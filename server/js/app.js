@@ -5,6 +5,7 @@ var app = require('app');
 */
 
 var express = require('express');
+var templ = require('jqtpl');
 
 var app = express.createServer();
 exports = app;
@@ -13,34 +14,45 @@ exports = app;
 Configuration
 */
 app.configure(function(){
-    app.use(express.methodOverride());
-    app.use(express.bodyParser());
-    app.use(app.router);
+    this.name = "Tarkus";
     
-    app.set('views', __dirname + '/views');
+    this.use(express.methodOverride());
+    this.use(express.bodyParser());
+    this.use(this.router);
     
-    app.set('port', 80);
-    app.set('host', undefined);
+    // view and template settings
+    this.set("views", __dirname + "/../views");
+    this.set("view engine", "html" );
+    this.set('view options', {
+            layout: false
+        });
+    this.register(".html", templ);
+    
+    // network settings    
+    this.set("port", 80);
+    this.set("host", undefined);
 });
 
-app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+app.configure("development", function(){
+    this.use(express.errorHandler({
+            dumpExceptions: true,
+            showStack:      true
+        }));
 });
 
-app.configure('production', function(){
+app.configure("production", function(){
     app.use(express.errorHandler());
 });
 
 /*
 */
-
-app.start = function()
-{
-    this.listen(this.set('port'), this.set('host'));
+app.start = function(){
+    this.listen(this.set("port"), this.set("host"));
+    console.log("%s is listening on port %d", this.name, this.set("port"));
 }
 
-app.get('/', function(req, res){
-    res.send('hello world');
+app.get("/", function(req, res){
+    res.render("index.html");
 });
 
 app.start();
