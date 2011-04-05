@@ -1,10 +1,11 @@
 /*
 Main application module.
-To access the application object from other modules, use:
+To access the application object in other modules, use:
 var app = require('app');
 */
 
 var express = require('express');
+
 var app = express.createServer();
 exports = app;
 
@@ -16,8 +17,10 @@ app.configure(function(){
     app.use(express.bodyParser());
     app.use(app.router);
     
-    app.port = 80;
-    app.host = undefined;
+    app.set('views', __dirname + '/views');
+    
+    app.set('port', 80);
+    app.set('host', undefined);
 });
 
 app.configure('development', function(){
@@ -33,7 +36,7 @@ app.configure('production', function(){
 
 app.start = function()
 {
-    this.listen(this.port, this.host);
+    this.listen(this.set('port'), this.set('host'));
 }
 
 app.get('/', function(req, res){
