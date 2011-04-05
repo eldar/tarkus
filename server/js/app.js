@@ -29,7 +29,7 @@ app.configure(function(){
     this.register(".html", templ);
     
     // network settings    
-    this.set("port", 80);
+    this.set("port", 8000);
     this.set("host", undefined);
 });
 
