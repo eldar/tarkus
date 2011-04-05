@@ -11,7 +11,6 @@ exports = app;
 /*
 Configuration
 */
-
 app.configure(function(){
     app.use(express.methodOverride());
     app.use(express.bodyParser());
@@ -21,11 +20,11 @@ app.configure(function(){
     app.host = undefined;
 });
 
-app.configure('release', function(){
+app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-app.configure('debug', function(){
+app.configure('production', function(){
     app.use(express.errorHandler());
 });
 
@@ -34,7 +33,7 @@ app.configure('debug', function(){
 
 app.start = function()
 {
-    this.listen(app.port, app.host);
+    this.listen(this.port, this.host);
 }
 
 app.get('/', function(req, res){
