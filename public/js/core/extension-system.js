@@ -4,7 +4,8 @@ tarkus.core = {};
 
 tarkus.core.PluginSpec = function()
 {
-    this.
+    this.name = "";
+    this.version = "";
 }
 
 tarkus.core.Plugin = function()
