@@ -55,7 +55,7 @@ app.get("/", function(req, res){
 
 app.run = function(){
     this.listen(this.port, this.host);
-    console.log("%s is listening on port %d", this.name, this.set("port"));
+    console.log("%s is listening on port %d", this.name, this.port);
 }
 
 app.run();
