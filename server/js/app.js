@@ -4,8 +4,8 @@ To access the application object in other modules, use:
 var app = require("<app-dir>/app").app;
 */
 
-var express = require('express');
-var templ = require('jqtpl');
+var express = require("express");
+var templ = require("jqtpl");
 
 var app = express.createServer();
 exports.app = app;
@@ -14,15 +14,17 @@ exports.app = app;
 Configuration
 */
 app.configure(function(){
-    app.name = "Tarkus";
+    app.name = "Tarkus";   
     
     app.use(express.methodOverride());
     app.use(express.bodyParser());
+    app.use(express.static(__dirname + '/../../client'));
     app.use(app.router);
+    
     
     // view and template settings
     app.set("views", __dirname + "/../views");
-    app.set("view engine", "html" );
+    app.set("view engine", "html");
     app.set('view options', {
             layout: false
         });
@@ -44,14 +46,14 @@ app.configure("production", function(){
     app.use(express.errorHandler());
 });
 
+app.get("/", function(req, res){
+    res.render("test/index.html");
+});
+
 app.run = function(){
     this.listen(this.set("port"), this.set("host"));
     console.log("%s is listening on port %d", this.name, this.set("port"));
 }
-
-app.get("/", function(req, res){
-    res.render("index.html");
-});
 
 app.run();
 
