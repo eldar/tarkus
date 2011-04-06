@@ -14,16 +14,19 @@ exports.app = app;
 Configuration
 */
 app.configure(function(){
-    app.name = "Tarkus";   
+    app.name = "Tarkus";
+
+    app.clientDir = __dirname + "/../../client";
+    app.viewsDir = __dirname + "/../views";
     
     app.use(express.methodOverride());
     app.use(express.bodyParser());
-    app.use(express.static(__dirname + '/../../client'));
+    app.use(express.static(app.clientDir));
     app.use(app.router);
     
     
     // view and template settings
-    app.set("views", __dirname + "/../views");
+    app.set("views", app.viewsDir);
     app.set("view engine", "html");
     app.set('view options', {
             layout: false
