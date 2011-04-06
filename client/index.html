@@ -1,22 +1,54 @@
 <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.11.custom.css" rel="Stylesheet" />  
 <script type="text/javascript" src="js/jquery/jquery-1.5.2.js"></script>
 <script type="text/javascript" src="js/jquery-ui/jquery-ui-1.8.11.custom.min.js"></script>
+<script type="text/javascript" src="js/ui-misc/splitter.js"></script>
+
+<style type="text/css" media="all">
+html, body
+{
+	margin: 0;
+	padding: 0;
+	overflow: hidden;	/* Remove scroll bars on browser window */
+}
+#header { padding: 0px; }
+.splitarea {
+	height: 100%;
+	width: 100%;
+	border: 2px solid #aaa;
+}
+.splitarea div {
+	overflow: auto;
+}
+.vsplitbar {
+	width: 3px;
+	background: #aaa;
+}
+.leftpane {
+	width: 20%;
+}
+</style>
+
+<script type="text/javascript">
+$().ready(function() {
+	$(".splitarea").splitter();
+});
+</script>
 
 <body>
-<style>
-    #resizable { width: 150px; height: 100%; padding: 0.5em; }
-    #resizable h3 { text-align: center; margin: 0; }
-    </style>
-    <script>
-    $(function() {
-        $( "#resizable" ).resizable();
-    });
-    </script>
 
-
-<div id="resizable" class="ui-widget-content">
-    <h3 class="ui-widget-header">Tree view</h3>
+<div id="header">
+Here goes a menubar,<br>
+toolbar and friends.
 </div>
 
+<div class="splitarea">
+	<div class="leftpane">
+	This is the left pane that will contain tree view.
+	</div>
+
+	<div>
+	This is the right pane that will contain the text editor(s)
+	</div>
+</div>
 
 </body>
