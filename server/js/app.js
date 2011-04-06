@@ -16,12 +16,12 @@ Configuration
 app.configure(function(){
     app.name = "Tarkus";
 
-    app.clientDir = __dirname + "/../../client";
+    app.publicDir = __dirname + "/../../public";
     app.viewsDir = __dirname + "/../views";
     
     app.use(express.methodOverride());
     app.use(express.bodyParser());
-    app.use(express.static(app.clientDir));
+    app.use(express.static(app.publicDir));
     app.use(app.router);
     
     
@@ -34,8 +34,8 @@ app.configure(function(){
     app.register(".html", templ);
     
     // network settings    
-    app.set("port", 8080);
-    app.set("host", undefined);
+    app.port = 8080;
+    app.host = undefined;
 });
 
 app.configure("development", function(){
@@ -54,7 +54,7 @@ app.get("/", function(req, res){
 });
 
 app.run = function(){
-    this.listen(this.set("port"), this.set("host"));
+    this.listen(this.port, this.host);
     console.log("%s is listening on port %d", this.name, this.set("port"));
 }
 
