@@ -1,3 +1,5 @@
+<head>
+<title>Tarkus IDE</title>
 <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.11.custom.css" rel="Stylesheet" />  
 <script data-main="js/main" src="js/jquery/require-jquery.js"></script>
 <style type="text/css" media="all">
@@ -23,27 +25,24 @@ html, body
 .leftpane {
     width: 200px;
 }
+.projecttreewidget {
+    width: 100%;
+    height: 100%;
+}
 </style>
-
-<script type="text/javascript">
-$().ready(function() {
-    $(".splitarea").splitter({
-        splitVertical: true,
-        sizeLeft: true,
-    });
-});
-</script>
+</head>
 
 <body>
 
-<div id="header">
+<div id="headerarea">
 Here goes a menubar,<br>
 toolbar and friends.
 </div>
 
 <div class="splitarea">
     <div class="leftpane">
-    This is the left pane that will contain tree view.
+        <div class="projecttreewidget">
+        </div>
     </div>
 
     <div>
