@@ -25,7 +25,8 @@ require(deps, function($) {
                 ]
             },
             "themes" : {
-                "theme" : "classic"
+                "theme" : "classic",
+                "url"   : "css/jstree-themes/classic/style.css"
             },
             "plugins" : [ "themes", "json_data" ]
         });
