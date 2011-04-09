@@ -9,7 +9,8 @@ require(deps, function($) {
         sizeLeft: true,
     });
     
-    var newSplit = $("<div id=\"newsplit\" class=\"splitarea\"> <div>first</div> <div>second</div> </div>");
+//  factor this bit of code into separate unit when implementing layout manager
+    var newSplit = $("<div id=\"newsplit\" class=\"splitarea\"> <div class=\"splitterpane\">first</div> <div class=\"splitterpane\">second</div> </div>");
     $("#rightpane").empty().append(newSplit);
     $("#newsplit").splitter({splitVertical : false});
 });
