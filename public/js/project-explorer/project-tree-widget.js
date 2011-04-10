@@ -3,7 +3,7 @@ var deps = [
     "ui-misc/jstree"
 ];
 
-require(deps, function($) {
+define(deps, function($) {
     $(".projecttreewidget")
         .jstree({
             "core" : {
