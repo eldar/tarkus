@@ -1,19 +1,18 @@
 var deps = [
     "jquery",
-    "ui-misc/splitter"
-];
-
-/*
+    "ui-misc/splitter",
     "ace/editor",
+    "ace/virtual_renderer",
     "ace/mode/javascript",
     "ace/theme/twilight"
-*/
+];
+
 
 define(deps, function($) {
-//    var Editor = require("ace/editor").Editor;
-//    var Renderer = require("ace/virtual_renderer").VirtualRenderer;
-//    var JavaScriptMode = require("ace/mode/javascript").Mode;
-//    var theme = require("ace/theme/twilight");
+    var Editor = require("ace/editor").Editor;
+    var Renderer = require("ace/virtual_renderer").VirtualRenderer;
+    var JavaScriptMode = require("ace/mode/javascript").Mode;
+    var theme = require("ace/theme/twilight");
 
     $("#mainsplit").splitter({
         splitVertical: false,
@@ -25,11 +24,6 @@ define(deps, function($) {
     $("#rightpane").empty().append(newSplit);
     $("#newsplit").splitter({splitVertical : false});
     
-                var editor = ace.edit("editor");
-                editor.setTheme("ace/theme/eclipse");
-                editor.getSession().setTabSize(4); 
-
-//    var container = document.getElementById("editor");
-//    var editor = new Editor(new Renderer(container, theme));
-   
+    var container = document.getElementById("editor");
+    var editor = new Editor(new Renderer(container, theme));
 });
