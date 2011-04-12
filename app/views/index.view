@@ -1,3 +1,0 @@
-It's ${app.name} talking. I'm watching you. 
-I am {{tmpl({a:1}, {filename: "inner.view"}) "inner"}}.
-
