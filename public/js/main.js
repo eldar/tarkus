@@ -15,17 +15,20 @@ require(["jquery"], function($) {
 $(document).ready(function() {
 
 require(ace_deps, function() {
-    var catalog = require("pilot/plugin_manager").catalog;
-    require.ready(function() {        
-        catalog.registerPlugins(plugins).then(function() {
-            var env = require("pilot/environment").create();
-            catalog.startupPlugins({ env: env }).then(function() {
-                require(deps, function() {
-    	            require("core/editor").launch(env);
-    	        });
-            });
+    var catalog = require("pilot/plugin_manager").catalog;    
+       
+    catalog.registerPlugins(plugins).then(function() {
+        var env = require("pilot/environment").create();
+        catalog.startupPlugins({ env: env }).then(function() {
+            require(deps, function() {
+	            var editor = require("core/editor");	            
+	            require.ready(function() {
+	                editor.launch(env);
+	            });
+	        });
         });
     });
+    
 });
 
 });
