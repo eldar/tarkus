@@ -46,6 +46,10 @@ html, body
     height: 100%;
 }
 
+#rightpane {
+    height: 100%;
+}
+
 .projecttreewidget {
     width: 100%;
     height: 100%;
