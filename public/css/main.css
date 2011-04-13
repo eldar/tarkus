@@ -34,7 +34,6 @@ html, body
 
 .mainarea {
     height: 100%;
-    width: 100%;
     border: 3px solid #aaa;
 }
 .mainarea div {
@@ -43,11 +42,9 @@ html, body
 
 .leftpane {
     width: 200px;
-    height: 100%;
 }
 
 #rightpane {
-    height: 100%;
 }
 
 .projecttreewidget {
