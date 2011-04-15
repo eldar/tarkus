@@ -8,20 +8,13 @@ define(deps, function($) {
     
     $("#project-tree-widget").jstree({
             "core" : {
-                animation : 300
+                animation : 200
             },
             "json_data" : {
                 "data" : [
                     { 
-                        "data" : "A node", 
-                        "children" : [ "Child 1", "Child 2" ]
-                    },
-                    { 
-                        "attr" : { "id" : "li.node.id" }, 
-                        "data" : { 
-                            "title" : "Long format demo", 
-                            "attr" : { "href" : "#" } 
-                        } 
+                        "data" : "New project", 
+                        "attr" : { "id" : "root.id" }
                     }
                 ]
             },
@@ -29,11 +22,13 @@ define(deps, function($) {
                 "theme" : "classic",
                 "url"   : "css/jstree-themes/classic/style.css"
             },
-            "plugins" : [ "themes", "json_data" ]
-        })
-        .bind("create.jstree", function (e, data) {
-            alert("hello world");
+            "plugins" : [ "themes", "json_data", "ui" ]
         });
 
-//    $("#project-tree-widget").jstree("create");
+    $( "#new-file" ).click(function() {
+        $("#project-tree-widget").jstree("create_node", $("#root\\.id"), "inside", { "data" : "new file" }, true);
+
+    });
+
+    var x = 5;
 });

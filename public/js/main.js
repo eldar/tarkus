@@ -12,7 +12,7 @@ var deps = [
     "project-explorer/nodes",
     "project-explorer/model",
     "project-explorer/tree-widget",
-    "project-explorer/project-actions"
+    "project-explorer/actions"
 ];
 
 var plugins = [ "pilot/index", "ace/defaults" ];
