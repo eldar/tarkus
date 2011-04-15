@@ -14,14 +14,15 @@ exports.ControllerHandler.prototype = {
     handle : function(req, res, next) {
         console.log("in handler " + req);
     
-        //TODO: move to separate middleware
+        //TODO: move to a separate middleware
         if (!req.parsedUrl)
             req.parsedUrl = url.parse(req.url, true);
             
         req.subPathNodes = [];
         
         // remove the leading and trailing "/"
-        var relPath = req.parsedUrl.pathname.substr(1);
+        var relPath = req.relPath;
+        if (!relPath) || req.parsedUrl.pathname.substr(1);
         if (relPath.length && relPath.charAt(relPath.length - 1) == '/')
             relPath = relPath.slice(0, relPath.length - 1);
         req.relPath = relPath;
@@ -51,9 +52,10 @@ exports.ControllerHandler.prototype = {
         var relPath = req.relPath;
         var fullPath = path.join(this.controllersDir, relPath);
 
+        // TODO: using exceptions may be slow
         try {             
             return require(fullPath);
-        } catch (e) {        
+        } catch (e) {       
             try {
                 return requre(path.join(fullPath, "index"));                                 
             } catch(e) {

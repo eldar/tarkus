@@ -13,6 +13,7 @@ var express = require("express");
 var path = require("path");
 var mem = require("./memory");
 var controller = require("./controller");
+var socketio = require("socket.io");
 
 var app = express.createServer();
 global.app = exports.app = app;
@@ -30,7 +31,8 @@ app.configure(function(){
    
 	app.publicDir = __dirname + "/../../public";
 	app.viewsDir = __dirname + "/../views";
-    app.controllerHandler = controller.createHandler({ controllersDir : __dirname + "/controllers" });    
+    app.httpHandler = controller.createHandler({ controllersDir : __dirname + "/http-handlers" });
+    app.messageHandler = controller.createHandler({ controllersDir : __dirname + "/message-handlers" });
 	   
 	app.use(express.methodOverride());
 	app.use(express.bodyParser());
@@ -77,11 +79,29 @@ app.configure("production", function(){
 	app.postConfigure();
 });
 
-// At thise point, circularly imported modlues can be loaded
+// At this point, circularly imported modules can be loaded
 
 app.get("/", function(req, res){
 	res.render("index.view");
 });
 
-app.run();
+app.socket = io.listen(app); 
+app.socket.on('connection', function(client){ 
+    client.on('message', function(data) {
+        var req = {
+                method: "MESSAGE",
+                url: data.url,
+                data: data,
+            };
+        var res = {};
+        function next() {
+        }
+        
+        app.messageHandler.handle(req, res, next);
+        return res;        
+    }); 
+    client.on('disconnect', function(){}); 
+});
+
+
 
