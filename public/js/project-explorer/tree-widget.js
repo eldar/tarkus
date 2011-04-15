@@ -24,25 +24,23 @@ define(deps, function($) {
             },
             "plugins" : [ "themes", "json_data", "ui" ]
         })
-
+        // hanling selection of the node in jstree
         .bind("select_node.jstree", function(e, obj) {
             var domElem = obj.rslt.obj;
             var id = domElem.attr("id");
             manager.setCurrentNode(id);
         });
 
-    $( "#new-file" ).click(function() {
-        $("#project-tree-widget").jstree("create_node", $("#root\\.id"), "inside", { "data" : "new file" }, true);
-    });
-    
+    // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
     manager.bind("change", function(sender, obj) {
         var node = obj.node;
         switch(obj.command) {
             case "add" :
-                /*
-                $("#project-tree-widget").jstree("create_node", $("#root\\.id"), "inside", { "data" : obj.node.name }, true);*/
-                var parent = (node.parent.name == "root-node") ? -1 : $("#" + node.parent.id);
-                $("#project-tree-widget").jstree("create_node", -1, "last", {
+                // TODO more robust check for a top-level node
+                var isToplevel = (node.parent.name == "root-node");
+                var parent = isToplevel ? -1 : $("#" + node.parent.id);
+                var position = isToplevel ? "last" : "inside";
+                $("#project-tree-widget").jstree("create_node", parent, position, {
                     "data" : obj.node.name,
                     "attr"  : { "id" : node.id }
                 }); 

@@ -8,7 +8,7 @@ define(deps, function($) {
 
     var ProjectModel = Backbone.Model.extend({
         self : {},
-        currentNode : {},
+        currentNode : null,
         
         initialize : function() {
             this.self = new Node("root-node");
@@ -17,6 +17,15 @@ define(deps, function($) {
         newProject : function(name) {
             var node = new Node(name);
             this.self.addChild(node);
+            this.change({
+                command : "add",
+                node: node
+            });
+        },
+
+        newFile : function(name) {
+            var node = new Node(name);
+            this.currentNode.addChild(node);
             this.change({
                 command : "add",
                 node: node
