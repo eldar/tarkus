@@ -2,11 +2,13 @@ var ace_deps = [ "pilot/fixoldbrowsers", "pilot/plugin_manager", "pilot/settings
              "pilot/environment", "core/editor" ];
 
 var deps = [
-    "jquery-ui/jquery-ui-1.8.11.custom.min",
+    "jquery-ui/jquery-ui",
     "ui-misc/splitter",
     "ui-misc/jstree",
+    "core/global",
     "core/edit-area",
-    "project-explorer/project-tree-widget"
+    "project-explorer/project-tree-widget",
+    "project-explorer/project-actions"
 ];
 
 var plugins = [ "pilot/index", "ace/defaults" ];

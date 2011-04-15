@@ -4,8 +4,10 @@ var deps = [
 ];
 
 define(deps, function($) {
-    $(".projecttreewidget")
-        .jstree({
+    var global = require("core/global");
+    
+    global.projectTreeWidget = $(".projecttreewidget");
+    global.projectTreeWidget.jstree({
             "core" : {
                 animation : 300
             },
