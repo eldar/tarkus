@@ -11,4 +11,8 @@ define(deps, function($) {
     $( "#open-project" ).button().click(function() {
 
     });
+    
+    $( "#new-file" ).button().click(function() {
+
+    });
 });

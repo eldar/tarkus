@@ -6,7 +6,7 @@ var deps = [
 define(deps, function($) {
     var global = require("core/global");
     
-    global.projectTreeWidget = $(".projecttreewidget");
+    global.projectTreeWidget = $("#project-tree-widget");
     global.projectTreeWidget.jstree({
             "core" : {
                 animation : 300

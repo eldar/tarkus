@@ -2,12 +2,16 @@ var ace_deps = [ "pilot/fixoldbrowsers", "pilot/plugin_manager", "pilot/settings
              "pilot/environment", "core/editor" ];
 
 var deps = [
+    "util/underscore",
+    "util/backbone",
     "jquery-ui/jquery-ui",
     "ui-misc/splitter",
     "ui-misc/jstree",
     "core/global",
     "core/edit-area",
-    "project-explorer/project-tree-widget",
+    "project-explorer/nodes",
+    "project-explorer/model",
+    "project-explorer/tree-widget",
     "project-explorer/project-actions"
 ];
 

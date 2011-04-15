@@ -16,10 +16,10 @@ html, body
 }
 
 #leftpane {
-    width: 200px;
+    width: 250px;
 }
 
-.projecttreewidget {
+.tarkus-full-sized {
     width: 100%;
     height: 100%;
 }
