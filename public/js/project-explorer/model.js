@@ -8,13 +8,25 @@ define(deps, function($) {
 
     var ProjectModel = Backbone.Model.extend({
         self : {},
+        currentNode : {},
         
         initialize : function() {
-            this.self = new Node("root-node", null);
+            this.self = new Node("root-node");
         },
 
-        newElement : function(name) {
-            self.addChild(new Node(name, self));
+        newProject : function(name) {
+            var node = new Node(name);
+            this.self.addChild(node);
+            this.change({
+                command : "add",
+                node: node
+            });
+        },
+        
+        setCurrentNode : function(id) {
+            this.currentNode = this.self.find(function(node) {
+                return node.id == id;
+            });
         }
     });
 
