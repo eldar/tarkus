@@ -6,8 +6,7 @@ var deps = [
 define(deps, function($) {
     var global = require("core/global");
     
-    global.projectTreeWidget = $("#project-tree-widget");
-    global.projectTreeWidget.jstree({
+    $("#project-tree-widget").jstree({
             "core" : {
                 animation : 300
             },
@@ -31,5 +30,10 @@ define(deps, function($) {
                 "url"   : "css/jstree-themes/classic/style.css"
             },
             "plugins" : [ "themes", "json_data" ]
+        })
+        .bind("create.jstree", function (e, data) {
+            alert("hello world");
         });
+
+//    $("#project-tree-widget").jstree("create");
 });
