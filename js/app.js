@@ -8,6 +8,7 @@
     Ensure app is properly configured before accessed in other modules.
 */
 
+var _ = require("underscore");
 var express = require("express");
 var path = require("path");
 var mem = require("./memory");
@@ -26,15 +27,16 @@ app.run = function(){
 */
 app.configure(function(){
 	app.name = "Tarkus"; 
-    
-    console.log(module);   
-	app.publicDir = dirname + "/../../public";
-	app.viewsDir = dirname + "/../views";    
+   
+	app.publicDir = __dirname + "/../../public";
+	app.viewsDir = __dirname + "/../views";
+    app.controllerHandler = controller.createHandler({ controllersDir : __dirname + "/controllers" });    
 	   
 	app.use(express.methodOverride());
-	app.use(express.bodyParser());    
+	app.use(express.bodyParser());
+	app.use(_.bind(app.controllerHandler.handle, app.controllerHandler));
 	app.use(app.router);
-	app.use(express.static(app.publicDir));    
+	app.use(express.static(app.publicDir));
 	
 	// common view and tmplate settings
 	app.set("views", app.viewsDir);
@@ -44,13 +46,11 @@ app.configure(function(){
 		});
         
     console.log();
-	app.register(".view", require(dirname + "/jqtpl/jqtpl"));
+	app.register(".view", require(__dirname + "/jqtpl/jqtpl"));
 	
 	// network settings    
 	app.port = 8080;
 	app.host = undefined;
-
-    app.controllerCache = new controller.ControllerCache();
 });
 
 /*
