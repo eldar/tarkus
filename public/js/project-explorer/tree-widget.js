@@ -40,10 +40,13 @@ define(deps, function($) {
                 var isToplevel = (node.parent.name == "root-node");
                 var parent = isToplevel ? -1 : $("#" + node.parent.id);
                 var position = isToplevel ? "last" : "inside";
-                $("#project-tree-widget").jstree("create_node", parent, position, {
+                var tree = $("#project-tree-widget");
+                tree.jstree("create_node", parent, position, {
                     "data" : obj.node.name,
                     "attr"  : { "id" : node.id }
-                }); 
+                });
+                if(parent != -1 && !tree.jstree("is_open", parent))
+                    tree.jstree("open_node", parent);
                 break;
             default:
                 alert("project model: no action taken");
