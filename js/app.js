@@ -1,8 +1,8 @@
 /*
     Main application module.
 
-    The application object is avalable to any
-    module via the global namespace. The object is also available as export from this module
+    The application object is available to any
+    module via the global namespace. The object is also available as an export from this module
     (require(path/to/this/module).app)
 
     Ensure app is properly configured before accessed in other modules.
@@ -12,7 +12,7 @@ var _ = require("underscore");
 var express = require("express");
 var path = require("path");
 var mem = require("./memory");
-var controller = require("./controller");
+var handler = require("./handler");
 var socketio = require("socket.io");
 
 var app = express.createServer();
@@ -31,24 +31,24 @@ app.configure(function(){
    
 	app.publicDir = __dirname + "/../../public";
 	app.viewsDir = __dirname + "/../views";
-    app.httpHandler = controller.createHandler({ controllersDir : __dirname + "/http-handlers" });
-    app.messageHandler = controller.createHandler({ controllersDir : __dirname + "/message-handlers" });
+    app.httpHandler = handler.createHandler({ handlersDir : __dirname + "/http-handlers" });
+    app.messageHandler = handler.createHandler({ handlersDir : __dirname + "/message-handlers" });
 	   
 	app.use(express.methodOverride());
 	app.use(express.bodyParser());
-	app.use(_.bind(app.controllerHandler.handle, app.controllerHandler));
+	//app.use(_.bind(app.httpHandler.handle, app.httpHandler));
 	app.use(app.router);
 	app.use(express.static(app.publicDir));
 	
 	// common view and tmplate settings
 	app.set("views", app.viewsDir);
-	app.set("view engine", "view");
+	app.set("view engine", "html");
 	app.set('view options', {
 			layout: false
 		});
         
     console.log();
-	app.register(".view", require(__dirname + "/jqtpl/jqtpl"));
+	app.register(".html", require(__dirname + "/jqtpl/jqtpl"));
 	
 	// network settings    
 	app.port = 8080;
@@ -79,26 +79,31 @@ app.configure("production", function(){
 	app.postConfigure();
 });
 
-// At this point, circularly imported modules can be loaded
-
-app.get("/", function(req, res){
-	res.render("index.view");
+app.get("/:view", function(req, res){
+	res.render(req.params.view);
 });
 
-app.socket = io.listen(app); 
-app.socket.on('connection', function(client){ 
+app.run();
+
+app.socket = socketio.listen(app);
+app.socket.on('connection', function(client){
+
     client.on('message', function(data) {
+        /*
         var req = {
                 method: "MESSAGE",
                 url: data.url,
                 data: data,
             };
+            
+        req = _.extend(req, client);
         var res = {};
         function next() {
         }
         
         app.messageHandler.handle(req, res, next);
-        return res;        
+        return res;
+        */        
     }); 
     client.on('disconnect', function(){}); 
 });

@@ -7,6 +7,7 @@ define(deps, function($) {
     $("#mainsplit").splitter({
         splitVertical: false,
         sizeLeft: true,
+        resizeTo: window,
     });
 /*    
 //  factor this bit of code into separate unit when implementing layout manager

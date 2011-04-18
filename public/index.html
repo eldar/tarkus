@@ -1,21 +1,24 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html>
 <head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Tarkus IDE</title>
-<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.11.custom.css" rel="Stylesheet" />  
+<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.11.custom.css" rel="Stylesheet" />
 <script data-main="js/main" src="js/jquery/require-jquery.js"></script>
 <link type="text/css" href="css/main.css" rel="Stylesheet" />
 </head>
-
 <body>
 
-<div id="headerarea">
-Here goes a menubar,<br>
-toolbar and friends.
+<div id="header">
+<button class="tarkus-toolbutton" id="new-project">New Project</button>
+<button class="tarkus-toolbutton" id="open-project">Open Project</button>
+<button class="tarkus-toolbutton" id="new-file">New File</button>
 </div>
 
 <div id="mainsplit" class="mainarea">
-    <div class="leftpane">
-        <div class="projecttreewidget">
+    <div id="leftpane">
+        <div class="tarkus-full-sized" id="project-tree-widget">
         </div>
     </div>
 
@@ -26,3 +29,4 @@ toolbar and friends.
 </div>
 
 </body>
+</html>

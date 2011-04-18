@@ -3,13 +3,13 @@ var url = require("url");
 var fs = require("fs");
 var mem = require("./memory");
 
-exports.ControllerHandler = function(options)
+exports.Handler = function(options)
 {
     options = options || {};
-    this.controllersDir = options.controllersDir || __dirname + "/controllers";
+    this.handlersDir = options.handlersDir;
 }
 
-exports.ControllerHandler.prototype = {
+exports.Handler.prototype = {
 
     handle : function(req, res, next) {
         console.log("in handler " + req);
@@ -21,18 +21,16 @@ exports.ControllerHandler.prototype = {
         req.subPathNodes = [];
         
         // remove the leading and trailing "/"
-        var relPath = req.relPath;
-        if (!relPath) || req.parsedUrl.pathname.substr(1);
-        if (relPath.length && relPath.charAt(relPath.length - 1) == '/')
-            relPath = relPath.slice(0, relPath.length - 1);
-        req.relPath = relPath;
-        
-        console.log("controller: ", relPath);
+        var relBasePath = req.parsedUrl.pathname.substr(1);
+        if (relBasePath.length && relBasePath.charAt(relBasePath.length - 1) == '/')
+            relBasePath = relBasePath.slice(0, relBasePath.length - 1);
+        req.relPath = req.relBasePath = relBasePath;
             
         var mod = this._load(req);
 
         if (mod) {
             var subPathNodes = req.subPathNodes;
+
             if (subPathNodes.length >= 1) {
                 var command = subPathNodes[0];
                 if (mod[command]) {
@@ -49,8 +47,8 @@ exports.ControllerHandler.prototype = {
     },
     
     _load : function(req) {
-        var relPath = req.relPath;
-        var fullPath = path.join(this.controllersDir, relPath);
+        var relBasePath = req.relBasePath;
+        var fullPath = path.join(this.handlersDir, relBasePath);
 
         // TODO: using exceptions may be slow
         try {             
@@ -59,12 +57,12 @@ exports.ControllerHandler.prototype = {
             try {
                 return requre(path.join(fullPath, "index"));                                 
             } catch(e) {
-                if (!relPath.length || relPath == ".")
+                if (!relBasePath.length || relBasePath == ".")
                     return null;
                                  
-                req.subPathNodes.unshift(path.basename(relPath));
-                req.relPath = path.dirname(relPath);               
-                return this._load(req);                
+                req.subPathNodes.unshift(path.basename(relBasePath));
+                req.relBasePath = path.dirname(relBasePath);               
+                return this._load(req);
             }
         }
     }
@@ -72,5 +70,6 @@ exports.ControllerHandler.prototype = {
 
 exports.createHandler = function(options)
 {
-    return new exports.ControllerHandler(options);
+    return new exports.Handler(options);
 }
+

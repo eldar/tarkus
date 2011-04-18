@@ -19,21 +19,8 @@ launch : function(env) {
     var container = document.getElementById("editor");
     env.editor = new Editor(new Renderer(container, theme));
     env.editor.setSession(session);
-    
-    /* 
-    function onResize() {
-        container.style.width = (document.documentElement.clientWidth) + "px";
-        container.style.height = (document.documentElement.clientHeight - 60 - 22) + "px";
-    */
-        env.editor.resize();
-        
-    /*
-    };
 
-    window.onresize = onResize;
-    onResize();
-    */
-
+    env.editor.resize();
 }
 };
 
