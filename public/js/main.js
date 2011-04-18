@@ -4,6 +4,7 @@ var ace_deps = [ "pilot/fixoldbrowsers", "pilot/plugin_manager", "pilot/settings
 var deps = [
     "util/underscore",
     "util/backbone",
+    "util/pclass",
     "jquery-ui/jquery-ui",
     "ui-misc/splitter",
     "ui-misc/jstree",
