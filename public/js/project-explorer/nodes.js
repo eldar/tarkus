@@ -1,9 +1,20 @@
 define(function() {
-    var NodeImpl = function(name) {
+    var Type = {
+        Folder : 1,
+        Project : 2,
+        File : 3
+    };
+    
+    var NodeImpl = function(name, type) {
+        this.type = type;
         this.parent = null;
         this.name = name;
         this.children = [];
         this.id = _.uniqueId("project_node_");
+        
+        this.isFolder = function() {
+            return (this.type == Type.Folder) || (this.type == Type.Project);
+        };
         
         this.addChild = function(node) {
             this.children.push(node);
@@ -28,6 +39,7 @@ define(function() {
     };
     
     return {
+        Type : Type,
         Node : NodeImpl
     };
 });

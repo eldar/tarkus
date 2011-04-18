@@ -4,7 +4,8 @@ var deps = [
 
 define(deps, function($) {
     var global = require("core/global");
-    var Node = require("project-explorer/nodes").Node;
+    var nodes = require("project-explorer/nodes");
+    var Node = nodes.Node;
 
     var ProjectModel = Backbone.Model.extend({
         self : {},
@@ -15,7 +16,7 @@ define(deps, function($) {
         },
 
         newProject : function(name) {
-            var node = new Node(name);
+            var node = new Node(name, nodes.Type.Project);
             this.self.addChild(node);
             this.change({
                 command : "add",
@@ -23,13 +24,24 @@ define(deps, function($) {
             });
         },
 
-        newFile : function(name) {
-            var node = new Node(name);
-            this.currentNode.addChild(node);
+        newNode : function(name, type) {
+            var node = new Node(name, type);
+            var current = this.currentNode;
+            var isFolder = current.isFolder();
+            var parent = current.isFolder() ? current : current.parent;
+            parent.addChild(node);
             this.change({
                 command : "add",
                 node: node
             });
+        },
+        
+        newFile : function(name) {
+            this.newNode(name, nodes.Type.File);
+        },
+
+        newFolder : function(name) {
+            this.newNode(name, nodes.Type.Folder);
         },
         
         setCurrentNode : function(id) {

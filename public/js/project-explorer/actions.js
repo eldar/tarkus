@@ -22,4 +22,13 @@ define(deps, function($) {
             return;
         manager.newFile(fileName);
     });
+    
+    $("#new-folder").click(function() {
+        if(!manager.currentNode)
+            return;
+        var folderName = prompt("Please, select folder name");
+        if(!folderName)
+            return;
+        manager.newFolder(folderName);
+    });
 });
