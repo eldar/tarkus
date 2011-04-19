@@ -51,7 +51,7 @@ define(deps, function($) {
             var node = this.currentNode;
             if(node.isDocument()) {
                 if(!node.session)
-                    node.session = global.env.getSession();
+                    node.session = global.env.getSession(node.docType);
                 global.env.editor.setSession(node.session);
             }
         }

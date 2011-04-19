@@ -5,6 +5,14 @@ define(function() {
         File : 3
     };
     
+    var getFileExt = function(name) {
+        var parts = name.split(".");
+        if(parts.length == 1)
+            return "";
+        else
+            return parts[parts.length - 1];
+    };
+    
     var NodeImpl = function(name, type) {
         this.type = type;
         this.parent = null;
@@ -12,7 +20,19 @@ define(function() {
         this.children = [];
         this.id = _.uniqueId("project_node_");
         this.session = null;
-        
+     
+        var ext = getFileExt(name);
+        var dType;
+        switch(ext) {
+            case "js":
+            case "css":
+                dType = ext;
+                break;
+            default:
+                dType = "unknown";
+        }
+        this.docType = dType;
+
         this.isFolder = function() {
             return (this.type == Type.Folder) || (this.type == Type.Project);
         };

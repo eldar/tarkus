@@ -10,6 +10,8 @@ launch : function(env) {
     var EditSession = require("ace/edit_session").EditSession;
 
     var JavaScriptMode = require("ace/mode/javascript").Mode;
+    var CssMode = require("ace/mode/css").Mode;
+    var TextMode = require("ace/mode/text").Mode;
     var UndoManager = require("ace/undomanager").UndoManager;
 
     var session = new EditSession("");
@@ -21,9 +23,20 @@ launch : function(env) {
 
     env.editor.resize();
 
-    env.getSession = function() {
+    env.getSession = function(docType) {
+        var mode;
+        switch(docType) {
+            case "js":
+                mode = new JavaScriptMode();
+                break;
+            case "css":
+                mode = new CssMode();
+                break;
+            default:
+                mode = new TextMode();
+        }
         var session = new EditSession("");
-        session.setMode(new JavaScriptMode());
+        session.setMode(mode);
         session.setUndoManager(new UndoManager());
         return session;
     }
