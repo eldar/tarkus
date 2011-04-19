@@ -28,9 +28,11 @@ require(ace_deps, function() {
         var env = require("pilot/environment").create();
         catalog.startupPlugins({ env: env }).then(function() {
             require(deps, function() {
-	            var editor = require("core/editor");	            
+                var global = require("core/global");
+	            var editor = require("core/editor");
 	            require.ready(function() {
 	                editor.launch(env);
+                    global.env = env;
 	            });
 	        });
         });

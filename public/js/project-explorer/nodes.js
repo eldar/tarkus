@@ -11,9 +11,14 @@ define(function() {
         this.name = name;
         this.children = [];
         this.id = _.uniqueId("project_node_");
+        this.session = null;
         
         this.isFolder = function() {
             return (this.type == Type.Folder) || (this.type == Type.Project);
+        };
+        
+        this.isDocument = function() {
+            return this.type == Type.File;
         };
         
         this.addChild = function(node) {

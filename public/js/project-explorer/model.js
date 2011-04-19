@@ -48,6 +48,12 @@ define(deps, function($) {
             this.currentNode = this.self.find(function(node) {
                 return node.id == id;
             });
+            var node = this.currentNode;
+            if(node.isDocument()) {
+                if(!node.session)
+                    node.session = global.env.getSession();
+                global.env.editor.setSession(node.session);
+            }
         }
     });
 
