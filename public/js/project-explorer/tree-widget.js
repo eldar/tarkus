@@ -24,9 +24,19 @@ define(deps, function($) {
             },
             "types" : {
                 "types" : {
-                    "file" : {
+                    "js" : {
                         "icon" : {
                             "image" : "images/js.png"
+                        }
+                    },
+                    "css" : {
+                        "icon" : {
+                            "image" : "images/css.png"
+                        }
+                    },
+                    "unknown" : {
+                        "icon" : {
+                            "image" : "images/unknown.png"
                         }
                     }
                 }
@@ -50,7 +60,7 @@ define(deps, function($) {
                 var parent = isToplevel ? -1 : $("#" + node.parent.id);
                 var position = isToplevel ? "last" : "inside";
                 var tree = $("#project-tree-widget");
-                var elemType = node.isFolder() ? "default" : "file";
+                var elemType = node.isFolder() ? "default" : node.docType;
                 tree.jstree("create_node", parent, position, {
                     "data" : {
                         "title" : obj.node.name
