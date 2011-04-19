@@ -22,7 +22,20 @@ define(deps, function($) {
             "ui" : {
                 "select_limit" : 1
             },
-            "plugins" : [ "themes", "json_data", "ui" ]
+            "types" : {
+                "file" : {
+                    "icon" : {
+                        "image" : "images/js.png"
+                    }
+                },
+            "default" : {
+                "icon" : {
+                    "image" : "images/js.png"
+                }
+            }
+
+            },
+            "plugins" : [ "themes", "json_data", "ui", "types" ]
         })
         // hanling selection of the node in jstree
         .bind("select_node.jstree", function(e, obj) {
@@ -42,8 +55,13 @@ define(deps, function($) {
                 var position = isToplevel ? "last" : "inside";
                 var tree = $("#project-tree-widget");
                 tree.jstree("create_node", parent, position, {
-                    "data" : obj.node.name,
-                    "attr"  : { "id" : node.id }
+                    "data" : {
+                        "title" : obj.node.name
+                    },
+                    "attr" : {
+                        "id" : node.id,
+                        "rel" : "file"
+                    }
                 });
                 if(parent != -1 && !tree.jstree("is_open", parent))
                     tree.jstree("open_node", parent);
