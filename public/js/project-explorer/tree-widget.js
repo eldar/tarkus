@@ -23,17 +23,13 @@ define(deps, function($) {
                 "select_limit" : 1
             },
             "types" : {
-                "file" : {
-                    "icon" : {
-                        "image" : "images/js.png"
+                "types" : {
+                    "file" : {
+                        "icon" : {
+                            "image" : "images/js.png"
+                        }
                     }
-                },
-            "default" : {
-                "icon" : {
-                    "image" : "images/js.png"
                 }
-            }
-
             },
             "plugins" : [ "themes", "json_data", "ui", "types" ]
         })
@@ -54,13 +50,14 @@ define(deps, function($) {
                 var parent = isToplevel ? -1 : $("#" + node.parent.id);
                 var position = isToplevel ? "last" : "inside";
                 var tree = $("#project-tree-widget");
+                var elemType = node.isFolder() ? "default" : "file";
                 tree.jstree("create_node", parent, position, {
                     "data" : {
                         "title" : obj.node.name
                     },
                     "attr" : {
                         "id" : node.id,
-                        "rel" : "file"
+                        "rel" : elemType
                     }
                 });
                 if(parent != -1 && !tree.jstree("is_open", parent))
