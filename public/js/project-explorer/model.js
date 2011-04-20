@@ -76,10 +76,8 @@ define(deps, function($) {
             if(foundSame)
                 return false;
             node.setName(newName);
-            this.change({
-                command : "rename",
-                node: node
-            });
+            // change syntax highlighting
+            node.session.setMode(global.env.modeForDocType(node.docType));
             return true;
         }
     });

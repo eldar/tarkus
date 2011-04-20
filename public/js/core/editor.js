@@ -23,7 +23,7 @@ launch : function(env) {
 
     env.editor.resize();
 
-    env.getSession = function(docType) {
+    env.modeForDocType = function(docType) {
         var mode;
         switch(docType) {
             case "js":
@@ -35,11 +35,15 @@ launch : function(env) {
             default:
                 mode = new TextMode();
         }
+        return mode;
+    };
+    
+    env.getSession = function(docType) {
         var session = new EditSession("");
-        session.setMode(mode);
+        session.setMode(env.modeForDocType(docType));
         session.setUndoManager(new UndoManager());
         return session;
-    }
+    };
 }
 };
 

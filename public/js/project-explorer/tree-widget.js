@@ -63,8 +63,12 @@ define(deps, function($) {
         })
         .bind("rename.jstree", function(e, data) {
             var rslt = data.rslt;
-            if(!manager.renameNode(rslt.obj.attr("id"), rslt.new_name)) {
-                var tree = data.inst;
+            var tree = data.inst;
+            var id = rslt.obj.attr("id");
+            if(manager.renameNode(id, rslt.new_name)) {
+                tree.set_type(manager.getNodeById(id).docType, rslt.obj);
+            }
+            else {
                 tree.set_text(rslt.obj, rslt.old_name);
             }
         });
@@ -94,9 +98,6 @@ define(deps, function($) {
                 tree.jstree("select_node", $("#" + node.id));
                 if(parent != -1 && !tree.jstree("is_open", parent))
                     tree.jstree("open_node", parent);
-                break;
-            case "rename":
-                tree.jstree("set_type", node.docType, $("#" + node.id));
                 break;
             default:
                 alert("project model: no action taken");
