@@ -44,16 +44,39 @@ define(deps, function($) {
             this.newNode(name, nodes.Type.Folder);
         },
         
-        setCurrentNode : function(id) {
-            this.currentNode = this.self.find(function(node) {
+        getNodeById : function(id) {
+            return this.self.find(function(node) {
                 return node.id == id;
             });
+        },
+        
+        setCurrentNode : function(id) {
+            this.currentNode = this.getNodeById(id);
             var node = this.currentNode;
             if(node.isDocument()) {
                 if(!node.session)
                     node.session = global.env.getSession(node.docType);
                 global.env.editor.setSession(node.session);
             }
+        },
+        
+        triggerRename : function() {
+            if(!this.currentNode)
+                return;
+            this.trigger("trigger_rename", this.currentNode);
+        },
+        
+        renameNode : function(id, newName) {
+            var node = this.getNodeById(id);
+            var foundSame = false;
+            _.each(node.parent.children, function(child) {
+                if(child.name == newName && child != node)
+                    foundSame = true;
+            });
+            if(foundSame)
+                return false;
+            node.name = newName;
+            return true;
         }
     });
 

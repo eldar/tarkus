@@ -52,13 +52,20 @@ define(deps, function($) {
                 else
                     return this.get_text(a) > this.get_text(b) ? 1 : -1;
             },
-            "plugins" : [ "themes", "json_data", "ui", "types", "sort" ]
+            "plugins" : [ "themes", "json_data", "ui", "types", "sort", "crrm" ]
         })
         // hanling selection of the node in jstree
         .bind("select_node.jstree", function(e, obj) {
             var domElem = obj.rslt.obj;
             var id = domElem.attr("id");
             manager.setCurrentNode(id);
+        })
+        .bind("rename.jstree", function(e, data) {
+            var rslt = data.rslt;
+            if(!manager.renameNode(rslt.obj.attr("id"), rslt.new_name)) {
+                var tree = data.inst;
+                tree.set_text(rslt.obj, rslt.old_name);
+            }
         });
 
     // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
@@ -91,5 +98,8 @@ define(deps, function($) {
             default:
                 alert("project model: no action taken");
         }
-    })
+    });
+    manager.bind("trigger_rename", function(node) {
+        $("#project-tree-widget").jstree("rename", $("#" + node.id));
+    });
 });

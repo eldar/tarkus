@@ -31,4 +31,8 @@ define(deps, function($) {
             return;
         manager.newFolder(folderName);
     });
+
+    $("#rename-node").click(function() {
+        manager.triggerRename();
+    });
 });
