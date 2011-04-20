@@ -4,6 +4,7 @@ var ace_deps = [ "pilot/fixoldbrowsers", "pilot/plugin_manager", "pilot/settings
 var deps = [
     "util/underscore",
     "util/backbone",
+    "util/pclass",
     "jquery-ui/jquery-ui",
     "ui-misc/splitter",
     "ui-misc/jstree",
@@ -27,9 +28,11 @@ require(ace_deps, function() {
         var env = require("pilot/environment").create();
         catalog.startupPlugins({ env: env }).then(function() {
             require(deps, function() {
-	            var editor = require("core/editor");	            
+                var global = require("core/global");
+	            var editor = require("core/editor");
 	            require.ready(function() {
 	                editor.launch(env);
+                    global.env = env;
 	            });
 	        });
         });

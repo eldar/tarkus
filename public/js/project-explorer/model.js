@@ -4,17 +4,56 @@ var deps = [
 
 define(deps, function($) {
     var global = require("core/global");
-    var Node = require("project-explorer/nodes").Node;
+    var nodes = require("project-explorer/nodes");
+    var Node = nodes.Node;
 
     var ProjectModel = Backbone.Model.extend({
         self : {},
+        currentNode : null,
         
         initialize : function() {
-            this.self = new Node("root-node", null);
+            this.self = new Node("root-node");
         },
 
-        newElement : function(name) {
-            self.addChild(new Node(name, self));
+        newProject : function(name) {
+            var node = new Node(name, nodes.Type.Project);
+            this.self.addChild(node);
+            this.change({
+                command : "add",
+                node: node
+            });
+        },
+
+        newNode : function(name, type) {
+            var node = new Node(name, type);
+            var current = this.currentNode;
+            var isFolder = current.isFolder();
+            var parent = current.isFolder() ? current : current.parent;
+            parent.addChild(node);
+            this.change({
+                command : "add",
+                node: node
+            });
+        },
+        
+        newFile : function(name) {
+            this.newNode(name, nodes.Type.File);
+        },
+
+        newFolder : function(name) {
+            this.newNode(name, nodes.Type.Folder);
+        },
+        
+        setCurrentNode : function(id) {
+            this.currentNode = this.self.find(function(node) {
+                return node.id == id;
+            });
+            var node = this.currentNode;
+            if(node.isDocument()) {
+                if(!node.session)
+                    node.session = global.env.getSession(node.docType);
+                global.env.editor.setSession(node.session);
+            }
         }
     });
 
