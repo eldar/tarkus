@@ -75,7 +75,7 @@ define(deps, function($) {
             });
             if(foundSame)
                 return false;
-            node.name = newName;
+            node.setName(newName);
             return true;
         }
     });

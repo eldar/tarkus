@@ -38,7 +38,8 @@ define(deps, function($) {
                         "icon" : {
                             "image" : "images/unknown.png"
                         }
-                    }
+                    },
+                    "folder" : {}
                 }
             },
             "sort" : function (a, b) {
@@ -78,14 +79,13 @@ define(deps, function($) {
                 var parent = isToplevel ? -1 : $("#" + node.parent.id);
                 var position = isToplevel ? "last" : "inside";
                 var tree = $("#project-tree-widget");
-                var elemType = node.isFolder() ? "default" : node.docType;
                 tree.jstree("create_node", parent, position, {
                     "data" : {
                         "title" : obj.node.name
                     },
                     "attr" : {
                         "id" : node.id,
-                        "rel" : elemType
+                        "rel" : node.docType
                     }
                 });
                 // FIXME jstree bug http://code.google.com/p/jstree/issues/detail?id=954
@@ -98,8 +98,8 @@ define(deps, function($) {
             default:
                 alert("project model: no action taken");
         }
-    });
-    manager.bind("trigger_rename", function(node) {
+    })
+    .bind("trigger_rename", function(node) {
         $("#project-tree-widget").jstree("rename", $("#" + node.id));
     });
 });
