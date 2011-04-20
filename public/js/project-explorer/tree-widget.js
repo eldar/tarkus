@@ -41,7 +41,18 @@ define(deps, function($) {
                     }
                 }
             },
-            "plugins" : [ "themes", "json_data", "ui", "types" ]
+            "sort" : function (a, b) {
+                var typeA = this._get_type(a);
+                var typeB = this._get_type(b);
+                var dirType = "default";
+                if(typeA == dirType && typeB != dirType)
+                    return -1;
+                else if(typeA != dirType && typeB == dirType)
+                    return 1;
+                else
+                    return this.get_text(a) > this.get_text(b) ? 1 : -1;
+            },
+            "plugins" : [ "themes", "json_data", "ui", "types", "sort" ]
         })
         // hanling selection of the node in jstree
         .bind("select_node.jstree", function(e, obj) {
