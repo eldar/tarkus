@@ -72,13 +72,13 @@ define(deps, function($) {
     // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
     manager.bind("change", function(sender, obj) {
         var node = obj.node;
+        var tree = $("#project-tree-widget");
         switch(obj.command) {
             case "add" :
                 // TODO more robust check for a top-level node
                 var isToplevel = (node.parent.name == "root-node");
                 var parent = isToplevel ? -1 : $("#" + node.parent.id);
                 var position = isToplevel ? "last" : "inside";
-                var tree = $("#project-tree-widget");
                 tree.jstree("create_node", parent, position, {
                     "data" : {
                         "title" : obj.node.name
@@ -94,6 +94,9 @@ define(deps, function($) {
                 tree.jstree("select_node", $("#" + node.id));
                 if(parent != -1 && !tree.jstree("is_open", parent))
                     tree.jstree("open_node", parent);
+                break;
+            case "rename":
+                tree.jstree("set_type", node.docType, $("#" + node.id));
                 break;
             default:
                 alert("project model: no action taken");

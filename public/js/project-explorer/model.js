@@ -76,6 +76,10 @@ define(deps, function($) {
             if(foundSame)
                 return false;
             node.setName(newName);
+            this.change({
+                command : "rename",
+                node: node
+            });
             return true;
         }
     });
