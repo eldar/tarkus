@@ -1,3 +1,9 @@
+require({    
+    paths: {
+        ace : "ace/lib/ace"
+    }
+});
+
 var ace_deps = [ "pilot/fixoldbrowsers", "pilot/plugin_manager", "pilot/settings",
              "pilot/environment", "core/editor" ];
 
