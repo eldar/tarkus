@@ -1,10 +1,10 @@
 var deps = [
-    "jquery"
+    "core/global",
+    "project-explorer/nodes"
 ];
 
-define(deps, function($) {
-    var global = require("core/global");
-    var nodes = require("project-explorer/nodes");
+define(deps, function(global, nodes) {
+
     var Node = nodes.Node;
 
     var ProjectModel = Backbone.Model.extend({
@@ -57,5 +57,5 @@ define(deps, function($) {
         }
     });
 
-    global.projectManager = new ProjectModel;
+    return new ProjectModel;
 });
