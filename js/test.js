@@ -1,13 +1,11 @@
 var A = function()
 {
-    this.dynamicallyAddedInCtor = 1;
+    console.log("in A");    
 }
 
-A.prototype.instance = 2;
-A.static = 3;
+console.log(A.prototype.constructor == A);
+
 
 var a = new A();
 
-console.log(a.dynamicallyAddedInCtor);
-console.log(a.instance);
-console.log(A.static);
+

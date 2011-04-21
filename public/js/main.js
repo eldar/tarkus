@@ -26,7 +26,7 @@ require(deps, function(
     editArea,
     editor,
     projectTree,
-    actions) {
+    actions) {    
     
     var catalog = pluginManager.catalog;
        
