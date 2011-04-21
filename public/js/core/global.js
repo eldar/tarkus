@@ -4,6 +4,7 @@ var deps = [
     "order!jquery",
     "order!jquery-ui/jquery-ui",
     "order!ui-misc/splitter",
+    "order!ui-misc/jquery-ui-layout",
     "order!ui-misc/jstree"
 ];
 
