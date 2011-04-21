@@ -9,10 +9,21 @@ var deps = [
 
 define(deps, function() {
 
+    // Prototypal inheritance
+    if (typeof Object.create !== 'function') {
+        Object.create = function (o) {
+            function F() {}
+            F.prototype = o;
+            return new F();
+        };
+    }
+
     // Shared empty constructor function to aid in prototype-chain creation.
     var ctor = function(){};
 
     _.mixin({
+    
+        // Classic inheritance
         inherits: function(superCtor, protoProps, staticProps) {
             var subCtor;
 
