@@ -37,6 +37,10 @@ return {
         $("#rename-node").click(function() {
             manager.triggerRename();
         });
+
+        $("#remove-node").click(function() {
+            manager.triggerRemove();
+        });
     }
 };
 

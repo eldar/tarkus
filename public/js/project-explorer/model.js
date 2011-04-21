@@ -8,14 +8,14 @@ define(deps, function(global, nodes) {
     var Node = nodes.Node;
 
     var ProjectModel = Backbone.Model.extend({
-        self : {},
-        currentNode : null,
+        self: {},
+        currentNode: null,
         
-        initialize : function() {
+        initialize: function() {
             this.self = new Node("root-node");
         },
 
-        newProject : function(name) {
+        newProject: function(name) {
             var node = new Node(name, nodes.Type.Project);
             this.self.addChild(node);
             this.change({
@@ -24,7 +24,7 @@ define(deps, function(global, nodes) {
             });
         },
 
-        newNode : function(name, type) {
+        newNode: function(name, type) {
             var node = new Node(name, type);
             var current = this.currentNode;
             var isFolder = current.isFolder();
@@ -36,21 +36,21 @@ define(deps, function(global, nodes) {
             });
         },
         
-        newFile : function(name) {
+        newFile: function(name) {
             this.newNode(name, nodes.Type.File);
         },
 
-        newFolder : function(name) {
+        newFolder: function(name) {
             this.newNode(name, nodes.Type.Folder);
         },
         
-        getNodeById : function(id) {
+        getNodeById: function(id) {
             return this.self.find(function(node) {
                 return node.id == id;
             });
         },
         
-        setCurrentNode : function(id) {
+        setCurrentNode: function(id) {
             this.currentNode = this.getNodeById(id);
             var node = this.currentNode;
             if(node.isDocument()) {
@@ -60,13 +60,24 @@ define(deps, function(global, nodes) {
             }
         },
         
-        triggerRename : function() {
+        triggerRename: function() {
             if(!this.currentNode)
                 return;
             this.trigger("trigger_rename", this.currentNode);
         },
         
-        renameNode : function(id, newName) {
+        triggerRemove: function() {
+            var node = this.currentNode;
+            if(!node)
+                return;
+            var siblings = node.parent.children;
+            this.trigger("trigger_remove", node);
+            var idx = _.indexOf(siblings, node);
+            if(idx != -1)
+                siblings.splice(idx, 1);
+        },
+        
+        renameNode: function(id, newName) {
             var node = this.getNodeById(id);
             var foundSame = false;
             _.each(node.parent.children, function(child) {

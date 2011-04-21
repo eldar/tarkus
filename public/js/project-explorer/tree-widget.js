@@ -106,6 +106,9 @@ return {
         })
         .bind("trigger_rename", function(node) {
             $("#project-tree-widget").jstree("rename", node.getDom());
+        })
+        .bind("trigger_remove", function(node) {
+            $("#project-tree-widget").jstree("remove", node.getDom());
         });
     }
 };    
