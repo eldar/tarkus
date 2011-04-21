@@ -69,6 +69,10 @@ define(function() {
             };
             return findImpl(this, pred);
         };
+        
+        this.getDom = function() {
+            return $("#" + this.id);
+        };
     };
     
     return {
