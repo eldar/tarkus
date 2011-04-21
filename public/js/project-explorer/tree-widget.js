@@ -82,7 +82,7 @@ return {
                 case "add" :
                     // TODO more robust check for a top-level node
                     var isToplevel = (node.parent.name == "root-node");
-                    var parent = isToplevel ? -1 : $("#" + node.parent.id);
+                    var parent = isToplevel ? -1 : node.parent.getDom();
                     var position = isToplevel ? "last" : "inside";
                     tree.jstree("create_node", parent, position, {
                         "data" : {
@@ -96,7 +96,7 @@ return {
                     // FIXME jstree bug http://code.google.com/p/jstree/issues/detail?id=954
                     // we shouln't need to call deselect_all
                     tree.jstree("deselect_all");
-                    tree.jstree("select_node", $("#" + node.id));
+                    tree.jstree("select_node", node.getDom());
                     if(parent != -1 && !tree.jstree("is_open", parent))
                         tree.jstree("open_node", parent);
                     break;
@@ -105,7 +105,7 @@ return {
             }
         })
         .bind("trigger_rename", function(node) {
-            $("#project-tree-widget").jstree("rename", $("#" + node.id));
+            $("#project-tree-widget").jstree("rename", node.getDom());
         });
     }
 };    

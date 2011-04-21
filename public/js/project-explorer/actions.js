@@ -11,6 +11,8 @@ return {
         
         $("#new-project").click(function() {
             var projName = prompt("Please, select project name");
+            if(!projName)
+                return;
             manager.newProject(projName);
         });
         
