@@ -6,9 +6,7 @@ var deps = [
 define(deps, function($, manager) {
 
 return {
-
     init: function() {
-
         $(".tarkus-toolbutton").button();
         
         $("#new-project").click(function() {
@@ -32,6 +30,10 @@ return {
             if(!folderName)
                 return;
             manager.newFolder(folderName);
+        });
+
+        $("#rename-node").click(function() {
+            manager.triggerRename();
         });
     }
 };

@@ -16,26 +16,34 @@ define(function() {
     var NodeImpl = function(name, type) {
         this.type = type;
         this.parent = null;
-        this.name = name;
         this.children = [];
         this.id = _.uniqueId("project_node_");
         this.session = null;
-     
-        var ext = getFileExt(name);
-        var dType;
-        switch(ext) {
-            case "js":
-            case "css":
-                dType = ext;
-                break;
-            default:
-                dType = "unknown";
-        }
-        this.docType = dType;
 
         this.isFolder = function() {
             return (this.type == Type.Folder) || (this.type == Type.Project);
         };
+        
+        this.setName = function(nm) {
+            this.name = nm;
+            if(this.isFolder()) {
+                this.docType = "folder";
+                return;
+            }
+            var ext = getFileExt(nm);
+            var dType;
+            switch(ext) {
+                case "js":
+                case "css":
+                    dType = ext;
+                    break;
+                default:
+                    dType = "unknown";
+            }
+            this.docType = dType;
+        };
+
+        this.setName(name);
         
         this.isDocument = function() {
             return this.type == Type.File;
