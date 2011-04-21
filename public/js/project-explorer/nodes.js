@@ -13,18 +13,21 @@ define(function() {
             return parts[parts.length - 1];
     };
     
-    var NodeImpl = function(name, type) {
-        this.type = type;
-        this.parent = null;
-        this.children = [];
-        this.id = _.uniqueId("project_node_");
-        this.session = null;
-
-        this.isFolder = function() {
-            return (this.type == Type.Folder) || (this.type == Type.Project);
-        };
+    var NodeImpl = _.inherits(Object, {
+        constructor: function(name, type) {
+            this.type = type;
+            this.parent = null;
+            this.children = [];
+            this.id = _.uniqueId("project_node_");
+            this.session = null;
+            this.setName(name);
+        },
         
-        this.setName = function(nm) {
+        isFolder: function() {
+            return (this.type == Type.Folder) || (this.type == Type.Project);
+        },
+        
+        setName: function(nm) {
             this.name = nm;
             if(this.isFolder()) {
                 this.docType = "folder";
@@ -41,20 +44,18 @@ define(function() {
                     dType = "unknown";
             }
             this.docType = dType;
-        };
-
-        this.setName(name);
-        
-        this.isDocument = function() {
+        },
+       
+        isDocument: function() {
             return this.type == Type.File;
-        };
+        },
         
-        this.addChild = function(node) {
+        addChild: function(node) {
             this.children.push(node);
             node.parent = this;
-        };
+        },
         
-        this.find = function(pred) {
+        find: function(pred) {
             var findImpl = function(node, pred) {
                 if(pred(node))
                     return node;
@@ -68,12 +69,12 @@ define(function() {
                 return null;
             };
             return findImpl(this, pred);
-        };
+        },
         
-        this.getDom = function() {
+        getDom: function() {
             return $("#" + this.id);
-        };
-    };
+        }
+    });
     
     return {
         Type : Type,
