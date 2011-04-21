@@ -50,9 +50,19 @@ define(function() {
             return this.type == Type.File;
         },
         
-        addChild: function(node) {
-            this.children.push(node);
-            node.parent = this;
+        setParent: function(parent) {
+            if(this.parent) {
+                if(parent == this.parent)
+                    return;
+                var siblings = this.parent.children;
+                var idx = _.indexOf(siblings, this);
+                if(idx != -1)
+                    siblings.splice(idx, 1);
+            };
+            if(parent) {
+                parent.children.push(this);
+            };
+            this.parent = parent;
         },
         
         find: function(pred) {

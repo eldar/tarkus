@@ -17,7 +17,7 @@ define(deps, function(global, nodes) {
 
         newProject: function(name) {
             var node = new Node(name, nodes.Type.Project);
-            this.self.addChild(node);
+            node.setParent(this.self);
             this.change({
                 command : "add",
                 node: node
@@ -29,7 +29,7 @@ define(deps, function(global, nodes) {
             var current = this.currentNode;
             var isFolder = current.isFolder();
             var parent = current.isFolder() ? current : current.parent;
-            parent.addChild(node);
+            node.setParent(parent);
             this.change({
                 command : "add",
                 node: node
@@ -72,9 +72,8 @@ define(deps, function(global, nodes) {
                 return;
             var siblings = node.parent.children;
             this.trigger("trigger_remove", node);
-            var idx = _.indexOf(siblings, node);
-            if(idx != -1)
-                siblings.splice(idx, 1);
+            node.setParent(null);
+            var idx = 5;
         },
         
         renameNode: function(id, newName) {
