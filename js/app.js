@@ -2,13 +2,13 @@
     Main application module.
 
     The application object is available to any
-    module via the global namespace. The object is also available as an export from this module
+    module via the global namespace. It is also available as an export from this module
     (require(path/to/this/module).app)
 
-    Ensure app is properly configured before accessed in other modules.
+    Ensure app is properly configured before it is accessed in other modules.
 */
 
-var _ = require("underscore");
+var _ = require("./global")._;
 var express = require("express");
 var path = require("path");
 var mem = require("./memory");
