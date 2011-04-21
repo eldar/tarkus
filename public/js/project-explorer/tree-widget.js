@@ -46,7 +46,7 @@ return {
                 "sort" : function (a, b) {
                     var typeA = this._get_type(a);
                     var typeB = this._get_type(b);
-                    var dirType = "default";
+                    var dirType = "folder";
                     if(typeA == dirType && typeB != dirType)
                         return -1;
                     else if(typeA != dirType && typeB == dirType)
