@@ -8,9 +8,9 @@
 <script data-main="js/main" src="js/jquery/require-jquery.js"></script>
 <link type="text/css" href="css/main.css" rel="Stylesheet" />
 </head>
-<body>
 
-<div id="header">
+<body>
+<div class="ui-layout-north">
 <button class="tarkus-toolbutton" id="new-project">New Project</button>
 <button class="tarkus-toolbutton" id="new-file">New File</button>
 <button class="tarkus-toolbutton" id="new-folder">New Folder</button>
@@ -18,17 +18,15 @@
 <button class="tarkus-toolbutton" id="remove-node">Remove</button>
 </div>
 
-<div id="mainsplit" class="mainarea">
-    <div id="leftpane">
+    <div class="ui-layout-west">
         <div class="tarkus-full-sized" id="project-tree-widget">
         </div>
     </div>
 
-    <div id="rightpane">
+    <div class="ui-layout-center">
         <div id="editor">
         </div>
     </div>
-</div>
 
 </body>
 </html>
