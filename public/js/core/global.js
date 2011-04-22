@@ -3,7 +3,6 @@ var deps = [
     "order!util/backbone",
     "order!jquery",
     "order!jquery-ui/jquery-ui",
-    "order!ui-misc/splitter",
     "order!ui-misc/jquery-ui-layout",
     "order!ui-misc/jstree"
 ];
