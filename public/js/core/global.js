@@ -17,7 +17,7 @@ define(deps, function() {
             return new F();
         };
     }
-
+    
     // Shared empty constructor function to aid in prototype-chain creation.
     var ctor = function(){};
 
@@ -60,6 +60,8 @@ define(deps, function() {
             return subClass;
         }                
     });
+    
+    
    
     return {};
 });

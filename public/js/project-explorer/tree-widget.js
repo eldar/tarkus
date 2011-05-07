@@ -80,8 +80,7 @@ return {
             var tree = $("#project-tree-widget");
             switch(obj.command) {
                 case "add" :
-                    // TODO more robust check for a top-level node
-                    var isToplevel = (node.parent.name == "root-node");
+                    var isToplevel = (node.parent.parent == null);
                     var parent = isToplevel ? -1 : node.parent.getDom();
                     var position = isToplevel ? "last" : "inside";
                     tree.jstree("create_node", parent, position, {

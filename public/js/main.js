@@ -12,6 +12,7 @@ var deps = [
     "pilot/environment",
     "core/edit-area",
     "core/editor",
+    "core/opened-docs-widget",
     "project-explorer/tree-widget",
     "project-explorer/actions",    
 
@@ -25,6 +26,7 @@ require(deps, function(
     pilotEnv,    
     editArea,
     editor,
+    openedDocs,
     projectTree,
     actions) {    
     
@@ -37,6 +39,8 @@ require(deps, function(
                 global.env = env;
                 
                 editArea.init();
+                openedDocs.init();
+                
                 actions.init();
                 projectTree.init();
                 editor.init(env);                

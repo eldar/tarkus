@@ -7,6 +7,8 @@ define(deps, function($) {
 
 return {
     init: function() {
+        $(".tarkus-toolbutton").button();
+
         // default options copied from js ui layout "complex" demo
         var layoutOuter = {
             // options.defaults apply to ALL PANES - but overridden by pane-specific settings

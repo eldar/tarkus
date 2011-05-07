@@ -1,9 +1,10 @@
 var deps = [
     "core/global",
+    "core/opened-docs",
     "project-explorer/nodes"
 ];
 
-define(deps, function(global, nodes) {
+define(deps, function(global, openedDocs, nodes) {
 
     var Node = nodes.Node;
 
@@ -54,8 +55,13 @@ define(deps, function(global, nodes) {
             this.currentNode = this.getNodeById(id);
             var node = this.currentNode;
             if(node.isDocument()) {
-                if(!node.session)
+                if(!node.session) {
                     node.session = global.env.getSession(node.docType);
+                    openedDocs.open({
+                        node: node,
+                        session: node.session,
+                    });
+                }
                 global.env.editor.setSession(node.session);
             }
         },
