@@ -7,12 +7,13 @@
 .tarkus-button-close { float: right; color: gray; }
 
 .header { 
-    border-bottom: 1px solid #777;
+    background: #d6d6d6;
+    padding: 3px 10px;
+    font-size: 0.85em;
     font-weight: bold;
-    text-align: center;
-    padding: 2px 0 4px;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
 }
 /*
  * Layout resizers
