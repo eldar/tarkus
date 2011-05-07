@@ -6,6 +6,14 @@
 .tarkus-ui-hovered { background:#e7f4f9; border:0px solid #e7f4f9; }
 .tarkus-button-close { float: right; color: gray; }
 
+.header { 
+    border-bottom: 1px solid #777;
+    font-weight: bold;
+    text-align: center;
+    padding: 2px 0 4px;
+    position: relative;
+    overflow: hidden;
+}
 /*
  * Layout resizers
  */
