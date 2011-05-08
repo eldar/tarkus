@@ -15,6 +15,7 @@ return {
             defaults: {
                 size:                   "auto",
                 minSize:                50,
+                resizeWhileDragging:    true,
                 paneClass:              "pane",      // default = 'ui-layout-pane'
                 resizerClass:           "resizer",   // default = 'ui-layout-resizer'
                 togglerClass:           "toggler",   // default = 'ui-layout-toggler'

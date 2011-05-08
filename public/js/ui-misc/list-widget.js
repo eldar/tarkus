@@ -86,8 +86,7 @@ init: function() {
         
         selectNode: function(newNode) {
             if(this._lastSelected) {
-                var cond = this._lastSelected.is(newNode);
-                if( cond )
+                if(this._lastSelected.is(newNode))
                     return;
                 this._lastSelected.removeClass("list-view-clicked");
                 var link = this._lastSelected.children("#main-elem");
@@ -103,7 +102,8 @@ init: function() {
             this.container().trigger("listView.selectNode", newNode);
         },
         
-        getTitle: function() {
+        getTitle: function(node) {
+            return $(node).children("a#main-elem").text();
         }
     });
 }
