@@ -98,5 +98,6 @@ define(deps, function(global, openedDocs, nodes) {
         }
     });
 
-    return new ProjectModel;
+    var model = new ProjectModel;
+    return model;
 });
