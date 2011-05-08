@@ -15,7 +15,7 @@ init: function() {
     var css_string = "" +
         ".list-widget ul {list-style: none; margin-left: 0px; padding-left: 0px;} " +
         ".list-widget ul {list-style: none; margin-right: 0px; padding-right: 0px;} " +
-        ".list-widget a {text-decoration:none;} " +
+        ".list-widget a {display:inline-block; white-space:nowrap; text-decoration:none;} " +
         ".list-widget a:focus {outline:none;} ";
 
     $.vakata.css.add_sheet({ str : css_string, title : "listWidget" });
@@ -42,6 +42,7 @@ init: function() {
     Widget = _.inherits(Object, {
         _elem: null,
         _config: null,
+        _lastSelected: null,
         
         constructor: function(elem, conf) {
             this._elem = elem;
@@ -62,13 +63,35 @@ init: function() {
             if(js.data) {
                 var a = $("<a />");
                 a.attr("href", "#");
-                a.css("color", "black");
+                a.attr("id", "main-elem");
+                a.addClass("list-view-unclicked-a");
                 var title = js.data.title;
                 a.html(title);
                 d.append(a);
             }
             this.container().children("ul").prepend(d);
             if(callback) { callback.call(this, d); }
+            
+            // selection handling
+            d.hover(function() {
+                $(this).addClass("list-view-hovered")
+            }, function() {
+                $(this).removeClass("list-view-hovered")
+            });
+            var th = this;
+            d.click(function() {
+                if(th._lastSelected) {
+                    th._lastSelected.removeClass("list-view-clicked");
+                    var link = th._lastSelected.children("#main-elem");
+                    link.removeClass("list-view-clicked-a");
+                    link.addClass("list-view-unclicked-a");
+                }
+                th._lastSelected = $(this);
+                th._lastSelected.addClass("list-view-clicked");
+                var link = th._lastSelected.children("#main-elem");
+                link.addClass("list-view-clicked-a");
+                link.removeClass("list-view-unclicked-a");
+            });
         }
     });
 }

@@ -27,13 +27,10 @@ return {
                         }
                     }, function(elem) {
                         elem.hover(function() {
-                                $(this)
-                                    .addClass("tarkus-ui-hovered")
-                                    .append("<a class=\"tarkus-button-close\" href=\"#\">✕&nbsp;</a>"); //✖
-                            }, function() {
-                                $(this).removeClass("tarkus-ui-hovered")
-                                $("#opened-docs-widget #" + node.node.id + " .tarkus-button-close").remove();
-                            });
+                            $(this).append("<a class=\"tarkus-button-close\" href=\"#\">✕&nbsp;</a>"); //✖
+                        }, function() {
+                            $("#opened-docs-widget #" + node.node.id + " .tarkus-button-close").remove();
+                        });
                     });
                     break;
                 default:
