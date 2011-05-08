@@ -80,18 +80,30 @@ init: function() {
             });
             var th = this;
             d.click(function() {
-                if(th._lastSelected) {
-                    th._lastSelected.removeClass("list-view-clicked");
-                    var link = th._lastSelected.children("#main-elem");
-                    link.removeClass("list-view-clicked-a");
-                    link.addClass("list-view-unclicked-a");
-                }
-                th._lastSelected = $(this);
-                th._lastSelected.addClass("list-view-clicked");
-                var link = th._lastSelected.children("#main-elem");
-                link.addClass("list-view-clicked-a");
-                link.removeClass("list-view-unclicked-a");
+                th.selectNode($(this));
             });
+        },
+        
+        selectNode: function(newNode) {
+            if(this._lastSelected) {
+                var cond = this._lastSelected.is(newNode);
+                if( cond )
+                    return;
+                this._lastSelected.removeClass("list-view-clicked");
+                var link = this._lastSelected.children("#main-elem");
+                link.removeClass("list-view-clicked-a");
+                link.addClass("list-view-unclicked-a");
+            }
+            this._lastSelected = newNode;
+            newNode.addClass("list-view-clicked");
+            var link = newNode.children("#main-elem");
+            link.addClass("list-view-clicked-a");
+            link.removeClass("list-view-unclicked-a");
+                
+            this.container().trigger("listView.selectNode", newNode);
+        },
+        
+        getTitle: function() {
         }
     });
 }

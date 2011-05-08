@@ -10,7 +10,10 @@ return {
 
     init: function() {
         listWid.init();
-        $("#opened-docs-widget").listWidget();
+        $("#opened-docs-widget").listWidget()
+            .bind("listView.selectNode", function(sender, node) {
+                //alert("selected " + $(node).children("a#main-elem").text());
+            });
 
         // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
         openedDocs.bind("change", function(sender, obj) {
