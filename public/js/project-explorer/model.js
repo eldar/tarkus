@@ -64,6 +64,7 @@ define(deps, function(global, openedDocs, nodes) {
                 }
                 global.env.editor.setSession(node.session);
             }
+            this.trigger("currentNodeChanged", node);
         },
         
         triggerRename: function() {
@@ -97,7 +98,17 @@ define(deps, function(global, openedDocs, nodes) {
             return true;
         }
     });
-
+    
     var model = new ProjectModel;
+
+    openedDocs.bind("documentSelected", function(id) {
+        model.setCurrentNode(id);
+    });
+    
+    model.bind("currentNodeChanged", function(node) {
+        if(node.isDocument())
+            openedDocs.setCurrentDocument(node);
+    });
+
     return model;
 });

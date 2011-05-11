@@ -10,9 +10,14 @@ return {
 
     init: function() {
         listWid.init();
+        
+        var inSelectEvent = false;
+        
         $("#opened-docs-widget").listWidget()
             .bind("listView.selectNode", function(sender, node) {
-                //alert("selected " + $(this).listWidget("getTitle", $(node)));
+                inSelectEvent = true;
+                openedDocs.setCurrentDocumentById($(node).attr("id"))
+                inSelectEvent = false;
             });
 
         // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
@@ -38,6 +43,12 @@ return {
                     break;
                 default:
                     alert("project model: no action taken");
+            }
+        })
+        .bind("documentSelectedForView", function(id) {
+            if(!inSelectEvent) {
+                list = $("#opened-docs-widget");
+                list.listWidget("selectNode", list.find("#" + id));
             }
         });
     }

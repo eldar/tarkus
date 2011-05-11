@@ -9,6 +9,8 @@ return {
 
     init: function() {
     
+        var inSelectEvent = false;
+        
         $("#project-tree-widget").jstree({
                 "core" : {
                     "animation" : 200
@@ -60,7 +62,9 @@ return {
             .bind("select_node.jstree", function(e, obj) {
                 var domElem = obj.rslt.obj;
                 var id = domElem.attr("id");
+                inSelectEvent = true;
                 manager.setCurrentNode(id);
+                inSelectEvent = false;
             })
             .bind("rename.jstree", function(e, data) {
                 var rslt = data.rslt;
@@ -94,13 +98,19 @@ return {
                     });
                     // FIXME jstree bug http://code.google.com/p/jstree/issues/detail?id=954
                     // we shouln't need to call deselect_all
-                    tree.jstree("deselect_all");
-                    tree.jstree("select_node", node.getDom());
+                    manager.setCurrentNode(node.id);
                     if(parent != -1 && !tree.jstree("is_open", parent))
                         tree.jstree("open_node", parent);
                     break;
                 default:
                     alert("project model: no action taken");
+            }
+        })
+        .bind("currentNodeChanged", function(node) {
+            if(!inSelectEvent) {
+                tree = $("#project-tree-widget");
+                tree.jstree("deselect_all");
+                tree.jstree("select_node", node.getDom());
             }
         })
         .bind("trigger_rename", function(node) {

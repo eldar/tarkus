@@ -13,6 +13,14 @@ define(deps, function($, global) {
                 command: "add",
                 node: docEntry
             });
+        },
+        
+        setCurrentDocument: function(node) {
+            this.trigger("documentSelectedForView", node.id);
+        },
+        
+        setCurrentDocumentById: function(id) {
+            this.trigger("documentSelected", id);
         }
     });
     
