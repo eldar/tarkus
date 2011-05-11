@@ -35,9 +35,14 @@ return {
                         }
                     }, function(elem) {
                         elem.hover(function() {
-                            $(this).append("<a class=\"tarkus-button-close\" href=\"#\">✕&nbsp;</a>"); //✖
+                            var a = $("<a />").attr("href", "#").addClass("tarkus-button-close").html("✕");
+                            $(this).append(a);
+                            a.click(function() {
+                                openedDocs.closeDocument(elem.attr("id"));
+                                elem.remove();
+                            });
                         }, function() {
-                            $("#opened-docs-widget #" + node.node.id + " .tarkus-button-close").remove();
+                            $(this).find(".tarkus-button-close").remove();
                         });
                     });
                     break;

@@ -26,6 +26,7 @@ define(deps, function($, global) {
             global.env.editor.setSession(entry.session);
         },
         
+        
         getEntryById: function(id) {
             var len = this._docs.length;
             for(var i = 0; i < len; i++) {
@@ -34,6 +35,12 @@ define(deps, function($, global) {
                     return entry;
             }
             return null;
+        },
+        
+        closeDocument: function(id) {
+            var entry = this.getEntryById(id);
+            var i = this._docs.indexOf(entry);
+            this._docs.splice(i, 1);
         }
     });
     
