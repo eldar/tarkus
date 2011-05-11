@@ -62,7 +62,6 @@ define(deps, function(global, openedDocs, nodes) {
                         session: node.session,
                     });
                 }
-                global.env.editor.setSession(node.session);
             }
             this.trigger("currentNodeChanged", node);
         },
