@@ -55,13 +55,7 @@ define(deps, function(global, openedDocs, nodes) {
             this.currentNode = this.getNodeById(id);
             var node = this.currentNode;
             if(node.isDocument()) {
-                if(!node.session) {
-                    node.session = global.env.getSession(node.docType);
-                    openedDocs.open({
-                        node: node,
-                        session: node.session,
-                    });
-                }
+                openedDocs.open(node);
             }
             this.trigger("currentNodeChanged", node);
         },
