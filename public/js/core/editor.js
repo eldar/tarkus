@@ -52,11 +52,21 @@ return {
             return mode;
         };
         
+        env.setEditorVisible = function(visible) {
+            $("#editor").toggle(visible);
+        };
+        
+        env.setEditorVisible(false);
+        
         env.getSession = function(docType) {
             var session = new EditSession("");
             session.setMode(env.modeForDocType(docType));
             session.setUndoManager(new UndoManager());
             return session;
+        };
+        
+        env.getEmptySession = function() {
+            return new EditSession("");
         };
     }
 };

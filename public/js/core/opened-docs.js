@@ -4,7 +4,7 @@ var deps = [
 ];
 
 define(deps, function($, global) {
-    var OpenedDocuments = Backbone.Model.extend({
+    var OpenDocuments = Backbone.Model.extend({
         // Contains an array of { node, session } objects
         _docs: [],
         _currentEntry: null,
@@ -16,7 +16,7 @@ define(deps, function($, global) {
                 node: node,
                 session: global.env.getSession(node.docType)
             };
-            this._docs.push(docEntry);
+            this._docs.unshift(docEntry);
             this.change({
                 command: "add",
                 node: docEntry
@@ -24,16 +24,19 @@ define(deps, function($, global) {
         },
         
         setCurrentDocument: function(node) {
-            this._currentEntry = this.getEntryByNode(node);
+            var newEntry = this.getEntryByNode(node)
+            if(this._currentEntry == newEntry)
+                return;
+            this._currentEntry = newEntry;
             this.trigger("documentSelectedForView", node.id);
         },
         
         setCurrentDocumentById: function(id) {
-            this.trigger("documentSelected", id);
             var entry = this.getEntryById(id);
+            global.env.setEditorVisible(true);
             global.env.editor.setSession(entry.session);
+            this.trigger("documentSelected", id);
         },
-        
         
         getEntryById: function(id) {
             var len = this._docs.length;
@@ -57,12 +60,20 @@ define(deps, function($, global) {
         
         closeDocument: function(id) {
             var entry = this.getEntryById(id);
+            var isSelected = (entry == this._currentEntry);
             var i = this._docs.indexOf(entry);
             this._docs.splice(i, 1);
-//            var nextIndex = (i == this._docs.length) ? (i - 1) : i;
-//            this.setCurrentDocument(this._docs[nextIndex]);
+            if(this._docs.length == 0) {
+                global.env.editor.setSession(global.env.getEmptySession());
+                global.env.setEditorVisible(false);
+                return;
+            }
+            if(isSelected) {
+                var nextIndex = (i == this._docs.length) ? (i - 1) : i;
+                this.setCurrentDocument(this._docs[nextIndex].node);
+            }
         }
     });
     
-    return new OpenedDocuments;
+    return new OpenDocuments;
 });
