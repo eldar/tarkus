@@ -19,45 +19,45 @@ var app = express.createServer();
 global.app = exports.app = app;
 
 app.run = function(){
-	this.listen(this.port, this.host);
-	console.log("%s is listening on port %d", this.name, this.port);
+    this.listen(this.port, this.host);
+    console.log("%s is listening on port %d", this.name, this.port);
 }
 
 /*
-	Configuration 
+    Configuration 
 */
 app.configure(function(){
-	app.name = "Tarkus"; 
+    app.name = "Tarkus"; 
    
-	app.publicDir = __dirname + "/../../public";
-	app.viewsDir = __dirname + "/../views";
+    app.publicDir = __dirname + "/../public";
+    app.viewsDir = __dirname + "/../views";
     app.httpHandler = handler.createHandler({ handlersDir : __dirname + "/http-handlers" });
     app.messageHandler = handler.createHandler({ handlersDir : __dirname + "/message-handlers" });
-	   
-	app.use(express.methodOverride());
-	app.use(express.bodyParser());
-	//app.use(_.bind(app.httpHandler.handle, app.httpHandler));
-	app.use(app.router);
-	app.use(express.static(app.publicDir));
-	
-	// common view and tmplate settings
-	app.set("views", app.viewsDir);
-	app.set("view engine", "html");
-	app.set('view options', {
-			layout: false
-		});
+       
+    app.use(express.methodOverride());
+    app.use(express.bodyParser());
+    //app.use(_.bind(app.httpHandler.handle, app.httpHandler));
+    app.use(app.router);
+    app.use(express.static(app.publicDir));
+    
+    // common view and tmplate settings
+    app.set("views", app.viewsDir);
+    app.set("view engine", "html");
+    app.set('view options', {
+            layout: false
+        });
         
     console.log();
-	app.register(".html", require(__dirname + "/jqtpl/jqtpl"));
-	
-	// network settings    
-	app.port = 8080;
-	app.host = undefined;
+    app.register(".html", require(__dirname + "/jqtpl/jqtpl"));
+    
+    // network settings    
+    app.port = 8080;
+    app.host = undefined;
 });
 
 /*
-	Configuration code run after
-	environment specific callbacks.
+    Configuration code run after
+    environment specific callbacks.
 */
 app.postConfigure = function()
 {    
@@ -65,30 +65,39 @@ app.postConfigure = function()
 
 app.configure("development", function(){
 
-	app.use(express.errorHandler({
-			dumpExceptions: true,
-			showStack:      true
-		}));
-		
-	app.postConfigure();
+    app.use(express.errorHandler({
+            dumpExceptions: true,
+            showStack:      true
+        }));
+        
+    app.postConfigure();
 });
 
 app.configure("production", function(){
-	app.use(express.errorHandler());
-	
-	app.postConfigure();
+    app.use(express.errorHandler());
+    
+    app.postConfigure();
 });
 
 app.get("/:view", function(req, res){
-	res.render(req.params.view);
+    res.render(req.params.view);
+});
+
+app.get("/ide", function(req, res){
+    res.render("ide");
+});
+
+app.get("/", function(req, res){
+    res.render("index");
 });
 
 app.run();
 
 app.socket = socketio.listen(app);
-app.socket.on('connection', function(client){
-
-    client.on('message', function(data) {
+app.socket.on("connection", function(client){
+    console.log("socket connected");
+    client.on("message", function(data) {
+        
         /*
         var req = {
                 method: "MESSAGE",
@@ -105,7 +114,7 @@ app.socket.on('connection', function(client){
         return res;
         */        
     }); 
-    client.on('disconnect', function(){}); 
+    client.on("disconnect", function(){}); 
 });
 
 

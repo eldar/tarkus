@@ -72,6 +72,11 @@ define(deps, function($, global) {
                 var nextIndex = (i == this._docs.length) ? (i - 1) : i;
                 this.setCurrentDocument(this._docs[nextIndex].node);
             }
+        },
+        
+        handleNodeRenamed: function(node) {
+            var entry = this.getEntryByNode(node);
+            entry.session.setMode(global.env.modeForDocType(node.docType));
         }
     });
     

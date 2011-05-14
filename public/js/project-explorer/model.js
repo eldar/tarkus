@@ -1,10 +1,11 @@
 var deps = [
     "core/global",
     "core/opened-docs",
+    "core/io",
     "project-explorer/nodes"
 ];
 
-define(deps, function(global, openedDocs, nodes) {
+define(deps, function(global, openedDocs, socket, nodes) {
 
     var Node = nodes.Node;
 
@@ -87,7 +88,7 @@ define(deps, function(global, openedDocs, nodes) {
                 return false;
             node.setName(newName);
             // change syntax highlighting
-            node.session.setMode(global.env.modeForDocType(node.docType));
+            this.trigger("nodeRenamed", node);
             return true;
         }
     });
@@ -103,5 +104,10 @@ define(deps, function(global, openedDocs, nodes) {
             openedDocs.setCurrentDocument(node);
     });
 
+    model.bind("nodeRenamed", function(node) {
+        if(node.isDocument())
+            openedDocs.handleNodeRenamed(node);
+    });
+    
     return model;
 });
