@@ -1,3 +1,8 @@
+body {
+    font-family: "Lucida Sans", "Lucida Sans Unicode", "Luxi Sans", Tahoma, sans-serif;
+    font-size: 14px;
+}
+
 #editor {
     height: 100%;
     width: 100%;
