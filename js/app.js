@@ -13,6 +13,7 @@ var express = require("express");
 var path = require("path");
 var mem = require("./memory");
 var handler = require("./handler");
+var msgHandler = require("./msghandler");
 var socketio = require("socket.io");
 
 var app = express.createServer();
@@ -96,9 +97,12 @@ app.run();
 app.socket = socketio.listen(app);
 app.socket.on("connection", function(client){
     console.log("socket connected");
+    var msgHandlerObj = new msgHandler.MsgHandler(client);
     client.on("message", function(data) {
+        console.log("some message received");
+        msgHandlerObj.handle(data);
         
-        /*
+/*
         var req = {
                 method: "MESSAGE",
                 url: data.url,

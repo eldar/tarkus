@@ -10,7 +10,7 @@ define(deps, function($, global) {
         _currentEntry: null,
         
         open: function(node) {
-            if(this.getEntryByNode(node))
+            if(this.entryByNode(node))
                 return;
             var docEntry = {
                 node: node,
@@ -24,7 +24,7 @@ define(deps, function($, global) {
         },
         
         setCurrentDocument: function(node) {
-            var newEntry = this.getEntryByNode(node)
+            var newEntry = this.entryByNode(node)
             if(this._currentEntry == newEntry)
                 return;
             this._currentEntry = newEntry;
@@ -48,7 +48,7 @@ define(deps, function($, global) {
             return null;
         },
         
-        getEntryByNode: function(node) {
+        entryByNode: function(node) {
             var len = this._docs.length;
             for(var i = 0; i < len; i++) {
                 var entry = this._docs[i];
@@ -75,7 +75,7 @@ define(deps, function($, global) {
         },
         
         handleNodeRenamed: function(node) {
-            var entry = this.getEntryByNode(node);
+            var entry = this.entryByNode(node);
             entry.session.setMode(global.env.modeForDocType(node.docType));
         }
     });

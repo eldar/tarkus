@@ -4,6 +4,7 @@ var deps = [
     "order!jquery",
     "order!jquery-ui/jquery-ui",
     "order!ui-misc/jquery-ui-layout",
+    "order!ui-misc/jquery-blockui",
     "order!ui-misc/jstree",
     "order!socket.io/socket.io.js"
 ];

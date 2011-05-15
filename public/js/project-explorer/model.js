@@ -5,16 +5,18 @@ var deps = [
     "project-explorer/nodes"
 ];
 
-define(deps, function(global, openedDocs, socket, nodes) {
+define(deps, function(global, openDocs, socketIo, nodes) {
 
     var Node = nodes.Node;
 
+    var ROOT_NAME = "root-node";
+    
     var ProjectModel = Backbone.Model.extend({
         self: {},
         currentNode: null,
         
         initialize: function() {
-            this.self = new Node("root-node");
+            this.self = new Node(ROOT_NAME);
         },
 
         newProject: function(name) {
@@ -24,26 +26,62 @@ define(deps, function(global, openedDocs, socket, nodes) {
                 command : "add",
                 node: node
             });
+            socketIo.send("projectCreate", { projectName: name});
         },
 
         newNode: function(name, type) {
-            var node = new Node(name, type);
             var current = this.currentNode;
-            var isFolder = current.isFolder();
             var parent = current.isFolder() ? current : current.parent;
+            var sameName = false;
+            _.each(parent.children, function(node) {
+                if(node.name === name)
+                    sameName = true;
+            });
+            if(sameName) {
+                alert("File with name " + name + " already exists");
+                return null;
+            }
+            var node = new Node(name, type);
             node.setParent(parent);
             this.change({
                 command : "add",
                 node: node
             });
+            return node;
         },
         
         newFile: function(name) {
-            this.newNode(name, nodes.Type.File);
+            this._createFilePath(this.newNode(name, nodes.Type.File), "fileCreate");
         },
 
         newFolder: function(name) {
-            this.newNode(name, nodes.Type.Folder);
+            this._createFilePath(this.newNode(name, nodes.Type.Folder), "folderCreate");
+        },
+        
+        pathDefinition: function(node) {
+            var stripped = this.stripNodePath(node.fullPath());
+            return {
+                projectName: stripped.project,
+                path: stripped.path
+            };
+        },
+        
+        _createFilePath: function(node, command) {
+            if(!node)
+                return;
+            socketIo.send(command, this.pathDefinition(node));
+        },
+        
+        stripNodePath: function(fullPath) {
+            // stripping of root node name
+            var i = fullPath.indexOf("/");
+            fullPath = fullPath.substr(i+1);
+            // splitting path into project name and relative path
+            i = fullPath.indexOf("/");
+            return {
+                project: fullPath.substr(0, i),
+                path: fullPath.substr(i+1)
+            };
         },
         
         getNodeById: function(id) {
@@ -56,7 +94,10 @@ define(deps, function(global, openedDocs, socket, nodes) {
             this.currentNode = this.getNodeById(id);
             var node = this.currentNode;
             if(node.isDocument()) {
-                openedDocs.open(node);
+                if(!openDocs.entryByNode(node)) {
+                    socketIo.send("requestFileContent", this.pathDefinition(node));
+                    openDocs.open(node);
+                }
             }
             this.trigger("currentNodeChanged", node);
         },
@@ -95,18 +136,18 @@ define(deps, function(global, openedDocs, socket, nodes) {
     
     var model = new ProjectModel;
 
-    openedDocs.bind("documentSelected", function(id) {
+    openDocs.bind("documentSelected", function(id) {
         model.setCurrentNode(id);
     });
     
     model.bind("currentNodeChanged", function(node) {
         if(node.isDocument())
-            openedDocs.setCurrentDocument(node);
+            openDocs.setCurrentDocument(node);
     });
 
     model.bind("nodeRenamed", function(node) {
         if(node.isDocument())
-            openedDocs.handleNodeRenamed(node);
+            openDocs.handleNodeRenamed(node);
     });
     
     return model;

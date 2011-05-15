@@ -81,6 +81,16 @@ define(function() {
             return findImpl(this, pred);
         },
         
+        fullPath: function() {
+            var node = this;
+            var result = "";
+            while(node) {
+                result = node.name + "/" + result;
+                node = node.parent;
+            }
+            return result;
+        },
+        
         getDom: function() {
             return $("#" + this.id);
         }
