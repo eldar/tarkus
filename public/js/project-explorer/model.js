@@ -77,10 +77,10 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             var self = this;
             var sendSignal = function() {
                 self.trigger("currentNodeChanged", node);
-                signalSent = true;
             }
             if(node.isDocument()) {
                 if(!openDocs.entryByNode(node)) {
+                    signalSent = true;
                     socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
                         openDocs.open(node, e.data);
                         sendSignal();
