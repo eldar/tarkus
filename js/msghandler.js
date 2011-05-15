@@ -15,18 +15,26 @@ HandlerObj.prototype = {
         return this._projectsDir() + "/" + name;
     },
     
-    projectCreate : function(data) {
-        var path = this._projectDir(data.projectName);
-        console.log("creating project at " + path);
-        fs.mkdir(path, 0777);
-    },
-
     _nodeFullPath: function(data) {
         var path = data.path.replace(/^\s*|\/*\s*$/g, '');
         console.log("relative path " + path);
         return this._projectDir(data.projectName) + "/" + path;
     },
     
+    _respondToRequest: function(e, data) {
+        this._socket.send({
+            message: e.message,
+            type: "responce",
+            data: data
+        });
+    },
+    
+    projectCreate : function(data) {
+        var path = this._projectDir(data.projectName);
+        console.log("creating project at " + path);
+        fs.mkdir(path, 0777);
+    },
+
     folderCreate: function(data) {
         fs.mkdir(this._nodeFullPath(data), 0777);
     },
@@ -39,9 +47,23 @@ HandlerObj.prototype = {
         });
     },
     
-    requestFileContent: function() {
-        console.log("requestFileContent");
-        this._socket.send({hello: "world"});
+    requestFileContent: function(data, e) {
+        var path = this._nodeFullPath(data);
+        console.log("File path " + path);
+        var self = this;
+        fs.readFile(path, function (err, buffer) {
+//            if (err) throw err;
+            var content = buffer.toString("utf8");
+            console.log(content);
+            self._respondToRequest(e, content);
+        });
+    },
+    
+    saveFile: function(data) {
+        console.log(data.content);
+        var path = this._nodeFullPath(data);
+        console.log("writing to file " + path);
+        fs.writeFile(path, data.content);
     }
 }
 
@@ -55,9 +77,10 @@ exports.MsgHandler.prototype = {
 
         var h = this.handler;
         var msg = e.message;
-        if(h[msg])
-            h[msg].call(h, e.data);
-        else
+        if(h[msg]) {
+            console.log("message " + msg);
+            h[msg].call(h, e.data, e);
+        } else
             console.log("Failed to respond to message " + msg);
     }
 }

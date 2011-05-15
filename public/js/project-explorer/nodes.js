@@ -13,6 +13,18 @@ define(function() {
             return parts[parts.length - 1];
     };
     
+    var stripNodePath = function(fullPath) {
+        // stripping of root node name
+        var i = fullPath.indexOf("/");
+        fullPath = fullPath.substr(i+1);
+        // splitting path into project name and relative path
+        i = fullPath.indexOf("/");
+        return {
+            project: fullPath.substr(0, i),
+            path: fullPath.substr(i+1)
+        };
+    };
+    
     var NodeImpl = _.inherits(Object, {
         constructor: function(name, type) {
             this.type = type;
@@ -93,7 +105,15 @@ define(function() {
         
         getDom: function() {
             return $("#" + this.id);
-        }
+        },
+        
+        pathDefinition: function() {
+            var stripped = stripNodePath(this.fullPath());
+            return {
+                projectName: stripped.project,
+                path: stripped.path
+            };
+        },
     });
     
     return {

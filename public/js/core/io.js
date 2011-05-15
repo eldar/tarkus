@@ -11,8 +11,17 @@ define(deps, function($, global) {
         
     });
     
-    socket.on("message", function(data) {
-        
+    var map = {};
+    
+    socket.on("message", function(e) {
+        if(e.type === "responce") {
+            var msg = e.message;
+            if(map[msg]) {
+                map[msg](e);
+                map[msg] = null;
+                $.unblockUI();
+            }
+        }
     });
     
     var handler = {
@@ -23,6 +32,22 @@ define(deps, function($, global) {
                 message: message,
                 data: data
             });
+        },
+        
+        request: function(message, data, callback) {
+            map[message] = callback;
+            this.send(message, data);
+            $.blockUI({ css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                'border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            }, applyPlatformOpacityRules: false }); 
+            setTimeout($.unblockUI, 10000); 
         }
     };
     

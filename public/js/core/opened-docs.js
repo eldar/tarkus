@@ -1,20 +1,21 @@
 var deps = [
     "jquery",
-    "core/global"
+    "core/global",
+    "core/io"
 ];
 
-define(deps, function($, global) {
+define(deps, function($, global, socketIo) {
     var OpenDocuments = Backbone.Model.extend({
         // Contains an array of { node, session } objects
         _docs: [],
         _currentEntry: null,
         
-        open: function(node) {
+        open: function(node, content) {
             if(this.entryByNode(node))
                 return;
             var docEntry = {
                 node: node,
-                session: global.env.getSession(node.docType)
+                session: global.env.getSession(node.docType, content)
             };
             this._docs.unshift(docEntry);
             this.change({
@@ -66,6 +67,7 @@ define(deps, function($, global) {
             if(this._docs.length == 0) {
                 global.env.editor.setSession(global.env.getEmptySession());
                 global.env.setEditorVisible(false);
+                this._currentEntry = null;
                 return;
             }
             if(isSelected) {
@@ -77,8 +79,23 @@ define(deps, function($, global) {
         handleNodeRenamed: function(node) {
             var entry = this.entryByNode(node);
             entry.session.setMode(global.env.modeForDocType(node.docType));
+        },
+        
+        saveNode: function() {
+            var entry = this._currentEntry;
+            if(!entry)
+                return;
+            var object = _.extend(entry.node.pathDefinition(), {
+                content: entry.session.getValue()
+            });
+            socketIo.send("saveFile", object);
         }
     });
     
-    return new OpenDocuments;
+    var openDocs = new OpenDocuments;
+    
+    $("#save-node").click(function() {
+        openDocs.saveNode();
+    });
+    return openDocs;
 });

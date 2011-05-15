@@ -58,8 +58,9 @@ return {
         
         env.setEditorVisible(false);
         
-        env.getSession = function(docType) {
-            var session = new EditSession("");
+        env.getSession = function(docType, content) {
+            var text = content || "";
+            var session = new EditSession(text);
             session.setMode(env.modeForDocType(docType));
             session.setUndoManager(new UndoManager());
             return session;

@@ -43,10 +43,6 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             }
             var node = new Node(name, type);
             node.setParent(parent);
-            this.change({
-                command : "add",
-                node: node
-            });
             return node;
         },
         
@@ -58,30 +54,14 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             this._createFilePath(this.newNode(name, nodes.Type.Folder), "folderCreate");
         },
         
-        pathDefinition: function(node) {
-            var stripped = this.stripNodePath(node.fullPath());
-            return {
-                projectName: stripped.project,
-                path: stripped.path
-            };
-        },
-        
         _createFilePath: function(node, command) {
             if(!node)
                 return;
-            socketIo.send(command, this.pathDefinition(node));
-        },
-        
-        stripNodePath: function(fullPath) {
-            // stripping of root node name
-            var i = fullPath.indexOf("/");
-            fullPath = fullPath.substr(i+1);
-            // splitting path into project name and relative path
-            i = fullPath.indexOf("/");
-            return {
-                project: fullPath.substr(0, i),
-                path: fullPath.substr(i+1)
-            };
+            socketIo.send(command, node.pathDefinition());
+            this.change({
+                command : "add",
+                node: node
+            });
         },
         
         getNodeById: function(id) {
@@ -93,13 +73,22 @@ define(deps, function(global, openDocs, socketIo, nodes) {
         setCurrentNode: function(id) {
             this.currentNode = this.getNodeById(id);
             var node = this.currentNode;
+            var signalSent = false;
+            var self = this;
+            var sendSignal = function() {
+                self.trigger("currentNodeChanged", node);
+                signalSent = true;
+            }
             if(node.isDocument()) {
                 if(!openDocs.entryByNode(node)) {
-                    socketIo.send("requestFileContent", this.pathDefinition(node));
-                    openDocs.open(node);
+                    socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
+                        openDocs.open(node, e.data);
+                        sendSignal();
+                    });
                 }
             }
-            this.trigger("currentNodeChanged", node);
+            if(!signalSent)
+                sendSignal();
         },
         
         triggerRename: function() {
