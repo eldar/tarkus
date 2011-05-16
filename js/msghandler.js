@@ -1,4 +1,5 @@
 var fs = require("fs");
+var _ = require("./global")._;
 
 var PROJECTS_DIR = "/data/tarkus/projects";
 
@@ -32,7 +33,10 @@ HandlerObj.prototype = {
     projectCreate : function(data) {
         var path = this._projectDir(data.projectName);
         console.log("creating project at " + path);
-        fs.mkdir(path, 0777);
+        var self = this;
+        fs.mkdir(path, 0777, function() {
+            self.fileCreate(_.extend(data, { path: ".project-definition"}));
+        });
     },
 
     folderCreate: function(data) {
