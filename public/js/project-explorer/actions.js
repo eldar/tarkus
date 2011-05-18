@@ -15,7 +15,14 @@ return {
                 return;
             manager.newProject(projName);
         });
-        
+
+        $("#open-project").click(function() {
+            var projName = prompt("Please, select project name");
+            if(!projName)
+                return;
+            manager.openProject(projName);
+        });
+
         $("#new-file").click(function() {
             if(!manager.currentNode)
                 return;

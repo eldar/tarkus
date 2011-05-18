@@ -19,14 +19,34 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             this.self = new Node(ROOT_NAME);
         },
 
-        newProject: function(name) {
-            var node = new Node(name, nodes.Type.Project);
-            node.setParent(this.self);
+        addNodeNotify: function(node) {
             this.change({
                 command : "add",
                 node: node
             });
+        },
+        
+        _newProject: function(name) {
+            var node = new Node(name, nodes.Type.Project);
+            node.setParent(this.self);
+            this.addNodeNotify(node);
+            return node;
+        },
+        
+        newProject: function(name) {
+            var node = this._newProject(name);
             socketIo.send("projectCreate", { projectName: name});
+            this.setCurrentNode(node.id);
+        },
+        
+        openProject: function(name) {
+            socketIo.request("projectOpen", { projectName: name }, function(e) {
+                this._newProject(name);
+                var project = e.data;
+                _.each(project.files, function(file) {
+                    
+                });
+            });
         },
 
         newNode: function(name, type) {
@@ -43,6 +63,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             }
             var node = new Node(name, type);
             node.setParent(parent);
+            this.addNodeNotify(node);
             return node;
         },
         
@@ -58,10 +79,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             if(!node)
                 return;
             socketIo.send(command, node.pathDefinition());
-            this.change({
-                command : "add",
-                node: node
-            });
+            this.setCurrentNode(node.id);
         },
         
         getNodeById: function(id) {

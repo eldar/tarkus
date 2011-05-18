@@ -96,9 +96,6 @@ return {
                             "rel" : node.docType
                         }
                     });
-                    // FIXME jstree bug http://code.google.com/p/jstree/issues/detail?id=954
-                    // we shouln't need to call deselect_all
-                    manager.setCurrentNode(node.id);
                     if(parent != -1 && !tree.jstree("is_open", parent))
                         tree.jstree("open_node", parent);
                     break;
@@ -109,6 +106,8 @@ return {
         .bind("currentNodeChanged", function(node) {
             if(!inSelectEvent) {
                 tree = $("#project-tree-widget");
+                // FIXME jstree bug http://code.google.com/p/jstree/issues/detail?id=954
+                // we shouln't need to call deselect_all
                 tree.jstree("deselect_all");
                 tree.jstree("select_node", node.getDom());
             }

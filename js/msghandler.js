@@ -7,6 +7,22 @@ var HandlerObj = function(socket) {
     this._socket = socket;
 }
 
+var getDirStructure = function(path) {
+    var res = {}
+    res.files = [];
+    res.dirs = {};
+    var list = fs.readdirSync(path);
+    _.each(list, function(elem) {
+        var stat = fs.lstatSync(path + "/" + elem);
+        console.log(elem);
+        if(stat.isDirectory())
+            res.dirs[elem] = getDirStructure(path + "/" + elem);
+        else if(stat.isFile())
+            res.files.push(elem)
+    });
+    return res;
+};
+
 HandlerObj.prototype = {
     _projectsDir: function() {
         return PROJECTS_DIR;
@@ -22,7 +38,7 @@ HandlerObj.prototype = {
         return this._projectDir(data.projectName) + "/" + path;
     },
     
-    _respondToRequest: function(e, data) {
+    _reply: function(e, data) {
         this._socket.send({
             message: e.message,
             type: "responce",
@@ -57,9 +73,10 @@ HandlerObj.prototype = {
         var self = this;
         fs.readFile(path, function (err, buffer) {
 //            if (err) throw err;
+            console.log("read file");
             var content = buffer.toString("utf8");
             console.log(content);
-            self._respondToRequest(e, content);
+            self._reply(e, content);
         });
     },
     
@@ -68,6 +85,13 @@ HandlerObj.prototype = {
         var path = this._nodeFullPath(data);
         console.log("writing to file " + path);
         fs.writeFile(path, data.content);
+    },
+    
+    projectOpen: function(data, e) {
+        var path = this._projectDir(data.projectName);
+        var res = getDirStructure(path);
+        console.log(res);
+        this._reply(e, res);
     }
 }
 
