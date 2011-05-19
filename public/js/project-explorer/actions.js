@@ -8,6 +8,14 @@ define(deps, function($, manager) {
 return {
     init: function() {
         $(".tarkus-toolbutton").button();
+        $(".tarkus-dialog").dialog({
+            height: 200,
+            modal: true,
+            autoOpen: false
+        });
+        
+        // initialize open project dialog here
+        $("#open-project-dialog #project-list").listWidget()
         
         $("#new-project").click(function() {
             var projName = prompt("Please, select project name");
@@ -17,10 +25,11 @@ return {
         });
 
         $("#open-project").click(function() {
-            var projName = prompt("Please, select project name");
+            $("#open-project-dialog").dialog("open");
+/*            var projName = prompt("Please, select project name");
             if(!projName)
                 return;
-            manager.openProject(projName);
+            manager.openProject(projName);*/
         });
 
         $("#new-file").click(function() {
