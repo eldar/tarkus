@@ -17,9 +17,9 @@ define(deps, function($, global) {
         if(e.type === "responce") {
             var msg = e.message;
             if(map[msg]) {
+                $.unblockUI();
                 map[msg](e);
                 map[msg] = null;
-                $.unblockUI();
             }
         }
     });

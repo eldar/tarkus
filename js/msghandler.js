@@ -51,7 +51,7 @@ HandlerObj.prototype = {
         console.log("creating project at " + path);
         var self = this;
         fs.mkdir(path, 0777, function() {
-            self.fileCreate(_.extend(data, { path: ".project-definition"}));
+//            self.fileCreate(_.extend(data, { path: ".project-definition"}));
         });
     },
 

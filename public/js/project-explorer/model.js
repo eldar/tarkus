@@ -39,19 +39,28 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             this.setCurrentNode(node.id);
         },
         
+        _openDir: function(parent, dataNode) {
+            var self = this;
+            _.each(dataNode.files, function(file) {
+                self.newNode(file, nodes.Type.File, parent);
+            });
+            _.each(dataNode.dirs, function(content, name) {
+                var dirNode = self.newNode(name, nodes.Type.Folder, parent);
+                self._openDir(dirNode, content);
+            });
+        },
+        
         openProject: function(name) {
+            var self = this;
             socketIo.request("projectOpen", { projectName: name }, function(e) {
-                this._newProject(name);
-                var project = e.data;
-                _.each(project.files, function(file) {
-                    
-                });
+                var parent = self._newProject(name);
+                self._openDir(parent, e.data);
             });
         },
 
-        newNode: function(name, type) {
+        newNode: function(name, type, parentNode) {
             var current = this.currentNode;
-            var parent = current.isFolder() ? current : current.parent;
+            var parent = parentNode || (current.isFolder() ? current : current.parent);
             var sameName = false;
             _.each(parent.children, function(node) {
                 if(node.name === name)
