@@ -3,7 +3,7 @@ body {
     font-size: 14px;
 }
 
-#project-tree-widget { overflow: auto; height: 100%; }
+.content { overflow: auto; position: relative; }
 
 #editor {
     height: 100%;
