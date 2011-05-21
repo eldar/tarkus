@@ -26,7 +26,7 @@ return {
             var tree = $("#opened-docs-widget");
             switch(obj.command) {
                 case "add" :
-                    tree.listWidget("createNode", {
+                    tree.listWidget("createNode", "first", {
                         "data" : {
                             "title" : node.node.name
                         },

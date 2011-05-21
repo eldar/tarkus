@@ -55,7 +55,16 @@ init: function() {
             return this._elem;
         },
         
-        createNode: function(js, callback) {
+        dataContainer: function() {
+            return this.container().children("ul");
+        },
+        
+        clear: function() {
+            this.dataContainer().html("");
+            this._lastSelected = null;
+        },
+        
+        createNode: function(position, js, callback) {
             var d = $("<li />");
             d.append("&nbsp;"); // indentation, FIXME properly
             
@@ -69,7 +78,14 @@ init: function() {
                 a.html(title);
                 d.append(a);
             }
-            this.container().children("ul").prepend(d);
+            var parent = this.dataContainer();
+            switch(position) {
+            case "last":
+                parent.append(d); break;
+            case "first":
+                parent.prepend(d); break;
+            };
+            
             if(callback) { callback.call(this, d); }
             
             // selection handling
@@ -100,6 +116,10 @@ init: function() {
             link.removeClass("list-view-unclicked-a");
                 
             this.container().trigger("listView.selectNode", newNode);
+        },
+        
+        selectedNode: function() {
+            return this._lastSelected;
         },
         
         getTitle: function(node) {

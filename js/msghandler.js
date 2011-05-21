@@ -92,6 +92,12 @@ HandlerObj.prototype = {
         var res = getDirStructure(path);
         console.log(res);
         this._reply(e, res);
+    },
+    
+    getProjectList: function(data, e) {
+        var list = fs.readdirSync(this._projectsDir());
+        console.log(list);
+        this._reply(e, { list: list});
     }
 }
 

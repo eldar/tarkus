@@ -1,21 +1,60 @@
 var deps = [
     "jquery",
-    "project-explorer/model"
+    "core/io",
+    "project-explorer/model",
 ];
 
-define(deps, function($, manager) {
+define(deps, function($, socketIo, manager) {
 
 return {
     init: function() {
         $(".tarkus-toolbutton").button();
-        $(".tarkus-dialog").dialog({
-            height: 200,
-            modal: true,
-            autoOpen: false
+        
+        var OpenProjectDialog = _.inherits(Object, {
+            constructor: function() {
+                this.self = $("#open-project-dialog");
+                var self = this;
+                this.self.dialog({
+                    height: 200,
+                    modal: true,
+                    autoOpen: false,
+                    buttons: {
+                        Ok: function() { self._onOk() },
+                        Cancel: function() { self._onCancel(); }
+                    }
+                });
+                this.projectList = this.self.find("#project-list");
+                this.projectList.listWidget();
+            },
+            
+            run: function(callback) {
+                this._onFinish = callback;
+                this.projectList.listWidget("clear");
+                this.self.dialog("open");
+                var self = this;
+                socketIo.request("getProjectList", {}, function(e) {
+                    _.each(e.data.list, function(elem) {
+                        self.projectList.listWidget("createNode", "last", { "data" : { "title" : elem } });
+                    });
+                });
+            },
+            
+            _close: function(value) {
+                this.self.dialog("close");
+                this._onFinish(value);
+            },
+            
+            _onOk: function() {
+                var list = this.projectList;
+                this._close(list.listWidget("getTitle", list.listWidget("selectedNode")));
+            },
+            
+            _onCancel: function() {
+                this._close("");
+            }
         });
         
-        // initialize open project dialog here
-        $("#open-project-dialog #project-list").listWidget()
+        var openProjectDialog = new OpenProjectDialog();
         
         $("#new-project").click(function() {
             var projName = prompt("Please, select project name");
@@ -25,11 +64,10 @@ return {
         });
 
         $("#open-project").click(function() {
-            $("#open-project-dialog").dialog("open");
-/*            var projName = prompt("Please, select project name");
-            if(!projName)
-                return;
-            manager.openProject(projName);*/
+            openProjectDialog.run(function(project) {
+                if(project)
+                    manager.openProject(project);
+            });
         });
 
         $("#new-file").click(function() {
