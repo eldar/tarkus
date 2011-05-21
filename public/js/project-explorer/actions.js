@@ -15,12 +15,12 @@ return {
                 this.self = $("#open-project-dialog");
                 var self = this;
                 this.self.dialog({
-                    height: 200,
+                    height: 300,
                     modal: true,
                     autoOpen: false,
                     buttons: {
-                        Ok: function() { self._onOk() },
-                        Cancel: function() { self._onCancel(); }
+                        "Ok": function() { self._onOk() },
+                        "Cancel": function() { self._onCancel(); }
                     }
                 });
                 this.projectList = this.self.find("#project-list");

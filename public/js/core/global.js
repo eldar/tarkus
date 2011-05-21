@@ -2,7 +2,7 @@ var deps = [
     "order!util/underscore",
     "order!util/backbone",
     "order!jquery",
-    "order!jquery-ui/jquery-ui",
+    "order!jquery-ui/jquery-ui.min",
     "order!ui-misc/jquery-ui-layout",
     "order!ui-misc/jquery-blockui",
     "order!ui-misc/jstree",
