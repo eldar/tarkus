@@ -1,6 +1,6 @@
 var deps = [
     "core/global",
-    "core/opened-docs",
+    "core/open-docs",
     "core/io",
     "project-explorer/nodes"
 ];

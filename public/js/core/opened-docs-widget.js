@@ -1,10 +1,10 @@
 var deps = [
     "jquery",
-    "core/opened-docs",
+    "core/open-docs",
     "ui-misc/list-widget"
 ];
 
-define(deps, function($, openedDocs, listWid) {
+define(deps, function($, openDocs, listWid) {
 
 return {
 
@@ -16,12 +16,12 @@ return {
         $("#opened-docs-widget").listWidget()
             .bind("listView.selectNode", function(sender, node) {
                 inSelectEvent = true;
-                openedDocs.setCurrentDocumentById($(node).attr("id"))
+                openDocs.setCurrentDocumentById($(node).attr("id"))
                 inSelectEvent = false;
             });
 
         // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
-        openedDocs.bind("change", function(sender, obj) {
+        openDocs.bind("change", function(sender, obj) {
             var node = obj.node;
             var tree = $("#opened-docs-widget");
             switch(obj.command) {
@@ -38,7 +38,7 @@ return {
                             var a = $("<a />").attr("href", "#").addClass("tarkus-button-close").html("✕");
                             $(this).append(a);
                             a.click(function() {
-                                openedDocs.closeDocument(elem.attr("id"));
+                                openDocs.closeDocument(elem.attr("id"));
                                 elem.remove();
                             });
                         }, function() {

@@ -1,10 +1,11 @@
 var deps = [
     "jquery",
     "core/io",
+    "core/open-docs",
     "project-explorer/model",
 ];
 
-define(deps, function($, socketIo, manager) {
+define(deps, function($, socketIo, openDocs, manager) {
 
 return {
     init: function() {
@@ -94,6 +95,10 @@ return {
 
         $("#remove-node").click(function() {
             manager.triggerRemove();
+        });
+        
+        $("#save-node").click(function() {
+            openDocs.saveNode();
         });
     }
 };

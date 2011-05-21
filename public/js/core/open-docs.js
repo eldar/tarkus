@@ -94,8 +94,5 @@ define(deps, function($, global, socketIo) {
     
     var openDocs = new OpenDocuments;
     
-    $("#save-node").click(function() {
-        openDocs.saveNode();
-    });
     return openDocs;
 });
