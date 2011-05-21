@@ -13,7 +13,7 @@ return {
         
         var inSelectEvent = false;
         
-        $("#opened-docs-widget").listWidget()
+        $("#open-docs-widget").listWidget()
             .bind("listView.selectNode", function(sender, node) {
                 inSelectEvent = true;
                 openDocs.setCurrentDocumentById($(node).attr("id"))
@@ -23,7 +23,7 @@ return {
         // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
         openDocs.bind("change", function(sender, obj) {
             var node = obj.node;
-            var tree = $("#opened-docs-widget");
+            var tree = $("#open-docs-widget");
             switch(obj.command) {
                 case "add" :
                     tree.listWidget("createNode", "first", {
@@ -52,7 +52,7 @@ return {
         })
         .bind("documentSelectedForView", function(id) {
             if(!inSelectEvent) {
-                list = $("#opened-docs-widget");
+                list = $("#open-docs-widget");
                 list.listWidget("selectNode", list.find("#" + id));
             }
         });

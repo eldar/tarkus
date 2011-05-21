@@ -12,7 +12,7 @@ var deps = [
     "pilot/environment",
     "core/edit-area",
     "core/editor",
-    "core/opened-docs-widget",
+    "core/open-docs-widget",
     "project-explorer/tree-widget",
     "project-explorer/actions",
     "text!../templates/ide-body.html",
@@ -32,14 +32,14 @@ require(deps, function(
     actions,
     bodyTempl) {
     
+    $("body").html(bodyTempl);
+    
     var catalog = pluginManager.catalog;
        
     catalog.registerPlugins(plugins).then(function() {
         var env = pilotEnv.create();
         catalog.startupPlugins({ env: env }).then(function() {        
             require.ready(function() {
-                $("body").html(bodyTempl);
-
                 global.env = env;
                 
                 editArea.init();
