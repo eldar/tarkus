@@ -14,7 +14,8 @@ var deps = [
     "core/editor",
     "core/opened-docs-widget",
     "project-explorer/tree-widget",
-    "project-explorer/actions",    
+    "project-explorer/actions",
+    "text!../templates/ide-body.html",
 
     "pilot/fixoldbrowsers",
     "pilot/settings"
@@ -28,7 +29,10 @@ require(deps, function(
     editor,
     openedDocs,
     projectTree,
-    actions) {    
+    actions,
+    bodyTempl) {
+    
+    $("body").html(bodyTempl);
     
     var catalog = pluginManager.catalog;
        
