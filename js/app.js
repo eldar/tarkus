@@ -80,16 +80,16 @@ app.configure("production", function(){
     app.postConfigure();
 });
 
-app.get("/:view", function(req, res){
-    res.render(req.params.view);
-});
-
 app.get("/ide", function(req, res){
     res.render("ide");
 });
 
 app.get("/", function(req, res){
     res.render("index");
+});
+
+app.get("/favicon.ico", function(req, res) {
+    res.send(app.publicDir + "/favicon.ico");
 });
 
 app.run();
