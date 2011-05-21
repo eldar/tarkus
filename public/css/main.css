@@ -38,13 +38,8 @@ body {
     background-color: #fff;
 }
 
-.ui-layout-north,
-.ui-layout-west,
-.ui-layout-center {
+.tarkus-bordered {
     border-style:solid;
     border-width:1px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
     border-color:#999;
 }
