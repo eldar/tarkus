@@ -89,7 +89,7 @@ app.get("/", function(req, res){
 });
 
 app.get("/favicon.ico", function(req, res) {
-    res.send(app.publicDir + "/favicon.ico");
+    res.send(fs.readFileSync(app.publicDir + "/favicon.ico"));
 });
 
 app.run();
