@@ -13,7 +13,7 @@ body {
 .tarkus-button-close { float: right; color: gray; }
 
 .list-view-hovered { background:#e7f4f9; border:0px solid #e7f4f9; }
-.list-view-clicked { background:navy; border:0px solid navy; padding:0 0px 0 0px; color:white; }
+.list-view-clicked { background:#63a1d6; border:0px solid #63a1d6; padding:0 0px 0 0px; color:white; }
 
 .list-view-unclicked-a { color:black; }
 .list-view-clicked-a { color:white; }
