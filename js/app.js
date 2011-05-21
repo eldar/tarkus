@@ -15,6 +15,7 @@ var mem = require("./memory");
 var handler = require("./handler");
 var msgHandler = require("./msghandler");
 var socketio = require("socket.io");
+var fs = require("fs");
 
 var app = express.createServer();
 global.app = exports.app = app;
