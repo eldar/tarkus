@@ -46,7 +46,11 @@ define(deps, function($, global) {
                 'border-radius': '10px', 
                 opacity: .5, 
                 color: '#fff' 
-            }, applyPlatformOpacityRules: false }); 
+            },
+            applyPlatformOpacityRules: false,
+            // styles for the overlay 
+            overlayCSS: { opacity: 0 }
+            }); 
             setTimeout($.unblockUI, 10000); 
         }
     };
