@@ -1,13 +1,63 @@
 body {
     font-family: "Lucida Sans", "Lucida Sans Unicode", "Luxi Sans", Tahoma, sans-serif;
     font-size: 14px;
+    width: 100%;
+    height: 100%;
+    overflow: "hidden";
+    overflowX: "hidden";
+    overflowY: "hidden";
+    margin: 0;
+    padding: 0;
+    border: "none";
+}
+
+html {
+    height: 100%;
 }
 
 .content { overflow: auto; position: relative; }
 
+#mainsplit {
+    width: 100%;
+    height: 100%;
+}
+
 #editor {
     height: 100%;
     width: 100%;
+}
+
+/* Menus */
+
+#mainsplit > .ui-layout-north {overflow:visible}
+
+#menubar {
+    font-size: 12px;
+    margin: 0 0 0em;
+    border-top-width: 0px;
+}
+
+.ui-menu { width: 200px; position: absolute; outline: none; z-index: 9999; }
+.ui-menu .ui-icon { float: right; }
+.ui-menu li.ui-state-disabled {
+    font-weight: bold;
+    padding: .0em .0em;
+    margin: .0em 0 .0em;
+    line-height: 1.0;
+}
+        
+/* menubar styles */
+.ui-menubar .ui-button { float: left; font-weight: normal; border-top-width: 0 !important; border-bottom-width: 0 !important; margin: 0; outline: none; }
+.ui-menubar .ui-menubar-link { border-right: 1px dashed transparent; border-left: 1px dashed transparent; }
+        
+.ui-menubar {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;    
+}
+        
+.ui-menubar-item {
+    float: left;        
 }
 
 .tarkus-button-close { float: right; color: gray; }

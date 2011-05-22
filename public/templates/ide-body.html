@@ -1,11 +1,33 @@
+<div id="mainsplit">
     <div class="ui-layout-north">
-        <button class="tarkus-toolbutton" id="new-project">New Project</button>
-        <button class="tarkus-toolbutton" id="open-project">Open Project</button>
-        <button class="tarkus-toolbutton" id="new-file">New File</button>
-        <button class="tarkus-toolbutton" id="new-folder">New Folder</button>
-        <button class="tarkus-toolbutton" id="rename-node">Rename</button>
-        <button class="tarkus-toolbutton" id="remove-node">Remove</button>
-        <button class="tarkus-toolbutton" id="save-node">Save</button>
+        <ul id="menubar">
+            <li>
+                <a href="#">File</a>
+                <ul>
+                    <li>
+                        <a href="#">New</a>
+                        <ul>
+                            <li id="new-project"><a href="#">New Project...</a></li>
+                            <li id="new-file"><a href="#">New File...</a></li>
+                            <li id="new-folder"><a href="#">New Folder...</a></li>
+                        </ul>
+                     </li>
+                    <li id="open-project"><a href="#">Open Project...</a></li>
+                    <li id="save-node"><a href="#">Save</a></li>
+                    <hr>
+                    <li id="rename-node"><a href="#">Rename</a></li>
+                    <li id="remove-node"><a href="#">Remove</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Edit</a>
+                <ul>
+                    <li><a href="#">Cut</a></li>
+                    <li><a href="#">Copy</a></li>
+                    <li><a href="#">Paste</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
     <div id="left-pane" class="ui-layout-west">
         <div class="ui-layout-north tarkus-bordered">
@@ -23,6 +45,7 @@
         <div id="editor" class="content">
         </div>
     </div>
+</div>
 
 <!-- Temporarily place the dialogs here unless found a better place -->
 <div id="open-project-dialog" title="Open Project">

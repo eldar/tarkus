@@ -1,11 +1,12 @@
 var deps = [
     "jquery",
+    "core/global",
     "core/io",
     "core/open-docs",
     "project-explorer/model",
 ];
 
-define(deps, function($, socketIo, openDocs, manager) {
+define(deps, function($, global, socketIo, openDocs, manager) {
 
 return {
     init: function() {
@@ -57,21 +58,16 @@ return {
         
         var openProjectDialog = new OpenProjectDialog();
         
-        $("#new-project").click(function() {
+        var mainMenu = global.mainMenu;
+        
+        mainMenu.addCallback("new-project", function() {
             var projName = prompt("Please, select project name");
             if(!projName)
                 return;
             manager.newProject(projName);
         });
 
-        $("#open-project").click(function() {
-            openProjectDialog.run(function(project) {
-                if(project)
-                    manager.openProject(project);
-            });
-        });
-
-        $("#new-file").click(function() {
+        mainMenu.addCallback("new-file", function() {
             if(!manager.currentNode)
                 return;
             var fileName = prompt("Please, select file name");
@@ -79,8 +75,8 @@ return {
                 return;
             manager.newFile(fileName);
         });
-        
-        $("#new-folder").click(function() {
+
+        mainMenu.addCallback("new-folder", function() {
             if(!manager.currentNode)
                 return;
             var folderName = prompt("Please, select folder name");
@@ -89,15 +85,22 @@ return {
             manager.newFolder(folderName);
         });
 
-        $("#rename-node").click(function() {
+        mainMenu.addCallback("open-project", function() {
+            openProjectDialog.run(function(project) {
+                if(project)
+                    manager.openProject(project);
+            });
+        });
+        
+        mainMenu.addCallback("rename-node", function() {
             manager.triggerRename();
         });
 
-        $("#remove-node").click(function() {
+        mainMenu.addCallback("remove-node", function() {
             manager.triggerRemove();
         });
-        
-        $("#save-node").click(function() {
+
+        mainMenu.addCallback("save-node", function() {
             openDocs.saveNode();
         });
     }

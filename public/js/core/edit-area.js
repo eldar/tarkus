@@ -3,12 +3,36 @@ var deps = [
     "core/global"
 ];
 
-define(deps, function($) {
+define(deps, function($, global) {
 
 return {
     init: function() {
         $(".tarkus-toolbutton").button();
 
+        var menuManager = {
+            _callbacks: {},
+       
+            addCallback: function(id, callback) {
+                this._callbacks[id] = callback;
+            },
+            
+            handle: function(id) {
+                var cb = this._callbacks[id];
+                if(cb)
+                    cb();
+            }
+        };
+        global.mainMenu = menuManager;
+        
+        $("#menubar").menubar({
+            menuIcon: true,
+            select: function(event, ui) {
+                menuManager.handle(ui.item.attr("id"));
+            }
+        });
+        // round corners in submenus only for bottom border
+        $("#menubar > li > .ui-menu").removeClass("ui-corner-all").addClass("ui-corner-bl ui-corner-br");
+        
         // options.defaults apply to ALL PANES - but overridden by pane-specific settings
         var defaults = {
             size:                   "auto",
@@ -38,7 +62,8 @@ return {
             defaults: defaults,
             north: {
                 resizable: false,
-                slidable:  false
+                slidable:  false,
+                zIndex: 20000
             },
             east: {
                 size: 250
@@ -50,8 +75,15 @@ return {
                 size: 300
             }
         };
-        $("body").layout(layoutOuter);
+        var container = $("#mainsplit");
+        var mainLayout = container.layout(layoutOuter);
         $("#left-pane").layout(layoutLeft);
+
+        container.children(".ui-layout-north").hover(function() {
+            mainLayout.allowOverflow(this);
+        }, function() {
+            mainLaoyut.resetOverflow(this);
+        });
     }
 };
 
