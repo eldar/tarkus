@@ -15,7 +15,8 @@ define(deps, function($, global, socketIo) {
                 return;
             var docEntry = {
                 node: node,
-                session: global.env.getSession(node.docType, content)
+                session: global.env.getSession(node.docType, content),
+                id: _.uniqueId("open_doc_") // id of the opened document, not to be confused with node.id
             };
             this._docs.unshift(docEntry);
             this.change({
@@ -29,21 +30,21 @@ define(deps, function($, global, socketIo) {
             if(this._currentEntry == newEntry)
                 return;
             this._currentEntry = newEntry;
-            this.trigger("documentSelectedForView", node.id);
+            this.trigger("documentSelectedForView", newEntry.id);
         },
         
         setCurrentDocumentById: function(id) {
             var entry = this.getEntryById(id);
             global.env.setEditorVisible(true);
             global.env.editor.setSession(entry.session);
-            this.trigger("documentSelected", id);
+            this.trigger("documentSelected", entry.node.id);
         },
         
         getEntryById: function(id) {
             var len = this._docs.length;
             for(var i = 0; i < len; i++) {
                 var entry = this._docs[i];
-                if(id == entry.node.id)
+                if(id == entry.id)
                     return entry;
             }
             return null;
@@ -61,9 +62,12 @@ define(deps, function($, global, socketIo) {
         
         closeDocument: function(id) {
             var entry = this.getEntryById(id);
+            if(!entry)
+                return;
             var isSelected = (entry == this._currentEntry);
             var i = this._docs.indexOf(entry);
             this._docs.splice(i, 1);
+            this.trigger("documentClosed", id);
             if(this._docs.length == 0) {
                 global.env.editor.setSession(global.env.getEmptySession());
                 global.env.setEditorVisible(false);
