@@ -34,13 +34,13 @@ define(deps, function($, global, socketIo) {
         },
         
         setCurrentDocumentById: function(id) {
-            var entry = this.getEntryById(id);
+            var entry = this.entryById(id);
             global.env.setEditorVisible(true);
             global.env.editor.setSession(entry.session);
             this.trigger("documentSelected", entry.node.id);
         },
         
-        getEntryById: function(id) {
+        entryById: function(id) {
             var len = this._docs.length;
             for(var i = 0; i < len; i++) {
                 var entry = this._docs[i];
@@ -60,8 +60,14 @@ define(deps, function($, global, socketIo) {
             return null;
         },
         
+        closeDocumentByNode: function(node) {
+            var entry = this.entryByNode(node);
+            if(entry)
+                this.closeDocument(entry.id);
+        },
+        
         closeDocument: function(id) {
-            var entry = this.getEntryById(id);
+            var entry = this.entryById(id);
             if(!entry)
                 return;
             var isSelected = (entry == this._currentEntry);

@@ -132,6 +132,9 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             var project = this.currentProject;
             if(!project)
                 return;
+            project.iterate(function(node) {
+                openDocs.closeDocumentByNode(node);
+            });
             this.removeNode(project);
             this.currentProject = null;
         },

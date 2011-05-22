@@ -76,14 +76,25 @@ define(function() {
             };
             this.parent = parent;
         },
+
+        iterate: function(callback) {
+            var iterImpl = function(node, pred) {
+                callback(node);
+
+                var children = node.children;
+                for(var i = 0; i < children.length; i++) {
+                    iterImpl(children[i], pred);
+                }
+            };
+            return iterImpl(this, callback);
+        },
         
         find: function(pred) {
             var findImpl = function(node, pred) {
                 if(pred(node))
                     return node;
                 var children = node.children;
-                var len = children.length;
-                for(var i = 0; i < len; i++) {
+                for(var i = 0; i < children.length; i++) {
                     var res = findImpl(children[i], pred);
                     if(res != null)
                         return res;

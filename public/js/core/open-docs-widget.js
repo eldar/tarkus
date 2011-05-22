@@ -53,7 +53,7 @@ return {
         })
         .bind("documentSelectedForView", function(id) {
             if(!inSelectEvent) {
-                openDocsWidget.listWidget("selectNode", list.find("#" + id));
+                openDocsWidget.listWidget("selectNode", openDocsWidget.find("#" + id));
             }
         });
     }
