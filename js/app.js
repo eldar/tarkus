@@ -35,9 +35,11 @@ app.configure(function(){
     app.viewsDir = __dirname + "/../views";
     app.httpHandler = handler.createHandler({ handlersDir : __dirname + "/http-handlers" });
     app.messageHandler = handler.createHandler({ handlersDir : __dirname + "/message-handlers" });
-       
-    app.use(express.methodOverride());
+     
+    app.use(express.methodOverride());    
     app.use(express.bodyParser());
+    app.use(express.cookieParser());
+    app.use(express.session({ secret: "42" }));
     //app.use(_.bind(app.httpHandler.handle, app.httpHandler));
     app.use(app.router);
     app.use(express.static(app.publicDir));
@@ -101,23 +103,8 @@ app.socket.on("connection", function(client){
     var msgHandlerObj = new msgHandler.MsgHandler(client);
     client.on("message", function(data) {
         console.log("some message received");
-        msgHandlerObj.handle(data);
-        
-/*
-        var req = {
-                method: "MESSAGE",
-                url: data.url,
-                data: data,
-            };
-            
-        req = _.extend(req, client);
-        var res = {};
-        function next() {
-        }
-        
-        app.messageHandler.handle(req, res, next);
-        return res;
-        */        
+        msgHandlerObj.handle(data);        
+      
     }); 
     client.on("disconnect", function(){}); 
 });
