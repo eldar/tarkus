@@ -14,6 +14,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
     var ProjectModel = Backbone.Model.extend({
         self: {},
         currentNode: null,
+        currentProject: null,
         
         initialize: function() {
             this.self = new Node(ROOT_NAME);
@@ -53,8 +54,9 @@ define(deps, function(global, openDocs, socketIo, nodes) {
         openProject: function(name) {
             var self = this;
             socketIo.request("projectOpen", { projectName: name }, function(e) {
-                var parent = self._newProject(name);
-                self._openDir(parent, e.data);
+                var project = self._newProject(name);
+                self._openDir(project, e.data);
+                self.setCurrentNode(project.id);
             });
         },
 
@@ -100,6 +102,8 @@ define(deps, function(global, openDocs, socketIo, nodes) {
         setCurrentNode: function(id) {
             this.currentNode = this.getNodeById(id);
             var node = this.currentNode;
+            this.currentProject = node.getProject();
+
             var signalSent = false;
             var self = this;
             var sendSignal = function() {
@@ -124,14 +128,18 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             this.trigger("trigger_rename", this.currentNode);
         },
         
-        triggerRemove: function() {
-            var node = this.currentNode;
-            if(!node)
+        closeCurrentProject: function() {
+            var project = this.currentProject;
+            if(!project)
                 return;
+            this.removeNode(project);
+            this.currentProject = null;
+        },
+        
+        removeNode: function(node) {
             var siblings = node.parent.children;
             this.trigger("trigger_remove", node);
             node.setParent(null);
-            var idx = 5;
         },
         
         renameNode: function(id, newName) {
@@ -157,8 +165,12 @@ define(deps, function(global, openDocs, socketIo, nodes) {
     });
     
     model.bind("currentNodeChanged", function(node) {
+        // setting file in the open docs model
         if(node.isDocument())
             openDocs.setCurrentDocument(node);
+
+        // update Close Project menu item
+        global.mainMenu.setActionName("close-project", 'Close Project "' + node.getProject().name + '"');
     });
 
     model.bind("nodeRenamed", function(node) {

@@ -103,6 +103,14 @@ define(function() {
             return result;
         },
         
+        getProject: function() {
+            var node = this;
+            while(node.parent.parent) {
+                node = node.parent;
+            }
+            return node;
+        },
+        
         getDom: function() {
             return $("#" + this.id);
         },

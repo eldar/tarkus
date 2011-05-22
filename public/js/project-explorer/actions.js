@@ -6,7 +6,7 @@ var deps = [
     "project-explorer/model",
 ];
 
-define(deps, function($, global, socketIo, openDocs, manager) {
+define(deps, function($, global, socketIo, openDocs, model) {
 
 return {
     init: function() {
@@ -64,45 +64,50 @@ return {
             var projName = prompt("Please, select project name");
             if(!projName)
                 return;
-            manager.newProject(projName);
+            model.newProject(projName);
         });
 
         mainMenu.addCallback("new-file", function() {
-            if(!manager.currentNode)
+            if(!model.currentNode)
                 return;
             var fileName = prompt("Please, select file name");
             if(!fileName)
                 return;
-            manager.newFile(fileName);
+            model.newFile(fileName);
         });
 
         mainMenu.addCallback("new-folder", function() {
-            if(!manager.currentNode)
+            if(!model.currentNode)
                 return;
             var folderName = prompt("Please, select folder name");
             if(!folderName)
                 return;
-            manager.newFolder(folderName);
+            model.newFolder(folderName);
         });
 
         mainMenu.addCallback("open-project", function() {
             openProjectDialog.run(function(project) {
                 if(project)
-                    manager.openProject(project);
+                    model.openProject(project);
             });
-        });
-        
-        mainMenu.addCallback("rename-node", function() {
-            manager.triggerRename();
-        });
-
-        mainMenu.addCallback("remove-node", function() {
-            manager.triggerRemove();
         });
 
         mainMenu.addCallback("save-node", function() {
             openDocs.saveNode();
         });
+
+        mainMenu.addCallback("close-project", function() {
+            model.closeCurrentProject();
+        });
+/*
+        mainMenu.addCallback("rename-node", function() {
+            model.triggerRename();
+        });
+
+        mainMenu.addCallback("remove-node", function() {
+            model.triggerRemove();
+        });
+*/
     }
 };
 

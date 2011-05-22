@@ -9,8 +9,12 @@ return {
     init: function() {
         $(".tarkus-toolbutton").button();
 
-        var menuManager = {
+        var mainMenu = {
             _callbacks: {},
+       
+            container: function() {
+                return $("#menubar");
+            },
        
             addCallback: function(id, callback) {
                 this._callbacks[id] = callback;
@@ -20,14 +24,19 @@ return {
                 var cb = this._callbacks[id];
                 if(cb)
                     cb();
+            },
+       
+            setActionName: function(id, text) {
+                var li = this.container().find("#" + id);
+                li.children("a").text(text);
             }
         };
-        global.mainMenu = menuManager;
+        global.mainMenu = mainMenu;
         
-        $("#menubar").menubar({
+        mainMenu.container().menubar({
             menuIcon: true,
             select: function(event, ui) {
-                menuManager.handle(ui.item.attr("id"));
+                mainMenu.handle(ui.item.attr("id"));
             }
         });
         // round corners in submenus only for bottom border
