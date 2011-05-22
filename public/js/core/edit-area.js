@@ -33,6 +33,10 @@ return {
         // round corners in submenus only for bottom border
         $("#menubar > li > .ui-menu").removeClass("ui-corner-all").addClass("ui-corner-bl ui-corner-br");
         
+        var onEditorResize = function() {
+            global.editorResize();
+        };
+        
         // options.defaults apply to ALL PANES - but overridden by pane-specific settings
         var defaults = {
             size:                   "auto",
@@ -67,6 +71,9 @@ return {
             },
             east: {
                 size: 250
+            },
+            center: {
+                onresize: onEditorResize
             }
         };
         var layoutLeft = {

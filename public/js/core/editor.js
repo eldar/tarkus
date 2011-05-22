@@ -8,13 +8,13 @@ var deps = [
     "ace/mode/javascript",
     "ace/mode/css",
     "ace/mode/text",
-    "ace/undomanager"
-    
+    "ace/undomanager",
+    "core/global"
 ];
     
 
 define(deps, function(canon, event, editor, renderer,
-    theme, editSession, jsMode, cssMode, textMode, undoManager) {
+    theme, editSession, jsMode, cssMode, textMode, undoManager, global) {
 
 return {
     init : function(env) {
@@ -36,6 +36,9 @@ return {
         env.editor = new Editor(new Renderer(container, theme));
 
         env.editor.resize();
+        global.editorResize = function() {
+            env.editor.resize();
+        };
 
         env.modeForDocType = function(docType) {
             var mode;
