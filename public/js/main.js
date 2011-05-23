@@ -1,6 +1,7 @@
 require({    
     paths: {
-        ace : "ace/lib/ace"
+        ace : "ace/lib/ace",
+        pilot: "pilot/lib/pilot"
     }
 });
 
