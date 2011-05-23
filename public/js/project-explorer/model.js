@@ -52,6 +52,8 @@ define(deps, function(global, openDocs, socketIo, nodes) {
         },
         
         openProject: function(name) {
+            if(this.projectByName(name))
+                return;
             var self = this;
             socketIo.request("projectOpen", { projectName: name }, function(e) {
                 var project = self._newProject(name);
@@ -59,6 +61,11 @@ define(deps, function(global, openDocs, socketIo, nodes) {
                 self.setCurrentNode(project.id);
                 self.trigger("trigger_openNode", project);
             });
+        },
+        
+        projectByName: function(name) {
+            var list = _.filter(this.self.children, function(node) { return node.name == name; });
+            return list.length > 0 ? list[0] : null;
         },
 
         newNode: function(name, type, parentNode) {
