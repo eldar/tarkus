@@ -51,6 +51,7 @@ define(deps, function($, global, socketIo) {
             var entry = this.entryById(id);
             global.env.setEditorVisible(true);
             global.env.editor.setSession(entry.session);
+            global.env.editor.resize();
             this.trigger("documentSelected", entry.node.id);
         },
         
