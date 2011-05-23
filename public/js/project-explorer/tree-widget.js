@@ -78,10 +78,10 @@ return {
                 }
             });
 
+        var tree = $("#project-tree-widget");
         // Handler of the changes of the Project Model, that defines how jstree reacts to those changes
         manager.bind("change", function(sender, obj) {
             var node = obj.node;
-            var tree = $("#project-tree-widget");
             switch(obj.command) {
                 case "add" :
                     var isToplevel = (node.parent.parent == null);
@@ -96,8 +96,6 @@ return {
                             "rel" : node.docType
                         }
                     });
-                    if(parent != -1 && !tree.jstree("is_open", parent))
-                        tree.jstree("open_node", parent);
                     break;
                 default:
                     alert("project model: no action taken");
@@ -105,13 +103,17 @@ return {
         })
         .bind("currentNodeChanged", function(node) {
             if(!inSelectEvent) {
-                tree = $("#project-tree-widget");
                 // FIXME jstree bug http://code.google.com/p/jstree/issues/detail?id=954
                 // we shouln't need to call deselect_all
                 tree.jstree("deselect_all");
                 tree.jstree("select_node", node.getDom());
             }
         })
+        .bind("trigger_openNode", function(node) {
+            var domElem = node.getDom();
+            if(!tree.jstree("is_open", domElem))
+            	tree.jstree("open_node", domElem);
+	})
         .bind("trigger_rename", function(node) {
             $("#project-tree-widget").jstree("rename", node.getDom());
         })

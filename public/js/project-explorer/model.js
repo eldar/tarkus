@@ -57,6 +57,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
                 var project = self._newProject(name);
                 self._openDir(project, e.data);
                 self.setCurrentNode(project.id);
+                self.trigger("trigger_openNode", project);
             });
         },
 
@@ -90,6 +91,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             if(!node)
                 return;
             socketIo.send(command, node.pathDefinition());
+            this.trigger("trigger_openNode", node.parent);
             this.setCurrentNode(node.id);
         },
         
