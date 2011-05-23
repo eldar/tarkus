@@ -27,7 +27,7 @@ return {
                 case "add" :
                     openDocsWidget.listWidget("createNode", "first", {
                         "data" : {
-                            "title" : node.node.name
+                            "title" : node.name
                         },
                         "attr" : {
                             "id" : node.id

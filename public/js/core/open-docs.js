@@ -5,6 +5,13 @@ var deps = [
 ];
 
 define(deps, function($, global, socketIo) {
+
+    var getCurrentDelta = function(session) {
+        var stack = session.getUndoManager().$undoStack;
+        var len = stack.length;
+        return (len == 0) ? null : stack[len - 1];
+    };
+    
     var OpenDocuments = Backbone.Model.extend({
         // Contains an array of { node, session } objects
         _docs: [],
@@ -13,15 +20,22 @@ define(deps, function($, global, socketIo) {
         open: function(node, content) {
             if(this.entryByNode(node))
                 return;
-            var docEntry = {
+            var session = global.env.getSession(node.docType, content);
+            var entry = {
                 node: node,
-                session: global.env.getSession(node.docType, content),
-                id: _.uniqueId("open_doc_") // id of the opened document, not to be confused with node.id
+                name: node.name,
+                session: session,
+                id: _.uniqueId("open_doc_"), // id of the opened document, not to be confused with node.id
+                lastSaved: getCurrentDelta(session)
             };
-            this._docs.unshift(docEntry);
+            var self = this;
+            session.on("change", function() {
+//				console.log(session.getUndoManager().$undoStack);
+            });
+            this._docs.unshift(entry);
             this.change({
                 command: "add",
-                node: docEntry
+                node: entry
             });
         },
         
