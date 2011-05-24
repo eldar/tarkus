@@ -26,17 +26,23 @@ define(deps, function($, global, socketIo) {
                 name: node.name,
                 session: session,
                 id: _.uniqueId("open_doc_"), // id of the opened document, not to be confused with node.id
-                lastSaved: getCurrentDelta(session)
+                lastSaved: getCurrentDelta(session),
+                isModified: false
             };
             var self = this;
-            session.on("change", function() {
-//				console.log(session.getUndoManager().$undoStack);
+            session.getUndoManager().on("change", function() {
+                entry.isModified = (entry.lastSaved != getCurrentDelta(session));
+                self.entryChanged(entry);
             });
             this._docs.unshift(entry);
             this.change({
                 command: "add",
                 node: entry
             });
+        },
+        
+        entryChanged: function(entry) {
+            this.trigger("entryChanged", entry);
         },
         
         setCurrentDocument: function(node) {

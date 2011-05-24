@@ -48,6 +48,11 @@ return {
                     alert("project model: no action taken");
             }
         })
+        .bind("entryChanged", function(entry) {
+            var domNode = openDocsWidget.find("#" + entry.id);
+            var text = entry.name + (entry.isModified ? "*" : "");
+            openDocsWidget.listWidget("setText", domNode, text);
+        })
         .bind("documentClosed", function(id) {
             openDocsWidget.find("#" + id).remove();
         })

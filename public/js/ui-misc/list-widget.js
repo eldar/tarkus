@@ -122,8 +122,16 @@ init: function() {
             return this._lastSelected;
         },
         
+        _getTextElement: function(node) {
+            return $(node).children("a#main-elem");
+        },
+        
         getTitle: function(node) {
-            return $(node).children("a#main-elem").text();
+            return this._getTextElement(node).text();
+        },
+        
+        setText: function(node, text) {
+            this._getTextElement(node).text(text);
         }
     });
 }
