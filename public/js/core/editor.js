@@ -35,7 +35,10 @@ return {
         var container = document.getElementById("editor");
         env.editor = new Editor(new Renderer(container, theme));
 
+        env.editor.renderer.setHScrollBarAlwaysVisible(false);
+
         env.editor.resize();
+        
         global.editorResize = function() {
             env.editor.resize();
         };

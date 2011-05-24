@@ -25,10 +25,21 @@ return {
                 if(cb)
                     cb();
             },
-       
-            setActionName: function(id, text) {
-                var li = this.container().find("#" + id);
-                li.children("a").text(text);
+            
+            getActionDom: function(id) {
+                return this.container().find("#" + id);
+            },
+            
+            setActionText: function(id, text) {
+                this.getActionDom(id).children("a").text(text);
+            },
+            
+            setActionEnabled: function(id, enabled) {
+                var elem = this.getActionDom(id);
+                if(enabled)
+                    elem.removeClass("ui-state-disabled");
+                else
+                    elem.addClass("ui-state-disabled");
             }
         };
         global.mainMenu = mainMenu;

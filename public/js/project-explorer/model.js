@@ -172,8 +172,9 @@ define(deps, function(global, openDocs, socketIo, nodes) {
     
     var model = new ProjectModel;
 
-    openDocs.bind("documentSelected", function(id) {
-        model.setCurrentNode(id);
+    openDocs.bind("documentSelected", function(doc) {
+        if(doc)
+	        model.setCurrentNode(doc.node.id);
     });
     
     model.bind("currentNodeChanged", function(node) {
@@ -182,7 +183,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             openDocs.setCurrentDocument(node);
 
         // update Close Project menu item
-        global.mainMenu.setActionName("close-project", 'Close Project "' + node.getProject().name + '"');
+        global.mainMenu.setActionText("close-project", 'Close Project "' + node.getProject().name + '"');
     });
 
     model.bind("nodeRenamed", function(node) {

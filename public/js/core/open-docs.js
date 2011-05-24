@@ -62,7 +62,7 @@ define(deps, function($, global, socketIo) {
             global.env.setEditorVisible(true);
             global.env.editor.setSession(entry.session);
             global.env.editor.resize();
-            this.trigger("documentSelected", entry.node.id);
+            this.trigger("documentSelected", entry);
         },
         
         entryById: function(id) {
@@ -103,6 +103,7 @@ define(deps, function($, global, socketIo) {
                 global.env.editor.setSession(global.env.getEmptySession());
                 global.env.setEditorVisible(false);
                 this._currentEntry = null;
+                this.trigger("documentSelected", null);
                 return;
             }
             if(isSelected) {

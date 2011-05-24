@@ -99,6 +99,17 @@ return {
         mainMenu.addCallback("close-project", function() {
             model.closeCurrentProject();
         });
+        
+        openDocs
+            .bind("entryChanged", function(doc) {
+                mainMenu.setActionEnabled("save-node", doc.isModified);
+            })
+            .bind("documentSelected", function(doc) {
+                var text = "Save";
+                if(doc)
+                    text += " \"" + doc.name + "\"";
+                mainMenu.setActionText("save-node", text);
+            });
 /*
         mainMenu.addCallback("rename-node", function() {
             model.triggerRename();
