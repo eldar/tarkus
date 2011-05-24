@@ -49,7 +49,7 @@ return {
             select: function(event, ui) {
                 mainMenu.handle(ui.item.attr("id"));
             }
-        });
+        }).disableSelection();
         // round corners in submenus only for bottom border
         $("#menubar > li > .ui-menu").removeClass("ui-corner-all").addClass("ui-corner-bl ui-corner-br");
         

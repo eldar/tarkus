@@ -1,4 +1,4 @@
-define(function() {
+define(["core/global"], function(global) {
     var Type = {
         Folder : 1,
         Project : 2,
