@@ -1,6 +1,6 @@
 [submodule "public/js/ace"]
 	path = public/js/ace
-	url = https://maxter@github.com/maxter/ace.git
+	url = https://github.com/maxter/ace.git
 
 [submodule "public/js/underscore"]
 	path = public/js/underscore
