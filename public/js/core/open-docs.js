@@ -25,10 +25,9 @@ define(deps, function($, global, socketIo) {
                 node: node,
                 name: node.name,
                 session: session,
-                id: _.uniqueId("open_doc_"), // id of the opened document, not to be confused with node.id
-                lastSaved: getCurrentDelta(session),
-                isModified: false
+                id: _.uniqueId("open_doc_") // id of the opened document, not to be confused with node.id
             };
+            this.setInitialSaveState(entry);
             var self = this;
             session.getUndoManager().on("change", function() {
                 entry.isModified = (entry.lastSaved != getCurrentDelta(session));
@@ -39,6 +38,11 @@ define(deps, function($, global, socketIo) {
                 command: "add",
                 node: entry
             });
+        },
+        
+        setInitialSaveState: function(entry) {
+            entry.lastSaved = getCurrentDelta(entry.session);
+            entry.isModified = false;
         },
         
         entryChanged: function(entry) {
@@ -116,6 +120,10 @@ define(deps, function($, global, socketIo) {
             var entry = this._currentEntry;
             if(!entry)
                 return;
+            if(!entry.isModified)
+                return;
+            this.setInitialSaveState(entry);
+            this.entryChanged(entry); 
             var object = _.extend(entry.node.pathDefinition(), {
                 content: entry.session.getValue()
             });
