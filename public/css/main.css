@@ -68,6 +68,12 @@ html {
 .list-view-unclicked-a { color:black; }
 .list-view-clicked-a { color:white; }
 
+.ui-menubar .ui-button,
+.unselectable {
+    -moz-user-select: none;
+    cursor: default;
+}
+
 .header { 
     background: #d6d6d6;
     padding: 3px 10px;

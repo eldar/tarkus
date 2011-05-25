@@ -66,12 +66,12 @@ init: function() {
         
         createNode: function(position, js, callback) {
             var d = $("<li />");
-            d.append("&nbsp;"); // indentation, FIXME properly
+            d.append("&nbsp;&nbsp;").addClass("unselectable"); // indentation, FIXME properly
             
             if(js.attr) { d.attr(js.attr); }
             if(js.data) {
-                var a = $("<a />");
-                a.attr("href", "#");
+                var a = $("<span />");
+                a.addClass("unselectable");
                 a.attr("id", "main-elem");
                 a.addClass("list-view-unclicked-a");
                 var title = js.data.title;
@@ -123,7 +123,7 @@ init: function() {
         },
         
         _getTextElement: function(node) {
-            return $(node).children("a#main-elem");
+            return $(node).children("#main-elem");
         },
         
         getTitle: function(node) {
