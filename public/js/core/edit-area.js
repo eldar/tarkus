@@ -22,9 +22,9 @@ return {
                 });
                 
                 // round corners in submenus only for bottom border
-                var menus = this.container().children("li").children(".ui-menu")
-                menus.removeClass("ui-corner-all").addClass("ui-corner-bl ui-corner-br");
-                menus.find("a").addClass("unselectable");
+                var menus = this.container().find(".ui-menu")
+                menus.removeClass("ui-corner-all");
+                menus.find("a").addClass("unselectable").removeClass("ui-corner-all");
             },
             
             _container: null,
