@@ -9,11 +9,29 @@ return {
     init: function() {
         $(".tarkus-toolbutton").button();
 
-        var mainMenu = {
+        var MainMenu = _.inherits(Object, {
+            
+            constructor: function(cont) {
+                _container = cont;
+                var self = this;
+                this.container().menubar({
+                    menuIcon: true,
+                    select: function(event, ui) {
+                        self.handle(ui.item.attr("id"));
+                    }
+                });
+                
+                // round corners in submenus only for bottom border
+                var menus = this.container().find(".ui-menu")
+                menus.removeClass("ui-corner-all");
+                menus.find("a").addClass("unselectable").removeClass("ui-corner-all");
+            },
+            
+            _container: null,
             _callbacks: {},
        
             container: function() {
-                return $("#menubar");
+                return $(_container);
             },
        
             addCallback: function(id, callback) {
@@ -41,17 +59,9 @@ return {
                 else
                     elem.addClass("ui-state-disabled");
             }
-        };
-        global.mainMenu = mainMenu;
+        });
         
-        mainMenu.container().menubar({
-            menuIcon: true,
-            select: function(event, ui) {
-                mainMenu.handle(ui.item.attr("id"));
-            }
-        }).disableSelection();
-        // round corners in submenus only for bottom border
-        $("#menubar > li > .ui-menu").removeClass("ui-corner-all").addClass("ui-corner-bl ui-corner-br");
+        global.mainMenu = new MainMenu("#menubar");
         
         var onEditorResize = function() {
             global.editorResize();
