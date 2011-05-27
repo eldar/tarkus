@@ -1,5 +1,6 @@
 var fs = require("fs");
 var _ = require("./global")._;
+var app = require("./app");
 
 var PROJECTS_DIR = "/data/tarkus/projects";
 
@@ -38,15 +39,13 @@ HandlerObj.prototype = {
         return this._projectDir(data.projectName) + "/" + path;
     },
     
-    _reply: function(e, data) {
-        this._socket.send({
-            message: e.message,
-            type: "responce",
-            data: data
-        });
+    _respond: function(msg) {
+        msg.type = "response";
+        this._socket.send(msg);
     },
-    
-    projectCreate : function(data) {
+
+    projectCreate : function(msg) {
+        var data = msg.data;
         var path = this._projectDir(data.projectName);
         console.log("creating project at " + path);
         var self = this;
@@ -55,49 +54,51 @@ HandlerObj.prototype = {
         });
     },
 
-    folderCreate: function(data) {
-        fs.mkdir(this._nodeFullPath(data), 0777);
+    folderCreate: function(msg) {
+        fs.mkdir(this._nodeFullPath(msg.data), 0777);
     },
     
-    fileCreate: function(data) {
-        var path = this._nodeFullPath(data);
+    fileCreate: function(msg) {
+        var path = this._nodeFullPath(msg.data);
         console.log("creating file " + path);
         fs.open(path, "w+", 0777, function(err, fd) {
             fs.close(fd);
         });
     },
     
-    requestFileContent: function(data, e) {
-        var path = this._nodeFullPath(data);
+    requestFileContent: function(msg) {
+        var path = this._nodeFullPath(msg.data);
         console.log("File path " + path);
         var self = this;
         fs.readFile(path, function (err, buffer) {
 //            if (err) throw err;
             console.log("read file");
-            var content = buffer.toString("utf8");
-            console.log(content);
-            self._reply(e, content);
+            msg.data = buffer.toString("utf8");
+            console.log(msg.data);
+            self._respond(msg);
         });
     },
     
-    saveFile: function(data) {
+    saveFile: function(msg) {
+        var data = msg.data;
         console.log(data.content);
         var path = this._nodeFullPath(data);
         console.log("writing to file " + path);
         fs.writeFile(path, data.content);
     },
     
-    projectOpen: function(data, e) {
-        var path = this._projectDir(data.projectName);
-        var res = getDirStructure(path);
-        console.log(res);
-        this._reply(e, res);
+    projectOpen: function(msg) {
+        var path = this._projectDir(msg.data.projectName);
+        msg.data = getDirStructure(path);
+        console.log(msg.data);
+        this._respond(msg);
     },
     
-    getProjectList: function(data, e) {
+    getProjectList: function(msg) {
         var list = fs.readdirSync(this._projectsDir());
         console.log(list);
-        this._reply(e, { list: list});
+        msg.data = { list: list};
+        this._respond(msg);
     }
 }
 
@@ -106,15 +107,15 @@ exports.MsgHandler = function(socket) {
 }
 
 exports.MsgHandler.prototype = {
-    handle: function(e) {
+    handle: function(msg) {
         console.log("--- Handling Message ---");
 
         var h = this.handler;
-        var msg = e.message;
-        if(h[msg]) {
-            console.log("message " + msg);
-            h[msg].call(h, e.data, e);
+        var name = msg.name;
+        if(h[name]) {
+            console.log("message " + name);
+            h[name].call(h, msg);
         } else
-            console.log("Failed to respond to message " + msg);
+            console.log("Failed to respond to message " + name);
     }
 }

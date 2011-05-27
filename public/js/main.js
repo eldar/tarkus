@@ -16,10 +16,10 @@ var deps = [
     "core/open-docs-widget",
     "project-explorer/tree-widget",
     "project-explorer/actions",
-    "text!../templates/ide-body.html",
+    "text!../templates/ide-body.html"
 
-    "pilot/fixoldbrowsers",
-    "pilot/settings"
+    //"pilot/fixoldbrowsers",
+    //"pilot/settings"
 ];  
 
 require(deps, function(

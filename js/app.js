@@ -1,15 +1,12 @@
 /*
     Main application module.
 
-    The application object is available to any
-    module via the global namespace. It is also available as an export from this module
-    (require(path/to/this/module).app)
-
     Ensure app is properly configured before it is accessed in other modules.
 */
 
 var _ = require("./global")._;
 var express = require("express");
+var session = require("./session");
 var path = require("path");
 var mem = require("./memory");
 var handler = require("./handler");
@@ -18,7 +15,7 @@ var socketio = require("socket.io");
 var fs = require("fs");
 
 var app = express.createServer();
-global.app = exports.app = app;
+exports.app = app;
 
 app.run = function(){
     this.listen(this.port, this.host);
@@ -39,7 +36,17 @@ app.configure(function(){
     app.use(express.methodOverride());    
     app.use(express.bodyParser());
     app.use(express.cookieParser());
-    app.use(express.session({ secret: "42" }));
+    
+    app.sessionOptions = {
+        secret: "42",
+        key: "tarkus-session-id",
+        store: new session.Store(),
+        cookie: { httpOnly: false }
+    };
+ 
+    app.sessionMiddleware = express.session(app.sessionOptions);    
+    app.use(app.sessionMiddleware);
+    
     //app.use(_.bind(app.httpHandler.handle, app.httpHandler));
     app.use(app.router);
     app.use(express.static(app.publicDir));
@@ -54,8 +61,8 @@ app.configure(function(){
     console.log();
     app.register(".html", require(__dirname + "/jqtpl/jqtpl"));
     
-    // network settings    
-    app.port = 8080;
+    // network settings
+    app.port = process.argv.length > 2 ? process.argv[2] : 8080;    
     app.host = undefined;
 });
 
@@ -79,7 +86,7 @@ app.configure("development", function(){
 
 app.configure("production", function(){
     app.use(express.errorHandler());
-    
+   
     app.postConfigure();
 });
 
@@ -88,7 +95,7 @@ app.get("/ide", function(req, res){
 });
 
 app.get("/", function(req, res){
-    res.render("index");
+    res.end();
 });
 
 app.get("/favicon.ico", function(req, res) {
@@ -100,13 +107,40 @@ app.run();
 app.socket = socketio.listen(app);
 app.socket.on("connection", function(client){
     console.log("socket connected");
+    
     var msgHandlerObj = new msgHandler.MsgHandler(client);
-    client.on("message", function(data) {
-        console.log("some message received");
-        msgHandlerObj.handle(data);        
-      
+    
+    client.on("message", function(msg) {
+    
+        console.log("message received \"" + msg.name + "\"");        
+        
+        if (msg.name == "startSession") {
+            // setup request members for the session middleware
+            client.headers = {};
+            client.cookies = {};
+            client.url = "";
+            client.cookies[app.sessionOptions.key] = msg.data.sessionId;
+            client.headers["user-agent"] = msg.data.userAgent;
+            msgHandlerObj.handler._respond(msg);
+        } else {        
+            
+            // dummy response object for session middleware
+            var res = {
+                end: function() {
+                    client.session = undefined;
+                    client.sessionStore = undefined;
+                },
+                _header: "dummy"
+            }
+            
+            app.sessionMiddleware(client, res, function() {                                       
+                    msgHandlerObj.handle(msg);
+                    res.end();
+                });            
+        }
     }); 
-    client.on("disconnect", function(){}); 
+    
+    client.on("disconnect", function(){});
 });
 
 

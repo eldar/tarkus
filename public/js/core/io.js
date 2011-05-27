@@ -5,38 +5,20 @@ var deps = [
 
 define(deps, function($, global) {
     var socket = new $.io.Socket();
-    socket.connect();
-    
-    socket.on("connect", function() {
-        
-    });
-    
     var map = {};
-    
-    socket.on("message", function(e) {
-        if(e.type === "responce") {
-            var msg = e.message;
-            if(map[msg]) {
-                $.unblockUI();
-                map[msg](e);
-                map[msg] = null;
-            }
-        }
-    });
-    
+
     var handler = {
-        _socket: socket,
         
-        send: function(message, data) {
-            this._socket.send({
-                message: message,
+        send: function(name, data) {
+            socket.send({
+                name: name,
                 data: data
             });
         },
         
-        request: function(message, data, callback) {
-            map[message] = callback;
-            this.send(message, data);
+        request: function(name, data, callback) {
+            map[name] = callback;
+            this.send(name, data);
             $.blockUI({ css: { 
                 border: 'none', 
                 padding: '15px', 
@@ -45,7 +27,7 @@ define(deps, function($, global) {
                 '-moz-border-radius': '10px', 
                 'border-radius': '10px', 
                 opacity: .5, 
-                color: '#fff' 
+                color: '#fff'
             },
             applyPlatformOpacityRules: false,
             // styles for the overlay 
@@ -55,5 +37,24 @@ define(deps, function($, global) {
         }
     };
     
+    socket.on("connect", function() {
+        handler.request("startSession", {                
+                sessionId: $.cookie("tarkus-session-id"),
+                userAgent: navigator.userAgent
+            });
+    });
+
+    socket.on("message", function(msg) {
+        if(msg.type === "response") {
+            var name = msg.name;
+            if(map[name]) {
+                $.unblockUI();
+                map[name](msg);
+                delete map[name];
+            }
+        }
+    });
+    
+    socket.connect();    
     return handler;
 });
