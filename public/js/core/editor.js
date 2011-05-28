@@ -1,4 +1,5 @@
 var deps = [
+    "dojo",
     "pilot/canon",
     "pilot/event",
     "ace/editor",
@@ -9,12 +10,13 @@ var deps = [
     "ace/mode/css",
     "ace/mode/text",
     "ace/undomanager",
-    "core/global"
+    "core/global",
+    "ide/core/MainArea"
 ];
     
 
-define(deps, function(canon, event, editor, renderer,
-    theme, editSession, jsMode, cssMode, textMode, undoManager, global) {
+define(deps, function(dojo, canon, event, editor, renderer,
+    theme, editSession, jsMode, cssMode, textMode, undoManager, global, mainArea) {
 
 return {
     init : function(env) {
@@ -28,21 +30,32 @@ return {
         var TextMode = textMode.Mode;
         var UndoManager = undoManager.UndoManager;
 
-        var session = new EditSession("");
-        session.setMode(new JavaScriptMode());
-        session.setUndoManager(new UndoManager());
+        var AceWidget = dojo.declare(dijit._Widget,
+        {
+            editor: null,
+            
+            postCreate : function()
+            {
+                this.editor = new Editor(new Renderer(this.domNode, theme));
+            },
+            
+            resize: function()
+            {
+                this.editor.resize();
+            }
+        });
         
-        var container = document.getElementById("editor");
-        env.editor = new Editor(new Renderer(container, theme));
-
-        env.editor.renderer.setHScrollBarAlwaysVisible(false);
-
-        env.editor.resize();
+        var aceWidget = new AceWidget().placeAt(mainArea.center.domNode);
+        dojo.style(aceWidget.domNode, {
+            "height": "100%",
+            "width": "100%"
+        });
+        aceWidget.resize();
         
-        global.editorResize = function() {
-            env.editor.resize();
-        };
-
+        aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
+        
+        env.editor = aceWidget.editor;
+        
         env.modeForDocType = function(docType) {
             var mode;
             switch(docType) {
@@ -59,10 +72,10 @@ return {
         };
         
         env.setEditorVisible = function(visible) {
-            $("#editor").toggle(visible);
+//            $("#editor").toggle(visible);
         };
         
-        env.setEditorVisible(false);
+//        env.setEditorVisible(false);
         
         env.getSession = function(docType, content) {
             var text = content || "";
@@ -76,6 +89,7 @@ return {
             return new EditSession("");
         };
     }
+
 };
 
 });
