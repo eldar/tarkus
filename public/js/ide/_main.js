@@ -5,13 +5,13 @@ require({
   packages: [
     {
       name: 'dojo',
-      location: 'dojo-release-1.6.0-src/dojo',
+      location: 'dojo-release-1.6.1-src/dojo',
       main: 'lib/main-browser',
       lib: '.'
     },
     {
       name: 'dijit',
-      location: 'dojo-release-1.6.0-src/dijit',
+      location: 'dojo-release-1.6.1-src/dijit',
       main: 'lib/main',
       lib: '.'
     }
