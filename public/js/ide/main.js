@@ -5,48 +5,34 @@ require({
     }
 });
 
-var plugins = [ "pilot/index", "ace/defaults" ];
-
-var deps = [
-    "core/global",
+require([
     "pilot/plugin_manager",
     "pilot/environment",
-    "ide/core/MainArea",
-    "ide/core/MainMenu",
-    "core/editor"
-    
-    //"pilot/fixoldbrowsers",
-    //"pilot/settings"
-];  
-
-require(deps, function(
-    global,
+    "pilot/fixoldbrowsers"
+], function(
     pluginManager,
-    pilotEnv,    
-    mainArea,
-    mainMenu,
-    editor,
-    openedDocs,
-    projectTree,
-    actions,
-    bodyTempl) {
+    pilotEnv) {
     
-    var catalog = pluginManager.catalog;
-       
-    catalog.registerPlugins(plugins).then(function() {
-        var env = pilotEnv.create();
-        catalog.startupPlugins({ env: env }).then(function() {        
-            require.ready(function() {
-                global.env = env;
-                
-/*                openedDocs.init();
-                
-                actions.init();
-                projectTree.init();
-*/
-                editor.init(env);
-            });
+    // loads ace&pilot stuff and calls callback on success
+    var onLoadPilot = function(callback) {
+        var catalog = pluginManager.catalog;
+
+        var plugins = [ "pilot/index", "ace/defaults" ];
+        catalog.registerPlugins(plugins).then(function() {
+            var env = pilotEnv.create();
+            catalog.startupPlugins({ env: env }).then(function() { callback(); });
+        });
+    }
+    
+    onLoadPilot(function() {
+        require.ready(function() { // on DOM loads
+            require([
+                "core/global",
+                "ide/core/MainArea",
+                "ide/core/MainMenu",
+                "core/editor",
+                "ide/project/Handlers"
+            ]);
         });
     });
-    
 });

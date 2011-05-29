@@ -1,9 +1,6 @@
 var deps = [  
     "order!util/underscore",
     "order!util/backbone",
-//    "order!jquery",
-//    "order!jquery-plugins/jquery.cookie",
-//    "order!ui-misc/jquery-blockui",
     "order!socket.io/socket.io.js"
 ];
 

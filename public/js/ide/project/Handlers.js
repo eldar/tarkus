@@ -1,17 +1,18 @@
 var deps = [
-    "jquery",
+    "dojo",
     "core/global",
     "core/io",
-    "core/open-docs",
-    "project-explorer/model",
+    "ide/core/Actions",
+//    "core/open-docs",
+//    "project-explorer/model",
 ];
 
-define(deps, function($, global, socketIo, openDocs, model) {
+define(deps, function(dojo, global, socketIo, actions, openDocs, model) {
 
-return {
-    init: function() {
-        $(".tarkus-toolbutton").button();
-        
+    dojo.connect(actions.file.openProject, "triggered", function() {
+        alert("open project");
+    });
+/*        
         var OpenProjectDialog = _.inherits(Object, {
             constructor: function() {
                 this.self = $("#open-project-dialog");
@@ -110,6 +111,7 @@ return {
                     text += " \"" + doc.name + "\"";
                 mainMenu.setActionText("save-node", text);
             });
+            */
 /*
         mainMenu.addCallback("rename-node", function() {
             model.triggerRename();
@@ -119,7 +121,5 @@ return {
             model.triggerRemove();
         });
 */
-    }
-};
 
 });

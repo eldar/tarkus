@@ -1,10 +1,10 @@
 var deps = [
-    "jquery",
+    "dojo",
     "core/global",
 ];
 
-define(deps, function($, global) {
-    var socket = new $.io.Socket();
+define(deps, function(dojo, global) {
+    var socket = new io.Socket();
     var map = {};
 
     var handler = {
@@ -19,27 +19,14 @@ define(deps, function($, global) {
         request: function(name, data, callback) {
             map[name] = callback;
             this.send(name, data);
-            $.blockUI({ css: { 
-                border: 'none', 
-                padding: '15px', 
-                backgroundColor: '#000', 
-                '-webkit-border-radius': '10px', 
-                '-moz-border-radius': '10px', 
-                'border-radius': '10px', 
-                opacity: .5, 
-                color: '#fff'
-            },
-            applyPlatformOpacityRules: false,
-            // styles for the overlay 
-            overlayCSS: { opacity: 0 }
-            }); 
-            setTimeout($.unblockUI, 10000); 
+//            $.blockUI();
+//            setTimeout($.unblockUI, 10000);
         }
     };
     
     socket.on("connect", function() {
         handler.request("startSession", {                
-                sessionId: $.cookie("tarkus-session-id"),
+                sessionId: dojo.cookie("tarkus-session-id"),
                 userAgent: navigator.userAgent
             });
     });
@@ -48,7 +35,7 @@ define(deps, function($, global) {
         if(msg.type === "response") {
             var name = msg.name;
             if(map[name]) {
-                $.unblockUI();
+//                $.unblockUI();
                 map[name](msg);
                 delete map[name];
             }

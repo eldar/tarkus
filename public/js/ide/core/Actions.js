@@ -1,4 +1,4 @@
-define(["dojo", "ui/Action"], function (dojo, Action) {
+define(["ui/Action"], function (Action) {
     return {
         file : {
             newProject: new Action({ label: "New Project..."}),
