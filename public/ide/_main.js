@@ -1,4 +1,5 @@
 require({
+  baseUrl: ".",
   // set the paths to our library packages
   packages: [
     {
@@ -16,7 +17,7 @@ require({
   ],
 
   paths: {
-    views: "../templates",
+    views: "templates",
     text: "requirejs/text",
     order: "requirejs/order",
     i18n: "requirejs/i18n",

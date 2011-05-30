@@ -1,15 +1,30 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
 <html>
 <head>
-<meta http-equiv="Content-Language" content="en" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Tarkus IDE</title>
-<link rel="stylesheet" href="css/jquery-ui/jquery-ui.css"> 
-<script data-main="js/main" src="js/jquery/require-jquery.js"></script>
-<link type="text/css" href="css/main.css" rel="Stylesheet" />
+    <meta http-equiv="Content-Language" content="en" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tarkus IDE</title>
+    <link rel="stylesheet" href="css/ide.css">
+    <script data-main="ide/_main" src="requirejs/require.js"></script>
 </head>
-<body>
-Loading...
+<body class="claro">
+    <div dojoType="dijit.layout.BorderContainer" design="headline" gutters="true" liveSplitters="true" id="mainLayout">
+        <div id="header" data-dojo-type="dijit.MenuBar" data-dojo-props="region:'top'" id="menuBar">
+            <div data-dojo-type="dijit.PopupMenuBarItem">
+                <span>File</span>
+                <div data-dojo-type="dijit.Menu" id="fileMenu">
+                </div>
+            </div>
+            <div data-dojo-type="dijit.PopupMenuBarItem">
+                <span>Edit</span>
+                <div data-dojo-type="dijit.Menu" id="editMenu">
+                </div>
+            </div>
+        </div>
+        <div dojoType="dijit.layout.ContentPane" splitter="true" region="left" style="width: 200px; padding: 0px;" id="leftPane">
+        </div>
+        <div dojoType="dijit.layout.ContentPane" splitter="true" region="center" style="padding: 0px;" id="centerPane">
+        </div>
+    </div>
 </body>
 </html>
-
