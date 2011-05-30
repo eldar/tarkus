@@ -1,4 +1,5 @@
 var deps = [
+    "dojo",
     "pilot/canon",
     "pilot/event",
     "ace/editor",
@@ -9,73 +10,86 @@ var deps = [
     "ace/mode/css",
     "ace/mode/text",
     "ace/undomanager",
-    "core/global"
+    "core/global",
+    "ide/core/MainArea"
 ];
     
 
-define(deps, function(canon, event, editor, renderer,
-    theme, editSession, jsMode, cssMode, textMode, undoManager, global) {
+define(deps, function(dojo, canon, event, editor, renderer,
+    theme, editSession, jsMode, cssMode, textMode, undoManager, global, mainArea) {
 
-return {
-    init : function(env) {
+    var Editor = editor.Editor;
+    var Renderer = renderer.VirtualRenderer;
+    var EditSession = editSession.EditSession;
 
-        var Editor = editor.Editor;
-        var Renderer = renderer.VirtualRenderer;
-        var EditSession = editSession.EditSession;
+    var JavaScriptMode = jsMode.Mode;
+    var CssMode = cssMode.Mode;
+    var TextMode = textMode.Mode;
+    var UndoManager = undoManager.UndoManager;
 
-        var JavaScriptMode = jsMode.Mode;
-        var CssMode = cssMode.Mode;
-        var TextMode = textMode.Mode;
-        var UndoManager = undoManager.UndoManager;
+    var AceWidget = dojo.declare(dijit._Widget,
+    {
+        editor: null,
 
-        var session = new EditSession("");
-        session.setMode(new JavaScriptMode());
+        postCreate : function()
+        {
+            this.editor = new Editor(new Renderer(this.domNode, theme));
+        },
+
+        resize: function()
+        {
+            this.editor.resize();
+        }
+    });
+        
+    var aceWidget = new AceWidget().placeAt(mainArea.center.domNode);
+    dojo.style(aceWidget.domNode, {
+        "height": "100%",
+        "width": "100%"
+    });
+    aceWidget.resize();
+        
+    aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
+
+    var editor = {};
+        
+    editor._editor = aceWidget.editor;
+    editor.currentEditor = function() {
+        return this._editor;
+    };
+        
+    editor.modeForDocType = function(docType) {
+        var mode;
+        switch(docType) {
+            case "js":
+                mode = new JavaScriptMode();
+                break;
+            case "css":
+                mode = new CssMode();
+                break;
+            default:
+                mode = new TextMode();
+        }
+        return mode;
+    };
+        
+    editor.setEditorVisible = function(visible) {
+//            $("#editor").toggle(visible);
+    };
+        
+//  editor.setEditorVisible(false);
+        
+    editor.getSession = function(docType, content) {
+        var text = content || "";
+        var session = new EditSession(text);
+        session.setMode(env.modeForDocType(docType));
         session.setUndoManager(new UndoManager());
+        return session;
+    };
         
-        var container = document.getElementById("editor");
-        env.editor = new Editor(new Renderer(container, theme));
-
-        env.editor.renderer.setHScrollBarAlwaysVisible(false);
-
-        env.editor.resize();
-        
-        global.editorResize = function() {
-            env.editor.resize();
-        };
-
-        env.modeForDocType = function(docType) {
-            var mode;
-            switch(docType) {
-                case "js":
-                    mode = new JavaScriptMode();
-                    break;
-                case "css":
-                    mode = new CssMode();
-                    break;
-                default:
-                    mode = new TextMode();
-            }
-            return mode;
-        };
-        
-        env.setEditorVisible = function(visible) {
-            $("#editor").toggle(visible);
-        };
-        
-        env.setEditorVisible(false);
-        
-        env.getSession = function(docType, content) {
-            var text = content || "";
-            var session = new EditSession(text);
-            session.setMode(env.modeForDocType(docType));
-            session.setUndoManager(new UndoManager());
-            return session;
-        };
-        
-        env.getEmptySession = function() {
-            return new EditSession("");
-        };
-    }
-};
-
+    editor.getEmptySession = function() {
+        return new EditSession("");
+    };
+    
+    return editor;
 });

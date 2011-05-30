@@ -1,0 +1,21 @@
+/*
+
+If you are developing a project that makes use of Dojo's built-in widgets,
+you will probably want to include these two files.
+*/
+@import '../js/dojo-release-1.6.1-src/dojo/resources/dojo.css';
+@import '../js/dojo-release-1.6.1-src/dijit/themes/claro/claro.css';
+
+html, body { 
+    font-family: "Lucida Sans", "Lucida Sans Unicode", "Luxi Sans", "Tahoma", "sans-serif";
+    font-size: 12px;
+    width: 100%; height: 100%; margin: 0;
+    overflow: hidden;
+}
+
+#mainLayout { width: 100%; height: 100%; }
+
+.dijitMenuItemLabel, .dijitMenuItem {
+    outline: none;
+    cursor: default;
+}
