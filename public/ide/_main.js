@@ -1,6 +1,4 @@
 require({
-  baseUrl: "js/",
-
   // set the paths to our library packages
   packages: [
     {
