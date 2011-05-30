@@ -49,6 +49,15 @@ _.mixin({
         subClass.superProto = superClass.prototype;            
          
         return subClass;
+    },
+    
+    find: function(array, pred) {               
+        for (var i = 0; i < array.length; ++i) {
+            var element = array[i];
+            if (pred(element))
+                return i;
+        }            
+        return -1;
     }                
 });
 

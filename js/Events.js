@@ -1,29 +1,9 @@
 var _ = require("./Global")._;
 var unittest = require("./Unittest");
 
-function _connect(sender, signal, receiver, slot) {
+function callNormalized(sender, signalName, receiver, slotOrName, call) {
+    var slot, signal = sender[signalName];
 
-    var slots = signal.__slots;
-    if (!slots) {
-        var origSignal = signal;        
-        signal = sender[origSignal.__name] = function() {
-            var args = arguments;
-            origSignal.apply(sender, args);
-            _.each(slots, function(slot) {
-                slot.apply(receiver, args);
-            });         
-        }
-        _.extend(signal, origSignal);
-        signal.__origSignal = origSignal;
-        slots = signal.__slots = [];
-    }
-    slots.push(slot);
-}
-
-function connect(sender, signalName, receiver, slotOrName) {
-    var slot;
-
-    var signal = sender[signalName];
     if (!_.isFunction(signal))
         throw new Error(sender + " has no signal function \"" + signalName + "\""); 
     else if (!signal.__name)
@@ -40,11 +20,54 @@ function connect(sender, signalName, receiver, slotOrName) {
         receiver = undefined;
     } else
         throw new Error("Invalid slot specification");
-  
-    _connect(sender, signal, receiver, slot);
+        
+    call(sender, signal, receiver, slot);
+}
+
+function _connect(sender, signal, receiver, slot) {
+    var slots = signal.__slots;
+    if (!slots) {
+        var origSignal = signal;        
+        signal = sender[origSignal.__name] = function() {
+            var args = arguments;
+            origSignal.apply(sender, args);
+            _.each(slots, function(slotItem) {
+                slotItem[1].apply(slotItem[0], args);
+            });         
+        }
+        _.extend(signal, origSignal);
+        signal.__origSignal = origSignal;
+        slots = signal.__slots = [];
+    }
+    slots.push([ receiver, slot ]);
+}
+
+function _disconnect(sender, signal, receiver, slot) {
+    var slots = signal.__slots;
+    var idx = -1;
+    if (slots) {
+        console.log(slots);
+        idx = _.find(slots, function(slotItem) {            
+            return receiver === slotItem[0] && slot === slotItem[1];
+        });           
+    }
+    if (idx === undefined)
+        throw new Error("Slot not connected");
+    else
+        slots.splice(idx, 1);
+    //TODO: restore origSignal when slot count drops to zero.
+}
+
+function connect(sender, signalName, receiver, slotOrName) {
+    callNormalized(sender, signalName, receiver, slotOrName, _connect);
+}
+
+function disconnect(sender, signalName, receiver, slotOrName) {
+    callNormalized(sender, signalName, receiver, slotOrName, _disconnect);
 }
 
 exports.connect = connect;
+exports.disconnect = disconnect;
 
 unittest(function(assert) {
     var test1 = {
@@ -61,6 +84,11 @@ unittest(function(assert) {
         }
     }
     
+    function reset() {
+        test1.fooCalls = [];
+        test2.barCalls = [];
+    }
+    
     //var test1.foo.x = 43;
 
     connect(test1, "foo", test2, "bar");
@@ -69,7 +97,12 @@ unittest(function(assert) {
     assert.ok(test1.fooCalls[0] == 42);
     assert.ok(test2.barCalls.length == 1);
     assert.ok(test2.barCalls[0] == 42);
-    //disconnect(test1, "foo", test2, "bar");    
+    disconnect(test1, "foo", test2, "bar");
+    reset();
+    test1.foo(43);    
+    assert.ok(test1.fooCalls.length == 1);   
+    assert.ok(test1.fooCalls[0] == 43);
+    assert.ok(test2.barCalls.length == 0);
 });
 
 
