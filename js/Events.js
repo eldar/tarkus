@@ -25,14 +25,14 @@ function connect(sender, signalName, receiver, slotOrName) {
 
     var signal = sender[signalName];
     if (!_.isFunction(signal))
-        throw new Error(sender.toString() + " has no signal function \"" + signalName + "\""); 
+        throw new Error(sender + " has no signal function \"" + signalName + "\""); 
     else if (!signal.__name)
         signal.__name = signalName;
 
     if (_.isString(slotOrName)) {       
         slot = receiver[slotOrName];
         if (!_.isFunction(slot))
-            throw new Error(receiver.toString() + " has no slot function \"" + slotOrName + "\"");
+            throw new Error(receiver + " has no slot function \"" + slotOrName + "\"");
     } else if (_.isFunction(slotOrName))
         slot = slotOrName;        
     else if (_.isFunction(receiver) && slotOrName === undefined) {
