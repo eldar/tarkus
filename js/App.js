@@ -22,7 +22,7 @@ exports.app = app;
 
 app.run = function(){
     this.listen(this.port, this.host);
-    console.log("%s is listening on port %d", this.name, this.port);
+    console.log("%s is listening on port %d", config.appName, this.port);
 }
 
 /*
@@ -99,7 +99,7 @@ app.get("/", function(req, res){
 });
 
 app.get("/favicon.ico", function(req, res) {
-    res.send(fs.readFileSync(app.publicDir + "/favicon.ico"));
+    res.send(fs.readFileSync(config.dirs.public + "/favicon.ico"));
 });
 
 app.run();
