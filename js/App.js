@@ -4,15 +4,18 @@
     Ensure app is properly configured before it is accessed in other modules.
 */
 
-var _ = require("./global")._;
 var express = require("express");
-var session = require("./session");
-var path = require("path");
-var mem = require("./memory");
-var handler = require("./handler");
-var msgHandler = require("./msghandler");
 var socketio = require("socket.io");
 var fs = require("fs");
+var path = require("path");
+
+var _ = require("./Global")._;
+var config = require("./Config");
+var session = require("./Session");
+var mem = require("./Memory");
+var handler = require("./Handler");
+var msgHandler = require("./MsgHandler");
+//var events = require("./Events");
 
 var app = express.createServer();
 exports.app = app;
@@ -23,15 +26,12 @@ app.run = function(){
 }
 
 /*
-    Configuration 
+    Application configuration 
 */
 app.configure(function(){
-    app.name = "Tarkus"; 
-   
-    app.publicDir = __dirname + "/../public";
-    app.viewsDir = __dirname + "/../views";
-    app.httpHandler = handler.createHandler({ handlersDir : __dirname + "/http-handlers" });
-    app.messageHandler = handler.createHandler({ handlersDir : __dirname + "/message-handlers" });
+    
+    app.httpHandler = handler.createHandler({ handlersDir : config.dirs.httpHandlers });
+    app.messageHandler = handler.createHandler({ handlersDir : config.dirs.messageHandlers });
      
     app.use(express.methodOverride());    
     app.use(express.bodyParser());
@@ -49,10 +49,10 @@ app.configure(function(){
     
     //app.use(_.bind(app.httpHandler.handle, app.httpHandler));
     app.use(app.router);
-    app.use(express.static(app.publicDir));
+    app.use(express.static(config.dirs.public));
     
     // common view and tmplate settings
-    app.set("views", app.viewsDir);
+    app.set("views", config.dirs.views);
     app.set("view engine", "html");
     app.set('view options', {
             layout: false
@@ -63,7 +63,7 @@ app.configure(function(){
     
     // network settings
     app.port = process.argv.length > 2 ? process.argv[2] : 8080;    
-    app.host = undefined;
+    app.host = undefined;    
 });
 
 /*

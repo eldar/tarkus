@@ -1,6 +1,5 @@
 var fs = require("fs");
-var _ = require("./global")._;
-var app = require("./app");
+var _ = require("./Global")._;
 
 var PROJECTS_DIR = "/data/tarkus/projects";
 

@@ -1,7 +1,7 @@
 var path = require("path");
 var url = require("url");
 var fs = require("fs");
-var mem = require("./memory");
+var mem = require("./Memory");
 
 exports.Handler = function(options)
 {
