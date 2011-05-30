@@ -1,10 +1,3 @@
-require({    
-    paths: {
-        ace : "ace/lib/ace",
-        pilot: "pilot/lib/pilot"
-    }
-});
-
 require([
     "pilot/plugin_manager",
     "pilot/environment",

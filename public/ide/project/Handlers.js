@@ -3,14 +3,31 @@ var deps = [
     "core/global",
     "core/io",
     "ide/core/Actions",
+    "ui/TemplatedWidget",
+    "dijit/Dialog",
+    "dijit/form/Button",
+    "text!ide/project/OpenProjectDialog.html",
 //    "core/open-docs",
 //    "project-explorer/model",
 ];
 
-define(deps, function(dojo, global, socketIo, actions, openDocs, model) {
+define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, Button, OpenProjectTemplate, openDocs, model) {
+
+//dijit.getEnclosingWidget(this.domNode.parentNode)
+    var openDialog = new dijit.Dialog({
+        content: new TemplatedWidget({
+            templateString: OpenProjectTemplate
+        }),
+        
+        title: "Open Project",
+        
+        style: "width: 200px"
+    });
+
+    openDialog.startup();
 
     dojo.connect(actions.file.openProject, "triggered", function() {
-        alert("open project");
+        openDialog.show();
     });
 /*        
         var OpenProjectDialog = _.inherits(Object, {
