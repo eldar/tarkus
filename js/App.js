@@ -15,7 +15,7 @@ var session = require("./Session");
 var mem = require("./Memory");
 var handler = require("./Handler");
 var msgHandler = require("./MsgHandler");
-//var events = require("./Events");
+var events = require("./Events");
 
 var app = express.createServer();
 exports.app = app;

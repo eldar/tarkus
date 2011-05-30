@@ -47,8 +47,6 @@ function connect(sender, signalName, receiver, slotOrName) {
 exports.connect = connect;
 
 unittest(function(assert) {
-
-    console.log("unittest");
     var test1 = {
         fooCalls: [],
         foo: function(arg) {
@@ -59,7 +57,6 @@ unittest(function(assert) {
     var test2 = {
         barCalls: [],
         bar: function(arg) {
-            console.log("in bar ", arg);
             this.barCalls.push(arg);
         }
     }
