@@ -1,57 +1,18 @@
-<div id="mainsplit">
-    <div class="ui-layout-north">
-        <ul id="menubar">
-            <li>
-                <a href="#">File</a>
-                <ul>
-                    <li>
-                        <a href="#">New</a>
-                        <ul>
-                            <li id="new-project"><a href="#">New Project...</a></li>
-                            <li id="new-file"><a href="#">New File...</a></li>
-                            <li id="new-folder"><a href="#">New Folder...</a></li>
-                        </ul>
-                     </li>
-                    <li id="open-project"><a href="#">Open Project...</a></li>
-                    <li id="save-node" class="ui-state-disabled"><a href="#">Save</a></li>
-                    <hr>
-                    <li id="close-project"><a href="#">Close Project</a></li>
-<!--
-                    <hr>
-                    <li id="rename-node"><a href="#">Rename</a></li>
-                    <li id="remove-node"><a href="#">Remove</a></li>
--->
-                </ul>
-            </li>
-            <li>
-                <a href="#">Edit</a>
-                <ul>
-                    <li><a href="#">Cut</a></li>
-                    <li><a href="#">Copy</a></li>
-                    <li><a href="#">Paste</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-    <div id="left-pane" class="ui-layout-west">
-        <div class="ui-layout-north tarkus-bordered">
-            <div class="header">Project Explorer</div>
-            <div id="project-tree-widget" class="content">
+<div dojoType="dijit.layout.BorderContainer" design="headline" gutters="true" liveSplitters="true" id="mainLayout">
+    <div id="header" data-dojo-type="dijit.MenuBar" data-dojo-props="region:'top'" id="menuBar">
+        <div data-dojo-type="dijit.PopupMenuBarItem">
+            <span>File</span>
+            <div data-dojo-type="dijit.Menu" id="fileMenu">
             </div>
         </div>
-        <div class="ui-layout-center tarkus-bordered">
-            <div class="header">Open Documents</div>
-            <div id="open-docs-widget" class="content">
+        <div data-dojo-type="dijit.PopupMenuBarItem">
+            <span>Edit</span>
+            <div data-dojo-type="dijit.Menu" id="editMenu">
             </div>
         </div>
     </div>
-    <div class="ui-layout-center tarkus-bordered">
-        <div id="editor" class="content">
-        </div>
+    <div dojoType="dijit.layout.ContentPane" splitter="true" region="left" style="width: 200px; padding: 0px;" id="leftPane">
     </div>
-</div>
-
-<!-- Temporarily place the dialogs here unless found a better place -->
-<div id="open-project-dialog" title="Open Project">
-    <div id="project-list"/>
+    <div dojoType="dijit.layout.ContentPane" splitter="true" region="center" style="padding: 0px;" id="centerPane">
+    </div>
 </div>
