@@ -1,11 +1,11 @@
 var deps = [
     "core/global",
-    "core/open-docs",
+//    "core/open-docs",
     "core/io",
-    "project-explorer/nodes"
+    "ide/project/Nodes"
 ];
 
-define(deps, function(global, openDocs, socketIo, nodes) {
+define(deps, function(global, /*openDocs, */socketIo, nodes) {
 
     var Node = nodes.Node;
 
@@ -122,7 +122,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
                 if(!openDocs.entryByNode(node)) {
                     signalSent = true;
                     socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
-                        openDocs.open(node, e.data);
+//                        openDocs.open(node, e.data);
                         sendSignal();
                     });
                 }
@@ -142,7 +142,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
             if(!project)
                 return;
             project.iterate(function(node) {
-                openDocs.closeDocumentByNode(node);
+//                openDocs.closeDocumentByNode(node);
             });
             this.removeNode(project);
             this.currentProject = null;
@@ -171,7 +171,7 @@ define(deps, function(global, openDocs, socketIo, nodes) {
     });
     
     var model = new ProjectModel;
-
+/*
     openDocs.bind("documentSelected", function(doc) {
         if(doc)
 	        model.setCurrentNode(doc.node.id);
@@ -190,6 +190,6 @@ define(deps, function(global, openDocs, socketIo, nodes) {
         if(node.isDocument())
             openDocs.handleNodeRenamed(node);
     });
-    
+*/    
     return model;
 });

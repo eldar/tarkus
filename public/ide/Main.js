@@ -24,7 +24,8 @@ require([
                 "ide/core/MainArea",
                 "ide/core/MainMenu",
                 "core/editor",
-                "ide/project/Handlers"
+                "ide/project/Handlers",
+                "ide/project/Tree"
             ]);
         });
     });

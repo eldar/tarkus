@@ -8,10 +8,10 @@ var deps = [
     "dijit/form/Button",
     "text!ide/project/OpenProjectDialog.html",
 //    "core/open-docs",
-//    "project-explorer/model",
+    "ide/project/Model",
 ];
 
-define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, Button, OpenProjectTemplate, openDocs, model) {
+define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, Button, OpenProjectTemplate, /*openDocs,*/ model) {
 
 //dijit.getEnclosingWidget(this.domNode.parentNode)
     var openDialog = new dijit.Dialog({
