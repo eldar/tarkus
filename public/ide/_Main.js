@@ -24,4 +24,4 @@ require({
     ace : "ace/lib/ace",
     pilot: "pilot/lib/pilot"
   }
-}, ['ide/main']);
+}, ['ide/Main']);
