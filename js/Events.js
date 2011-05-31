@@ -46,7 +46,6 @@ function _disconnect(sender, signal, receiver, slot) {
     var slots = signal.__slots;
     var idx = -1;
     if (slots) {
-        console.log(slots);
         idx = _.find(slots, function(slotItem) {            
             return receiver === slotItem[0] && slot === slotItem[1];
         });           
