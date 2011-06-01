@@ -1,7 +1,7 @@
 define([
     "ide/core/MainArea",
     "ide/project/Model",
-    "dojo/data/ItemFileReadStore",
+    "dojo/data/ItemFileWriteStore",
     "dijit/Tree"
 ], function(mainArea, model) {
 
@@ -31,17 +31,26 @@ define([
         }]
     },
     {
-        label: 'childless',
+        label: 'Childless',
         id: '3'
     }];
 
-    var store = new dojo.data.ItemFileReadStore({
+    var store = new dojo.data.ItemFileWriteStore({
         data: {
             identifier: 'id',
             label: 'label',
             items: rawdata
         }
     });
+    store.fetchItemByIdentity({identity: '3', onItem: function(item) {
+        store.newItem({label: 'New Item', id: '3.1', xxx: function() {} }, {parent: item, attribute:'children'});
+        
+        
+    store.fetchItemByIdentity({identity: '3.1', onItem: function(item2) {
+        store.newItem({label: 'New Item 2', id: '3.1.1'}, {parent: item2, attribute:'children'});
+    }})
+        
+    }})
     
     var treeModel = new dijit.tree.ForestStoreModel({
         store: store
