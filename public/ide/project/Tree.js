@@ -1,10 +1,87 @@
 define([
+    "dojo",
     "ide/core/MainArea",
     "ide/project/Model",
-    "dojo/data/ItemFileWriteStore",
     "dijit/Tree"
-], function(mainArea, model) {
+], function(dojo, mainArea, model, Tree) {
 
+    var data = {
+        label: "rootElem",
+        id: "root-elem",
+        children:
+        [/*{
+            label: 'Something',
+            id: '1',
+            children: [{
+                label: 'Life',
+                id: '1.1',
+            },
+            {
+                label: 'Liberty',
+                id: '1.2'
+            }]
+        },
+        {
+            label: 'Some links',
+            id: '2',
+            children: [{
+                label: 'Life',
+                id: '2.1'
+            },
+            {
+                label: 'Liberty',
+                id: '2.2'
+            }]
+        },*/
+        {
+            label: 'Childless',
+            id: '3',
+            children: []
+        }]
+    };
+
+    var MyModel = dojo.declare(null, {
+        root: data,
+        
+        getRoot: function(onItem, onError){
+            onItem(this.root);
+        },
+        
+        mayHaveChildren: function(item){
+            return item.children;
+        },
+        
+        getChildren: function(parentItem, callback, onError){
+            callback(parentItem.children);
+        },
+        
+        getLabel: function(item){
+            return item.label;
+        },
+                
+        isItem: function(something){
+            var elem = something.id;
+            return elem != null;
+        },
+        
+        getIdentity: function(item){
+            return item.id;
+        }
+        
+    });
+
+    var treeModel = new MyModel();
+    
+    var MyTree = dojo.declare(Tree, {
+    });
+    
+    new MyTree({
+        model: treeModel,
+        autoExpand: false
+    }).placeAt(mainArea.left.domNode);
+});
+
+/*
     var rawdata =
     [{
         label: 'Something',
@@ -43,13 +120,7 @@ define([
         }
     });
     store.fetchItemByIdentity({identity: '3', onItem: function(item) {
-        store.newItem({label: 'New Item', id: '3.1', xxx: function() {} }, {parent: item, attribute:'children'});
-        
-        
-    store.fetchItemByIdentity({identity: '3.1', onItem: function(item2) {
-        store.newItem({label: 'New Item 2', id: '3.1.1'}, {parent: item2, attribute:'children'});
-    }})
-        
+        store.newItem({label: 'New Item', id: '3.1'}, {parent: item, attribute:'children'});
     }})
     
     var treeModel = new dijit.tree.ForestStoreModel({
@@ -60,7 +131,7 @@ define([
         model: treeModel,
         showRoot: false,
     }).placeAt(mainArea.left.domNode);
-});
+*/
 
 /*
     var data =
