@@ -33,11 +33,11 @@ define([
             var icon;
             switch(item.docType) {
                 case "js":
-                    icon = "../images/js.png"; break;
+                    icon = "images/js.png"; break;
                 case "css":
-                    icon = "../images/css.png"; break;
+                    icon = "images/css.png"; break;
                 default:
-                    icon = "../images/unknown.png"; break;
+                    icon = "images/unknown.png"; break;
             }
             return icon;
         }
