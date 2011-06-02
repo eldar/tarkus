@@ -9,9 +9,10 @@ var deps = [
     "text!ide/project/OpenProjectDialog.html",
 //    "core/open-docs",
     "ide/project/Model",
+    "ide/project/Tree"
 ];
 
-define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, Button, OpenProjectTemplate, /*openDocs,*/ model) {
+define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, Button, OpenProjectTemplate, /*openDocs,*/ model, tree) {
 
 //dijit.getEnclosingWidget(this.domNode.parentNode)
     var openDialog = new dijit.Dialog({
@@ -34,7 +35,9 @@ define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, 
         var projName = prompt("Please, select project name");
         if(!projName)
             return;
-        model.newProject(projName);
+        var node = model.newProject(projName);
+        tree.set("path", [model.root(), node]);
+        
     });
 /*        
         var OpenProjectDialog = _.inherits(Object, {

@@ -19,46 +19,10 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
         constructor: function() {
             this.self = new Node(ROOT_NAME);
         },
-
-        // reimplementation of dijit.tree.model
-        getRoot: function(onItem, onError) {
-            onItem(this.self);
-        },
         
-        mayHaveChildren: function(item) {
-            return item.children.length != 0;
+        root: function() {
+            return this.self;
         },
-        
-        getChildren: function(parentItem, callback, onError) {
-            callback(parentItem.children);
-        },
-        
-        getLabel: function(item) {
-            return item.name;
-        },
-                
-        isItem: function(something) {
-            var elem = something.id;
-            return elem != null;
-        },
-        
-        getIdentity: function(item) {
-            return item.id;
-        },
-        
-		onChildrenChange: function(parent, newChildrenList) {
-		},
-		
-		newItem: function(item, parent) {
-		    parent.children.push(item);
-		    this.notifyChildrenChanged(parent);
-		},
-		
-		notifyChildrenChanged: function(parent) {
-		    this.getChildren(parent, dojo.hitch(this, function(children){
-			    this.onChildrenChange(parent, children);
-			}));
-		},
 
         addNodeNotify: function(node) {
 /*            this.change({
@@ -78,7 +42,7 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
         newProject: function(name) {
             var node = this._newProject(name);
             socketIo.send("projectCreate", { projectName: name});
-//            this.setCurrentNode(node.id);
+            return node;
         },
         
         _openDir: function(parent, dataNode) {
@@ -208,7 +172,43 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
             // change syntax highlighting
 //            this.trigger("nodeRenamed", node);
             return true;
-        }
+        },
+        
+        // reimplementation of dijit.tree.model
+        getRoot: function(onItem, onError) {
+            onItem(this.self);
+        },
+        
+        mayHaveChildren: function(item) {
+            return item.children.length != 0;
+        },
+        
+        getChildren: function(parentItem, callback, onError) {
+            callback(parentItem.children);
+        },
+        
+        getLabel: function(item) {
+            return item.name;
+        },
+                
+        isItem: function(something) {
+            var elem = something.id;
+            return elem != null;
+        },
+        
+        getIdentity: function(item) {
+            return item.id;
+        },
+        
+		onChildrenChange: function(parent, newChildrenList) {
+		},
+		
+		notifyChildrenChanged: function(parent) {
+		    this.getChildren(parent, dojo.hitch(this, function(children){
+			    this.onChildrenChange(parent, children);
+			}));
+		}
+		
     });
     
     var model = new ProjectModel;

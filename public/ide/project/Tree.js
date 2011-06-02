@@ -8,7 +8,7 @@ define([
 
     var Type = nodes.Type;
     
-    new Tree({
+    var tree = new Tree({
         model: model,
         autoExpand: false,
         showRoot: false,
@@ -16,29 +16,35 @@ define([
         getIconClass: function(item, opened) {
             if(item.type === Type.File)
                 return "";
-		    return "";((!item || this.model.mayHaveChildren(item))) && opened ? "dijitFolderOpened" : "dijitFolderClosed";
-	    },
-        
-        getIconStyle: function(item) {
-		//		Object suitable for input to dojo.style() like {backgroundImage: "url(...)"}
-		    return {
-		        backgroundImage: "url('" + getIconUrl(icon) + "')"
-		    };
+            return ((!item || this.model.mayHaveChildren(item))) && opened ? "dijitFolderOpened" : "dijitFolderClosed";
         },
-        
+      
+        getIconStyle: function(item) {
+            if(item.type !== Type.File)
+                return {};
+            return {
+                backgroundImage: "url('" + this.getIconUrl(item) + "')",
+                'height': '16px',
+                'width': '16px'
+            };
+        },
+
         getIconUrl: function(item) {
-            var icon = "images/css.png";
+            var icon;
             switch(item.docType) {
-                case "js": icon = "images/js.png"; break;
-                case "css": icon = "images/css.png"; break;
-                case "unknown": icon = "images/unknown.png"; break;
+                case "js":
+                    icon = "../images/js.png"; break;
+                case "css":
+                    icon = "../images/css.png"; break;
                 default:
+                    icon = "../images/unknown.png"; break;
             }
             return icon;
         }
         
-    }).placeAt(mainArea.left.domNode);
-
+    });
+    tree.placeAt(mainArea.left.domNode);
+    return tree;
 });
 
 /*
@@ -108,19 +114,19 @@ define([
             return item.id;
         },
         
-		onChildrenChange: function(parent, newChildrenList) {
-		},
-		
-		newItem: function(item, parent) {
-		    parent.children.push(item);
-		    this.notifyChildrenChanged(parent);
-		},
-		
-		notifyChildrenChanged: function(parent) {
-		    this.getChildren(parent, dojo.hitch(this, function(children){
-			    this.onChildrenChange(parent, children);
-			}));
-		}
+        onChildrenChange: function(parent, newChildrenList) {
+        },
+        
+        newItem: function(item, parent) {
+            parent.children.push(item);
+            this.notifyChildrenChanged(parent);
+        },
+        
+        notifyChildrenChanged: function(parent) {
+            this.getChildren(parent, dojo.hitch(this, function(children){
+                this.onChildrenChange(parent, children);
+            }));
+        }
     });
 
     var treeModel = new MyModel();
