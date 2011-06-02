@@ -1,15 +1,58 @@
 define([
     "dojo",
     "ide/core/MainArea",
+    "ide/project/Nodes",
     "ide/project/Model",
     "dijit/Tree"
-], function(dojo, mainArea, model, Tree) {
+], function(dojo, mainArea, nodes, model, Tree) {
+
+    var Type = nodes.Type;
+    
+    new Tree({
+        model: model,
+        autoExpand: false,
+        showRoot: false,
+        
+        getIconClass: function(item, opened) {
+            if(item.type === Type.File)
+                return "";
+		    return "";((!item || this.model.mayHaveChildren(item))) && opened ? "dijitFolderOpened" : "dijitFolderClosed";
+	    },
+        
+        getIconStyle: function(item) {
+		//		Object suitable for input to dojo.style() like {backgroundImage: "url(...)"}
+		    return {
+		        backgroundImage: "url('" + getIconUrl(icon) + "')"
+		    };
+        },
+        
+        getIconUrl: function(item) {
+            var icon = "images/css.png";
+            switch(item.docType) {
+                case "js": icon = "images/js.png"; break;
+                case "css": icon = "images/css.png"; break;
+                case "unknown": icon = "images/unknown.png"; break;
+                default:
+            }
+            return icon;
+        }
+        
+    }).placeAt(mainArea.left.domNode);
+
+});
+
+/*
+    var elem = {
+            label: 'Childless',
+            id: '3',
+            children: []
+        };
 
     var data = {
         label: "rootElem",
         id: "root-elem",
         children:
-        [/*{
+        [{
             label: 'Something',
             id: '1',
             children: [{
@@ -32,54 +75,62 @@ define([
                 label: 'Liberty',
                 id: '2.2'
             }]
-        },*/
-        {
-            label: 'Childless',
-            id: '3',
-            children: []
-        }]
+        },
+        elem
+        ]
     };
 
     var MyModel = dojo.declare(null, {
         root: data,
         
-        getRoot: function(onItem, onError){
+        getRoot: function(onItem, onError) {
             onItem(this.root);
         },
         
-        mayHaveChildren: function(item){
+        mayHaveChildren: function(item) {
             return item.children;
         },
         
-        getChildren: function(parentItem, callback, onError){
+        getChildren: function(parentItem, callback, onError) {
             callback(parentItem.children);
         },
         
-        getLabel: function(item){
+        getLabel: function(item) {
             return item.label;
         },
                 
-        isItem: function(something){
+        isItem: function(something) {
             var elem = something.id;
             return elem != null;
         },
         
-        getIdentity: function(item){
+        getIdentity: function(item) {
             return item.id;
-        }
+        },
         
+		onChildrenChange: function(parent, newChildrenList) {
+		},
+		
+		newItem: function(item, parent) {
+		    parent.children.push(item);
+		    this.notifyChildrenChanged(parent);
+		},
+		
+		notifyChildrenChanged: function(parent) {
+		    this.getChildren(parent, dojo.hitch(this, function(children){
+			    this.onChildrenChange(parent, children);
+			}));
+		}
     });
 
     var treeModel = new MyModel();
     
-    var MyTree = dojo.declare(Tree, {
-    });
-    
-    new MyTree({
+    new Tree({
         model: treeModel,
-        autoExpand: false
+        autoExpand: false,
+        showRoot: false
     }).placeAt(mainArea.left.domNode);
-});
+*/
 
 /*
     var rawdata =

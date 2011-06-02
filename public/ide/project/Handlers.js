@@ -29,6 +29,13 @@ define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, 
     dojo.connect(actions.file.openProject, "triggered", function() {
         openDialog.show();
     });
+    
+    dojo.connect(actions.file.newProject, "triggered", function() {
+        var projName = prompt("Please, select project name");
+        if(!projName)
+            return;
+        model.newProject(projName);
+    });
 /*        
         var OpenProjectDialog = _.inherits(Object, {
             constructor: function() {

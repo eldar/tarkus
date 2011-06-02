@@ -1,43 +1,84 @@
 var deps = [
+    "dojo",
     "core/global",
 //    "core/open-docs",
     "core/io",
     "ide/project/Nodes"
 ];
 
-define(deps, function(global, /*openDocs, */socketIo, nodes) {
+define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
 
     var Node = nodes.Node;
 
     var ROOT_NAME = "root-node";
     
-    var ProjectModel = Backbone.Model.extend({
-        self: {},
+    var ProjectModel = dojo.declare(null, {
         currentNode: null,
         currentProject: null,
         
-        initialize: function() {
+        constructor: function() {
             this.self = new Node(ROOT_NAME);
         },
 
+        // reimplementation of dijit.tree.model
+        getRoot: function(onItem, onError) {
+            onItem(this.self);
+        },
+        
+        mayHaveChildren: function(item) {
+            return item.children.length != 0;
+        },
+        
+        getChildren: function(parentItem, callback, onError) {
+            callback(parentItem.children);
+        },
+        
+        getLabel: function(item) {
+            return item.name;
+        },
+                
+        isItem: function(something) {
+            var elem = something.id;
+            return elem != null;
+        },
+        
+        getIdentity: function(item) {
+            return item.id;
+        },
+        
+		onChildrenChange: function(parent, newChildrenList) {
+		},
+		
+		newItem: function(item, parent) {
+		    parent.children.push(item);
+		    this.notifyChildrenChanged(parent);
+		},
+		
+		notifyChildrenChanged: function(parent) {
+		    this.getChildren(parent, dojo.hitch(this, function(children){
+			    this.onChildrenChange(parent, children);
+			}));
+		},
+
         addNodeNotify: function(node) {
-            this.change({
+/*            this.change({
                 command : "add",
                 node: node
-            });
+            });*/
         },
         
         _newProject: function(name) {
             var node = new Node(name, nodes.Type.Project);
-            node.setParent(this.self);
-            this.addNodeNotify(node);
+            var root = this.self;
+            node.setParent(root);
+            this.notifyChildrenChanged(root);
             return node;
         },
         
         newProject: function(name) {
             var node = this._newProject(name);
             socketIo.send("projectCreate", { projectName: name});
-            this.setCurrentNode(node.id);
+//            this.setCurrentNode(node.id);
         },
         
         _openDir: function(parent, dataNode) {
@@ -59,7 +100,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
                 var project = self._newProject(name);
                 self._openDir(project, e.data);
                 self.setCurrentNode(project.id);
-                self.trigger("trigger_openNode", project);
+//                self.trigger("trigger_openNode", project);
             });
         },
         
@@ -98,7 +139,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
             if(!node)
                 return;
             socketIo.send(command, node.pathDefinition());
-            this.trigger("trigger_openNode", node.parent);
+//            this.trigger("trigger_openNode", node.parent);
             this.setCurrentNode(node.id);
         },
         
@@ -116,7 +157,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
             var signalSent = false;
             var self = this;
             var sendSignal = function() {
-                self.trigger("currentNodeChanged", node);
+//                self.trigger("currentNodeChanged", node);
             }
             if(node.isDocument()) {
                 if(!openDocs.entryByNode(node)) {
@@ -134,7 +175,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
         triggerRename: function() {
             if(!this.currentNode)
                 return;
-            this.trigger("trigger_rename", this.currentNode);
+//            this.trigger("trigger_rename", this.currentNode);
         },
         
         closeCurrentProject: function() {
@@ -150,7 +191,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
         
         removeNode: function(node) {
             var siblings = node.parent.children;
-            this.trigger("trigger_remove", node);
+//            this.trigger("trigger_remove", node);
             node.setParent(null);
         },
         
@@ -165,7 +206,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
                 return false;
             node.setName(newName);
             // change syntax highlighting
-            this.trigger("nodeRenamed", node);
+//            this.trigger("nodeRenamed", node);
             return true;
         }
     });
