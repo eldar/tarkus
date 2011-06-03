@@ -54,7 +54,8 @@ define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, 
             alert("File with name " + name + " already exists");
             return;
         }
-        model.newFile(fileName, parent);
+        var node = model.newFile(fileName, parent);
+        tree.set("path", node.fullObjectPath());
     });
 /*        
         var OpenProjectDialog = _.inherits(Object, {

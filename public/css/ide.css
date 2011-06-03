@@ -1,4 +1,4 @@
-@import '../dojo-release-1.6.1-src/dojo/resources/dojo.css';
+@import 'dojo.css';
 @import '../dojo-release-1.6.1-src/dijit/themes/claro/claro.css';
 
 html, body { 
@@ -13,4 +13,8 @@ html, body {
 .dijitMenuItemLabel, .dijitMenuItem {
     outline: none;
     cursor: default;
+}
+
+.claro .dijitMenuBar {
+  border-top-width: 0;
 }

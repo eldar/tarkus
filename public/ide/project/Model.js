@@ -82,19 +82,18 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
         },
         
         newFile: function(name, parent) {
-            this._createFilePath(this.newNode(name, nodes.Type.File, parent), "fileCreate");
+            return this._createFilePath(this.newNode(name, nodes.Type.File, parent), "fileCreate");
         },
 
-        newFolder: function(name) {
-            this._createFilePath(this.newNode(name, nodes.Type.Folder), "folderCreate");
+        newFolder: function(name, parent) {
+            return this._createFilePath(this.newNode(name, nodes.Type.Folder), "folderCreate");
         },
         
         _createFilePath: function(node, command) {
             if(!node)
                 return;
             socketIo.send(command, node.pathDefinition());
-//            this.trigger("trigger_openNode", node.parent);
-//            this.setCurrentNode(node.id);
+            return node;
         },
         
         getNodeById: function(id) {
