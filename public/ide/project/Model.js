@@ -24,13 +24,6 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
             return this.self;
         },
 
-        addNodeNotify: function(node) {
-/*            this.change({
-                command : "add",
-                node: node
-            });*/
-        },
-        
         _newProject: function(name) {
             var node = new Node(name, nodes.Type.Project);
             var root = this.self;
@@ -64,7 +57,6 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
                 var project = self._newProject(name);
                 self._openDir(project, e.data);
                 self.setCurrentNode(project.id);
-//                self.trigger("trigger_openNode", project);
             });
         },
         
@@ -72,27 +64,25 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
             var list = _.filter(this.self.children, function(node) { return node.name == name; });
             return list.length > 0 ? list[0] : null;
         },
-
-        newNode: function(name, type, parentNode) {
-            var current = this.currentNode;
-            var parent = parentNode || (current.isFolder() ? current : current.parent);
-            var sameName = false;
+        
+        checkExists: function(parent, name) {
+            var exists = false;
             _.each(parent.children, function(node) {
                 if(node.name === name)
-                    sameName = true;
+                    exists = true;
             });
-            if(sameName) {
-                alert("File with name " + name + " already exists");
-                return null;
-            }
+            return exists;
+        },
+
+        newNode: function(name, type, parent) {
             var node = new Node(name, type);
             node.setParent(parent);
-            this.addNodeNotify(node);
+            this.notifyChildrenChanged(parent);
             return node;
         },
         
-        newFile: function(name) {
-            this._createFilePath(this.newNode(name, nodes.Type.File), "fileCreate");
+        newFile: function(name, parent) {
+            this._createFilePath(this.newNode(name, nodes.Type.File, parent), "fileCreate");
         },
 
         newFolder: function(name) {
@@ -104,7 +94,7 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
                 return;
             socketIo.send(command, node.pathDefinition());
 //            this.trigger("trigger_openNode", node.parent);
-            this.setCurrentNode(node.id);
+//            this.setCurrentNode(node.id);
         },
         
         getNodeById: function(id) {

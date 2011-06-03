@@ -39,6 +39,23 @@ define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, 
         tree.set("path", [model.root(), node]);
         
     });
+    
+    dojo.connect(actions.file.newFile, "triggered", function() {
+        var path = tree.get("path");
+        if(path.length === 0)
+            return;
+        var selected = _.last(path);
+        var parent = selected.isFolder() ? selected : selected.parent;
+        var fileName = prompt("Please, select file name");
+        if(!fileName)
+            return;
+            
+        if(model.checkExists(parent, fileName)) {
+            alert("File with name " + name + " already exists");
+            return;
+        }
+        model.newFile(fileName, parent);
+    });
 /*        
         var OpenProjectDialog = _.inherits(Object, {
             constructor: function() {
