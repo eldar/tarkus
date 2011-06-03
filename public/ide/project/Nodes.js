@@ -31,7 +31,6 @@ define(["core/global"], function(global) {
             this.parent = null;
             this.children = [];
             this.id = _.uniqueId("project_node_");
-            this.session = null;
             this.setName(name);
         },
         
@@ -114,16 +113,22 @@ define(["core/global"], function(global) {
             return result;
         },
         
+        fullObjectPath: function() {
+            var result = [];
+            var node = this;
+            while(node) {
+                result.unshift(node);
+                node = node.parent;
+            }
+            return result;
+        },
+        
         getProject: function() {
             var node = this;
             while(node.parent.parent) {
                 node = node.parent;
             }
             return node;
-        },
-        
-        getDom: function() {
-            return $("#" + this.id);
         },
         
         pathDefinition: function() {

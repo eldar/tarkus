@@ -58,6 +58,13 @@ define(deps, function(dojo, canon, event, editor, renderer,
         return this._editor;
     };
         
+    editor.setEditorVisible = function(visible) {
+        var value = visible ? "block" : "none";
+        dojo.style(aceWidget.domNode, { display: value});
+    };
+        
+//    editor.setEditorVisible(false);
+
     editor.modeForDocType = function(docType) {
         var mode;
         switch(docType) {
@@ -72,12 +79,6 @@ define(deps, function(dojo, canon, event, editor, renderer,
         }
         return mode;
     };
-        
-    editor.setEditorVisible = function(visible) {
-//            $("#editor").toggle(visible);
-    };
-        
-//  editor.setEditorVisible(false);
         
     editor.getSession = function(docType, content) {
         var text = content || "";
