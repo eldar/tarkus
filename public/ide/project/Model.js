@@ -86,7 +86,7 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
         },
 
         newFolder: function(name, parent) {
-            return this._createFilePath(this.newNode(name, nodes.Type.Folder), "folderCreate");
+            return this._createFilePath(this.newNode(name, nodes.Type.Folder, parent), "folderCreate");
         },
         
         _createFilePath: function(node, command) {

@@ -1,5 +1,5 @@
 @import 'dojo.css';
-@import '../dojo-release-1.6.1-src/dijit/themes/claro/claro.css';
+@import 'claro/claro.css';
 
 html, body { 
     font-family: "Lucida Sans", "Lucida Sans Unicode", "Luxi Sans", "Tahoma", "sans-serif";
