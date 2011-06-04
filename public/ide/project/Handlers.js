@@ -30,7 +30,10 @@ define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dia
 
     dojo.connect(actions.file.openProject, "triggered", function() {
         //openDialog.show();
-        model.openProject("haha");
+        model.openProject("haha", function(node) {
+            var treeNodes = tree.getNodesByItem(node);
+            tree._expandNode(_.first(treeNodes), false);
+        });
     });
     
     dojo.connect(actions.file.newProject, "triggered", function() {

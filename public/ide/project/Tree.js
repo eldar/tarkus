@@ -12,6 +12,7 @@ define([
         model: model,
         autoExpand: false,
         showRoot: false,
+        persist: false,
         
         getIconClass: function(item, opened) {
             if(item.type === Type.File)

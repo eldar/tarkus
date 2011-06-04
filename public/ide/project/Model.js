@@ -46,13 +46,15 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
             });
         },
         
-        openProject: function(name) {
+        openProject: function(name, onOpen) {
             if(this.projectByName(name))
                 return;
             socketIo.request("projectOpen", { projectName: name }, dojo.hitch(this, function(e) {
                 var project = this._newProject(name);
                 this._openDir(project, e.data);
                 this.notifyChildrenChanged(this.root());
+                if(onOpen)
+                   onOpen(project);
             }));
         },
         
