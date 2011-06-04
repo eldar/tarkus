@@ -1,8 +1,8 @@
 var deps = [
     "dojo",
-    "core/global",
+    "core/Global",
 //    "core/open-docs",
-    "core/io",
+    "core/Io",
     "ide/project/Nodes"
 ];
 

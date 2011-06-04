@@ -1,6 +1,6 @@
 var deps = [
     "dojo",
-    "core/global",
+    "core/Global",
 ];
 
 define(deps, function(dojo, global) {

@@ -1,8 +1,8 @@
 var deps = [
     "dojo",
     "util/sprintf",
-    "core/global",
-    "core/io",
+    "core/Global",
+    "core/Io",
     "ide/core/Actions",
     "ui/TemplatedWidget",
     "dijit/Dialog",

@@ -58,5 +58,9 @@ define(deps, function() {
         }                
     });
    
-    return {};
+    return {
+        makeUnique: function(obj, prefix) {
+            obj.id = _.uniqueId(prefix);
+        }
+    };
 });

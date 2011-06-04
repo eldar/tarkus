@@ -1,7 +1,7 @@
 var deps = [
     "jquery",
-    "core/global",
-    "core/io"
+    "core/Global",
+    "core/Io"
 ];
 
 define(deps, function($, global, socketIo) {

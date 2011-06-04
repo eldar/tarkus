@@ -10,7 +10,7 @@ var deps = [
     "ace/mode/css",
     "ace/mode/text",
     "ace/undomanager",
-    "core/global",
+    "core/Global",
     "ide/core/MainArea"
 ];
     

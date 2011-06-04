@@ -1,4 +1,7 @@
-define(["core/global"], function(global) {
+define([
+    "dojo",
+    "core/Global"
+], function(dojo, global) {
     var Type = {
         Folder : 1,
         Project : 2,
@@ -25,11 +28,12 @@ define(["core/global"], function(global) {
         };
     };
     
-    var NodeImpl = _.inherits(Object, {
+    var NodeImpl = dojo.declare(null, {
         constructor: function(name, type, parent) {
             this.type = type;
             this.setParent(parent);
             this.children = [];
+            global.makeUnique(this, "p_n_");
             this.id = _.uniqueId("project_node_");
             this.setName(name);
         },
