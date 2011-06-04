@@ -2,17 +2,18 @@ var deps = [
     "dojo",
     "core/Global",
     "core/Io",
+    "core/ModelBase",
     "ide/core/OpenDocs",
     "ide/project/Nodes"
 ];
 
-define(deps, function(dojo, global, socketIo, openDocs, nodes) {
+define(deps, function(dojo, global, socketIo, ModelBase, openDocs, nodes) {
 
     var Node = nodes.Node;
 
     var ROOT_NAME = "root-node";
     
-    var ProjectModel = dojo.declare(null, {
+    var ProjectModel = dojo.declare(ModelBase, {
         currentNode: null,
         currentProject: null,
         
@@ -95,7 +96,7 @@ define(deps, function(dojo, global, socketIo, openDocs, nodes) {
         openAndSelectDocument: function(node) {
             if(!node.isDocument())
                 return;
-            var select = function() { openDocs.setCurrentDocument(node) };
+            var select = function() { openDocs.setCurrentDocumentByNode(node) };
             if(!openDocs.entryByNode(node)) {
                 this.openDocument(node, function() {
                     select();
@@ -144,42 +145,7 @@ define(deps, function(dojo, global, socketIo, openDocs, nodes) {
             // change syntax highlighting
 //            this.trigger("nodeRenamed", node);
             return true;
-        },
-        
-        // reimplementation of dijit.tree.model
-        getRoot: function(onItem, onError) {
-            onItem(this.root());
-        },
-        
-        mayHaveChildren: function(item) {
-            return item.children.length != 0;
-        },
-        
-        getChildren: function(parentItem, callback, onError) {
-            callback(parentItem.children);
-        },
-        
-        getLabel: function(item) {
-            return item.name;
-        },
-                
-        isItem: function(something) {
-            return something.id;
-        },
-        
-        getIdentity: function(item) {
-            return item.id;
-        },
-        
-		onChildrenChange: function(parent, newChildrenList) {
-		},
-		
-		notifyChildrenChanged: function(parent) {
-		    this.getChildren(parent, dojo.hitch(this, function(children){
-			    this.onChildrenChange(parent, children);
-			}));
-		}
-		
+        }
     });
     
     var model = new ProjectModel;

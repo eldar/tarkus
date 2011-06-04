@@ -1,11 +1,10 @@
-var deps = [
+define([
     "dojo",
     "core/Global",
     "core/Io",
+    "core/ModelBase",
     "ide/core/Editor"
-];
-
-define(deps, function(dojo, global, socketIo, editor) {
+], function(dojo, global, socketIo, ModelBase, editor) {
 
     var getCurrentDelta = function(session) {
         var stack = session.getUndoManager().$undoStack;
@@ -30,14 +29,23 @@ define(deps, function(dojo, global, socketIo, editor) {
         }
     });
     
-    var OpenDocuments = dojo.declare(null, {
+    var OpenDocuments = dojo.declare(ModelBase, {
         constructor: function() {
             this._fakeRoot = new Document(null, null);
             this._fakeRoot.children = [];
         },
         
+        root: function() {
+           return this._fakeRoot;
+        },
+        
         list: function() {
-            return this._fakeRoot.children;
+            return this.root().children;
+        },
+        
+        getLabel: function(item) {
+            var node = item.node;
+            return node ? node.name : "";
         },
         
         _docs: [],
@@ -54,13 +62,17 @@ define(deps, function(dojo, global, socketIo, editor) {
                 self.entryChanged(entry);
             });
             this.list().unshift(entry);
+            this.notifyChildrenChanged(this.root());
         },
         
         entryChanged: function(entry) {
         },
         
-        setCurrentDocument: function(node) {
-            var newEntry = this.entryByNode(node)
+        setCurrentDocumentByNode: function(node) {
+            this.setCurrentDocument(this.entryByNode(node));
+        },
+        
+        setCurrentDocument: function(newEntry) {
             if(this._currentEntry == newEntry)
                 return;
             this._currentEntry = newEntry;
@@ -68,6 +80,10 @@ define(deps, function(dojo, global, socketIo, editor) {
             ace.setVisible(true);
             ace.editor.setSession(newEntry.session);
             ace.resize();
+            this.currentDocChanged(newEntry);
+        },
+        
+        currentDocChanged: function() {
         },
         
         entryByNode: function(node) {

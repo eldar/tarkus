@@ -24,6 +24,7 @@ require([
                 "ide/core/MainArea",
                 "ide/core/MainMenu",
                 "ide/core/Editor",
+                "ide/core/OpenDocsWidget",
                 "ide/project/Handlers",
                 "ide/project/Tree"
             ]);
