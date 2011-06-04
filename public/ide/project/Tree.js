@@ -44,7 +44,7 @@ define([
         }
         
     });
-    tree.placeAt(mainArea.left.domNode);
+    tree.placeAt(mainArea.left.top.domNode);
     return tree;
 });
 

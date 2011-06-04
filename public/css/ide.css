@@ -16,5 +16,23 @@ html, body {
 }
 
 .claro .dijitMenuBar {
-  border-top-width: 0;
+    border-top-width: 0;
+}
+
+.rightBottomBorder {
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 1px;
+    border-bottom: 1px;
+    border-style: solid;
+    border-color: #cccccc;
+}
+
+.rightTopBorder {
+    border-top: 1px;
+    border-left: 0px;
+    border-right: 1px;
+    border-bottom: 0px;
+    border-style: solid;
+    border-color: #cccccc;
 }
