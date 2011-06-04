@@ -1,12 +1,12 @@
 var deps = [
     "dojo",
     "core/Global",
-//    "core/open-docs",
     "core/Io",
+    "ide/core/OpenDocs",
     "ide/project/Nodes"
 ];
 
-define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
+define(deps, function(dojo, global, socketIo, openDocs, nodes) {
 
     var Node = nodes.Node;
 
@@ -92,33 +92,13 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
             });
         },
         
-        setCurrentNode: function(id) {
-            this.currentNode = this.getNodeById(id);
-            var node = this.currentNode;
-            this.currentProject = node.getProject();
-
-            var signalSent = false;
-            var self = this;
-            var sendSignal = function() {
-//                self.trigger("currentNodeChanged", node);
+        openDocument: function(node, onOpen) {
+            if(node.isDocument() && !openDocs.entryByNode(node)) {
+                socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
+                    openDocs.open(node, e.data);
+                    onOpen();
+                });
             }
-            if(node.isDocument()) {
-                if(!openDocs.entryByNode(node)) {
-                    signalSent = true;
-                    socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
-//                        openDocs.open(node, e.data);
-                        sendSignal();
-                    });
-                }
-            }
-            if(!signalSent)
-                sendSignal();
-        },
-        
-        triggerRename: function() {
-            if(!this.currentNode)
-                return;
-//            this.trigger("trigger_rename", this.currentNode);
         },
         
         closeCurrentProject: function() {
@@ -126,7 +106,7 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
             if(!project)
                 return;
             project.iterate(function(node) {
-//                openDocs.closeDocumentByNode(node);
+                openDocs.closeDocumentByNode(node);
             });
             this.removeNode(project);
             this.currentProject = null;

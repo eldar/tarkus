@@ -39,6 +39,11 @@ define(deps, function(dojo, canon, event, editor, renderer,
         resize: function()
         {
             this.editor.resize();
+        },
+
+        setVisible:  function(visible) {
+            var value = visible ? "block" : "none";
+            dojo.style(this.domNode, { display: value});
         }
     });
         
@@ -48,23 +53,17 @@ define(deps, function(dojo, canon, event, editor, renderer,
         "width": "100%"
     });
     aceWidget.resize();
-        
     aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
+    aceWidget.setVisible(false);
 
-    var editor = {};
+    var editor = {
+        _current: aceWidget,
         
-    editor._editor = aceWidget.editor;
-    editor.currentEditor = function() {
-        return this._editor;
+        current: function() {
+            return this._current;
+        }
     };
         
-    editor.setEditorVisible = function(visible) {
-        var value = visible ? "block" : "none";
-        dojo.style(aceWidget.domNode, { display: value});
-    };
-        
-//    editor.setEditorVisible(false);
-
     editor.modeForDocType = function(docType) {
         var mode;
         switch(docType) {
@@ -83,7 +82,7 @@ define(deps, function(dojo, canon, event, editor, renderer,
     editor.getSession = function(docType, content) {
         var text = content || "";
         var session = new EditSession(text);
-        session.setMode(env.modeForDocType(docType));
+        session.setMode(this.modeForDocType(docType));
         session.setUndoManager(new UndoManager());
         return session;
     };
@@ -92,5 +91,6 @@ define(deps, function(dojo, canon, event, editor, renderer,
         return new EditSession("");
     };
     
+    global.editor = editor;
     return editor;
 });

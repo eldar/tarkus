@@ -1,52 +1,62 @@
 var deps = [
-    "jquery",
+    "dojo",
     "core/Global",
-    "core/Io"
+    "core/Io",
+    "ide/core/Editor"
 ];
 
-define(deps, function($, global, socketIo) {
+define(deps, function(dojo, global, socketIo, editor) {
 
     var getCurrentDelta = function(session) {
         var stack = session.getUndoManager().$undoStack;
         var len = stack.length;
         return (len == 0) ? null : stack[len - 1];
     };
+
+    var Document = dojo.declare(null, {
+        constructor: function(node, session) {
+            this.node = node;
+            this.session = session;
+            global.makeUnique(this, "od_");
+        },
+        
+        setInitialSaveState: function() {
+            this.lastSaved = getCurrentDelta(this.session);
+            this.isModified = false;
+        },
+        
+        name: function() {
+            return node.name;
+        }
+    });
     
-    var OpenDocuments = Backbone.Model.extend({
-        // Contains an array of { node, session } objects
+    var OpenDocuments = dojo.declare(null, {
+        constructor: function() {
+            this._fakeRoot = new Document(null, null);
+            this._fakeRoot.children = [];
+        },
+        
+        list: function() {
+            return this._fakeRoot.children;
+        },
+        
         _docs: [],
         _currentEntry: null,
         
         open: function(node, content) {
             if(this.entryByNode(node))
                 return;
-            var session = global.env.getSession(node.docType, content);
-            var entry = {
-                node: node,
-                name: node.name,
-                session: session,
-                id: _.uniqueId("open_doc_") // id of the opened document, not to be confused with node.id
-            };
-            this.setInitialSaveState(entry);
+            var session = editor.getSession(node.docType, content);
+            var entry = new Document(node, session);
             var self = this;
             session.getUndoManager().on("change", function() {
                 entry.isModified = (entry.lastSaved != getCurrentDelta(session));
                 self.entryChanged(entry);
             });
-            this._docs.unshift(entry);
-            this.change({
-                command: "add",
-                node: entry
-            });
-        },
-        
-        setInitialSaveState: function(entry) {
-            entry.lastSaved = getCurrentDelta(entry.session);
-            entry.isModified = false;
+            this.list().unshift(entry);
         },
         
         entryChanged: function(entry) {
-            this.trigger("entryChanged", entry);
         },
         
         setCurrentDocument: function(node) {
@@ -54,31 +64,16 @@ define(deps, function($, global, socketIo) {
             if(this._currentEntry == newEntry)
                 return;
             this._currentEntry = newEntry;
-            this.trigger("documentSelectedForView", newEntry.id);
-        },
-        
-        setCurrentDocumentById: function(id) {
-            var entry = this.entryById(id);
-            global.env.setEditorVisible(true);
-            global.env.editor.setSession(entry.session);
-            global.env.editor.resize();
-            this.trigger("documentSelected", entry);
-        },
-        
-        entryById: function(id) {
-            var len = this._docs.length;
-            for(var i = 0; i < len; i++) {
-                var entry = this._docs[i];
-                if(id == entry.id)
-                    return entry;
-            }
-            return null;
+            var ace = editor.current();
+            ace.setVisible(true);
+            ace.editor.setSession(newEntry.session);
+            ace.resize();
         },
         
         entryByNode: function(node) {
-            var len = this._docs.length;
+            var len = this.list().length;
             for(var i = 0; i < len; i++) {
-                var entry = this._docs[i];
+                var entry = this.list()[i];
                 if(node == entry.node)
                     return entry;
             }
@@ -98,12 +93,12 @@ define(deps, function($, global, socketIo) {
             var isSelected = (entry == this._currentEntry);
             var i = this._docs.indexOf(entry);
             this._docs.splice(i, 1);
-            this.trigger("documentClosed", id);
+//            this.trigger("documentClosed", id);
             if(this._docs.length == 0) {
                 global.env.editor.setSession(global.env.getEmptySession());
                 global.env.setEditorVisible(false);
                 this._currentEntry = null;
-                this.trigger("documentSelected", null);
+//                this.trigger("documentSelected", null);
                 return;
             }
             if(isSelected) {
@@ -123,7 +118,7 @@ define(deps, function($, global, socketIo) {
                 return;
             if(!entry.isModified)
                 return;
-            this.setInitialSaveState(entry);
+            entry.setInitialSaveState();
             this.entryChanged(entry); 
             var object = _.extend(entry.node.pathDefinition(), {
                 content: entry.session.getValue()

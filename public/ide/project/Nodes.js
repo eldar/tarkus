@@ -33,7 +33,7 @@ define([
             this.type = type;
             this.setParent(parent);
             this.children = [];
-            global.makeUnique(this, "p_n_");
+            global.makeUnique(this, "pn_");
             this.id = _.uniqueId("project_node_");
             this.setName(name);
         },
