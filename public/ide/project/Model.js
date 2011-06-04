@@ -92,6 +92,19 @@ define(deps, function(dojo, global, socketIo, openDocs, nodes) {
             });
         },
         
+        openAndSelectDocument: function(node) {
+            if(!node.isDocument())
+                return;
+            var select = function() { openDocs.setCurrentDocument(node) };
+            if(!openDocs.entryByNode(node)) {
+                this.openDocument(node, function() {
+                    select();
+                });
+            } else {
+                select();
+            }
+        },
+        
         openDocument: function(node, onOpen) {
             if(node.isDocument() && !openDocs.entryByNode(node)) {
                 socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
@@ -151,8 +164,7 @@ define(deps, function(dojo, global, socketIo, openDocs, nodes) {
         },
                 
         isItem: function(something) {
-            var elem = something.id;
-            return elem != null;
+            return something.id;
         },
         
         getIdentity: function(item) {

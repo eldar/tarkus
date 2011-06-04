@@ -45,14 +45,7 @@ define([
         },
         
         onDblClick: function(node) {
-            var select = function() { openDocs.setCurrentDocument(node) };
-            if(!openDocs.entryByNode(node)) {
-                model.openDocument(node, function() {
-                    select();
-                });
-            } else {
-                select();
-            }
+            model.openAndSelectDocument(node);
         }
         
     });

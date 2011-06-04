@@ -60,10 +60,12 @@ define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dia
         }
         var node = model.createNewNode(fileName, parent, isFile);
         tree.set("path", node.fullObjectPath());
+        return node;
     };
     
     dojo.connect(actions.file.newFile, "triggered", function() {
-        newSomething(true);
+        var node = newSomething(true);
+        model.openAndSelectDocument(node);
     });
     
     dojo.connect(actions.file.newFolder, "triggered", function() {
