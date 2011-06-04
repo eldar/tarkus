@@ -17,51 +17,47 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
         currentProject: null,
         
         constructor: function() {
-            this.self = new Node(ROOT_NAME);
+            this._root = new Node(ROOT_NAME);
         },
         
         root: function() {
-            return this.self;
+            return this._root;
         },
 
         _newProject: function(name) {
-            var node = new Node(name, nodes.Type.Project);
-            var root = this.self;
-            node.setParent(root);
-            this.notifyChildrenChanged(root);
-            return node;
+            return new Node(name, nodes.Type.Project, this.root());
         },
         
-        newProject: function(name) {
+        creteNewProject: function(name) {
             var node = this._newProject(name);
+            this.notifyChildrenChanged(this.root());
             socketIo.send("projectCreate", { projectName: name});
             return node;
         },
         
         _openDir: function(parent, dataNode) {
             var self = this;
-            _.each(dataNode.files, function(file) {
-                self.newNode(file, nodes.Type.File, parent);
-            });
             _.each(dataNode.dirs, function(content, name) {
-                var dirNode = self.newNode(name, nodes.Type.Folder, parent);
+                var dirNode = new Node(name, nodes.Type.Folder, parent);
                 self._openDir(dirNode, content);
+            });
+            _.each(dataNode.files, function(file) {
+                new Node(file, nodes.Type.File, parent);
             });
         },
         
         openProject: function(name) {
             if(this.projectByName(name))
                 return;
-            var self = this;
-            socketIo.request("projectOpen", { projectName: name }, function(e) {
-                var project = self._newProject(name);
-                self._openDir(project, e.data);
-                self.setCurrentNode(project.id);
-            });
+            socketIo.request("projectOpen", { projectName: name }, dojo.hitch(this, function(e) {
+                var project = this._newProject(name);
+                this._openDir(project, e.data);
+                this.notifyChildrenChanged(this.root());
+            }));
         },
         
         projectByName: function(name) {
-            var list = _.filter(this.self.children, function(node) { return node.name == name; });
+            var list = _.filter(this.root().children, function(node) { return node.name == name; });
             return list.length > 0 ? list[0] : null;
         },
         
@@ -74,30 +70,22 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
             return exists;
         },
 
-        newNode: function(name, type, parent) {
-            var node = new Node(name, type);
-            node.setParent(parent);
-            this.notifyChildrenChanged(parent);
-            return node;
-        },
-        
-        newFile: function(name, parent) {
-            return this._createFilePath(this.newNode(name, nodes.Type.File, parent), "fileCreate");
-        },
-
-        newFolder: function(name, parent) {
-            return this._createFilePath(this.newNode(name, nodes.Type.Folder, parent), "folderCreate");
+        createNewNode: function(name, parent, isFile) {
+            var type = isFile ? nodes.Type.File : nodes.Type.Folder;
+            var action = isFile ? "fileCreate" : "folderCreate";
+            return this._createFilePath(new Node(name, type, parent), action);
         },
         
         _createFilePath: function(node, command) {
             if(!node)
                 return;
+            this.notifyChildrenChanged(node.parent);
             socketIo.send(command, node.pathDefinition());
             return node;
         },
         
         getNodeById: function(id) {
-            return this.self.find(function(node) {
+            return this.root().find(function(node) {
                 return node.id == id;
             });
         },
@@ -165,7 +153,7 @@ define(deps, function(dojo, global, /*openDocs, */socketIo, nodes) {
         
         // reimplementation of dijit.tree.model
         getRoot: function(onItem, onError) {
-            onItem(this.self);
+            onItem(this.root());
         },
         
         mayHaveChildren: function(item) {

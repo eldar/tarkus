@@ -29,16 +29,16 @@ define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dia
     openDialog.startup();
 
     dojo.connect(actions.file.openProject, "triggered", function() {
-        openDialog.show();
+        //openDialog.show();
+        model.openProject("haha");
     });
     
     dojo.connect(actions.file.newProject, "triggered", function() {
-        var projName = prompt("Please, select project name");
-        if(!projName)
+        var name = prompt("Please, select project name");
+        if(!name)
             return;
-        var node = model.newProject(projName);
+        var node = model.creteNewProject(name);
         tree.set("path", [model.root(), node]);
-        
     });
     
     var newSomething = function(isFile) {
@@ -55,7 +55,7 @@ define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dia
             alert("File with name " + name + " already exists");
             return;
         }
-        var node = model[isFile? "newFile" : "newFolder"](fileName, parent);
+        var node = model.createNewNode(fileName, parent, isFile);
         tree.set("path", node.fullObjectPath());
     };
     

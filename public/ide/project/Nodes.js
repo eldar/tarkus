@@ -26,9 +26,9 @@ define(["core/global"], function(global) {
     };
     
     var NodeImpl = _.inherits(Object, {
-        constructor: function(name, type) {
+        constructor: function(name, type, parent) {
             this.type = type;
-            this.parent = null;
+            this.setParent(parent);
             this.children = [];
             this.id = _.uniqueId("project_node_");
             this.setName(name);
@@ -73,7 +73,7 @@ define(["core/global"], function(global) {
             if(parent) {
                 parent.children.push(this);
             };
-            this.parent = parent;
+            this.parent = parent || null;
         },
 
         iterate: function(callback) {
