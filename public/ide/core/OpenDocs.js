@@ -21,11 +21,15 @@ define([
         
         setInitialSaveState: function() {
             this.lastSaved = getCurrentDelta(this.session);
-            this.isModified = false;
+            this._isModified = false;
         },
         
         name: function() {
             return node.name;
+        },
+        
+        isModified: function() {
+            return this._isModified;
         }
     });
     
@@ -46,7 +50,7 @@ define([
         getLabel: function(item) {
             var node = item.node;
             if(node) {
-                return node.name + (item.isModified ? "*" : "");
+                return node.name + (item.isModified() ? "*" : "");
             }
             else {
                 return "";
@@ -61,7 +65,7 @@ define([
             var session = editor.getSession(node.docType, content);
             var doc = new Document(node, session);
             session.getUndoManager().on("change", dojo.hitch(this, function() {
-                doc.isModified = (doc.lastSaved != getCurrentDelta(session));
+                doc._isModified = (doc.lastSaved != getCurrentDelta(session));
                 this.onChange(doc);
             }));
             this.list().unshift(doc);
@@ -142,7 +146,7 @@ define([
             var doc = this._currentDoc;
             if(!doc)
                 return;
-            if(!doc.isModified)
+            if(!doc.isModified())
                 return;
             doc.setInitialSaveState();
             this.onChange(doc); 

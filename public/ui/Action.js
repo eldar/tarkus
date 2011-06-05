@@ -10,8 +10,8 @@ define(deps, function (dojo, Stateful, MenuItem) {
 
         constructor: function(params) {
             this._params = params;
-            this.disabled = false;
             this.label = params.label || "";
+            this.disabled = params.disabled !== undefined ? params.disabled : false;
             this._widgets = [];
             this._dispatchProperty("disabled");
             this._dispatchProperty("label");

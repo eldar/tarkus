@@ -1,19 +1,19 @@
 var deps = [
     "dojo",
-    "util/sprintf",
     "core/Global",
     "core/Io",
-    "ide/core/Actions",
+    "util/sprintf",
     "ui/TemplatedWidget",
     "dijit/Dialog",
     "dijit/form/Button",
-    "text!ide/project/OpenProjectDialog.html",
-//    "core/open-docs",
+    "ide/core/Actions",
+    "ide/core/OpenDocs",
     "ide/project/Model",
-    "ide/project/Tree"
+    "ide/project/Tree",
+    "text!ide/project/OpenProjectDialog.html"
 ];
 
-define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dialog, Button, OpenProjectTemplate, /*openDocs,*/ model, tree) {
+define(deps, function(dojo, global, socketIo, str, TemplatedWidget, Dialog, Button, actions, openDocs, model, tree, OpenProjectTemplate) {
 
 //dijit.getEnclosingWidget(this.domNode.parentNode)
     var openDialog = new dijit.Dialog({
@@ -71,6 +71,25 @@ define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dia
     dojo.connect(actions.file.newFolder, "triggered", function() {
         newSomething(false);
     });
+
+    var saveAct = actions.file.save;
+    var updateSaveSensitivity = function(doc) {
+        saveAct.set("disabled", !doc.isModified());
+    };
+    dojo.connect(saveAct, "triggered", function() {
+        openDocs.saveNode();
+    });
+    dojo.connect(openDocs, "onChange", function(doc) {
+        updateSaveSensitivity(doc);
+    });
+    dojo.connect(openDocs, "currentDocChanged", function(doc) {
+        var text = "Save";
+        if(doc)
+            text += " \"" + openDocs.getLabel(doc) + "\"";
+        saveAct.set("label", text);
+        updateSaveSensitivity(doc);
+    });
+    
 /*        
         var OpenProjectDialog = _.inherits(Object, {
             constructor: function() {
@@ -127,25 +146,10 @@ define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dia
             });
         });
 
-        mainMenu.addCallback("save-node", function() {
-            openDocs.saveNode();
-        });
-
         mainMenu.addCallback("close-project", function() {
             model.closeCurrentProject();
         });
         
-        openDocs
-            .bind("entryChanged", function(doc) {
-                mainMenu.setActionEnabled("save-node", doc.isModified);
-            })
-            .bind("currentDocChanged", function(doc) {
-                var text = "Save";
-                if(doc)
-                    text += " \"" + doc.name + "\"";
-                mainMenu.setActionText("save-node", text);
-            });
-
         mainMenu.addCallback("rename-node", function() {
             model.triggerRename();
         });
