@@ -26,9 +26,9 @@ define(deps, function (dojo, Stateful, MenuItem) {
         },
         
         makeMenuItem: function(params, srcNodeRef) {
-            var itemParams = dojo.mixin(params, this._params, {
+            var itemParams = dojo.mixin(this._params, {
                 onClick: dojo.hitch(this, "triggered")
-            });
+            }, params);
             var item = MenuItem(itemParams, srcNodeRef);
             this._widgets.push(item);
             return item;

@@ -61,18 +61,6 @@
   border: 0px;
   color: #000000;
 }
-.claro .dijitTreeRowActive {
-  background-color: #abd6ff;
-  margin-left: 0;
-  border: 0px;
-  color: #000000;
-}
-.dj_ie6 .claro .dijitTreeRowActive {
-  background-image: none;
-}
-.claro .dijitTreeRowFocused {
-  background-repeat: repeat;
-}
 /* expando (open/closed) icon */
 .claro .dijitTreeExpando {
   background-image: url('images/treeExpandImages.png');
