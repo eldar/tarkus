@@ -36,3 +36,20 @@ html, body {
     border-style: solid;
     border-color: #cccccc;
 }
+
+.close-button {
+    width: 14px;
+    height: 14px;
+    background-image: url("../icons/images/closeButtons.png");
+    background-position: 0 0;
+    background-color: transparent;
+    border: 0 none transparent;
+}
+
+.close-button:hover {
+    background-position: 14px 0;
+}
+
+.close-button:active {
+    background-position: 28px 0;
+}

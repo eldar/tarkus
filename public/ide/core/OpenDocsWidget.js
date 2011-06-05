@@ -4,6 +4,34 @@ define([
     "dijit/Tree",
     "ide/core/MainArea",
 ], function(dojo, openDocs, Tree, mainArea) {
+
+    var ClosableNode = dojo.declare(dijit._TreeNode, {
+        postCreate: function() {
+            console.log(this.rowNode);
+            var button = dojo.create("div", {
+                style: {
+                    float: "right",
+                    display: "none",
+                    marginRight: "5px"
+                }
+            });
+            dojo.addClass(button, "close-button");
+            dojo.place(button, this.rowNode, "first");
+
+            dojo.connect(this.domNode, "onmouseenter", function() {
+                dojo.style(button, { display: "block"});
+            });
+            dojo.connect(this.domNode, "onmouseleave", function() {
+                dojo.style(button, { display: "none"});
+            });
+            
+            dojo.connect(button, "onclick", dojo.hitch(this, function(event) {
+                openDocs.closeDocument(this.item);
+                dojo.stopEvent(event);
+            }));
+        }
+    });
+
     var OpenWidget = dojo.declare(Tree, {
         autoExpand: false,
         showRoot: false,
@@ -22,7 +50,11 @@ define([
       
         onClick: function(doc) {
             openDocs.setCurrentDocument(doc);
-        }
+        },
+        
+	    _createTreeNode: function(/*Object*/ args){
+		    return new ClosableNode(args);
+	    }
         
     });
     var tree = new OpenWidget({ model: openDocs });

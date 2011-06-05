@@ -53,7 +53,6 @@ define([
             }
         },
         
-        _docs: [],
         _currentDoc: null,
         
         open: function(node, content) {
@@ -107,25 +106,28 @@ define([
             if(!doc)
                 return;
             var isSelected = (doc == this._currentDoc);
-            var i = this._docs.indexOf(doc);
-            this._docs.splice(i, 1);
-//            this.trigger("documentClosed", id);
-            if(this._docs.length == 0) {
-                global.env.editor.setSession(global.env.getEmptySession());
-                global.env.setEditorVisible(false);
+            var list = this.list();
+            var i = list.indexOf(doc);
+            list.splice(i, 1);
+            this.notifyChildrenChanged(this.root());
+
+            if(list.length == 0) {
+                var ace = editor.current();
+                ace.editor.setSession(editor.getEmptySession());
+                ace.setVisible(false);
                 this._currentDoc = null;
                 this.currentDocChanged(null);
                 return;
             }
             if(isSelected) {
-                var nextIndex = (i == this._docs.length) ? (i - 1) : i;
-                this.setCurrentDocument(this._docs[nextIndex].node);
+                var nextIndex = (i == list.length) ? (i - 1) : i;
+                this.setCurrentDocument(list[nextIndex]);
             }
         },
         
         handleNodeRenamed: function(node) {
             var doc = this.docByNode(node);
-            doc.session.setMode(global.env.modeForDocType(node.docType));
+            doc.session.setMode(editor.modeForDocType(node.docType));
             this.onChange(doc);
         },
         
