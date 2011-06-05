@@ -74,7 +74,7 @@ define(deps, function(dojo, global, socketIo, str, TemplatedWidget, Dialog, Butt
 
     var saveAct = actions.file.save;
     var updateSaveSensitivity = function(doc) {
-        saveAct.set("disabled", !doc.isModified());
+        saveAct.set("disabled", doc ? !doc.isModified() : true);
     };
     dojo.connect(saveAct, "triggered", function() {
         openDocs.saveNode();
