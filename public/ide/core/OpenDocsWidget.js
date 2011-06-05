@@ -38,7 +38,7 @@ define([
         persist: false,
         
         constructor: function(params) {
-            dojo.connect(params.model, "currentDocChanged", dojo.hitch(this, function(doc) {
+            dojo.connect(params.model, "currentDocChangedForView", dojo.hitch(this, function(doc) {
                 if(doc)
                     this.set("path", [this.model.root(), doc]);
             }));
@@ -52,7 +52,7 @@ define([
             openDocs.setCurrentDocument(doc);
         },
         
-	    _createTreeNode: function(/*Object*/ args){
+	    _createTreeNode: function(args){
 		    return new ClosableNode(args);
 	    }
         

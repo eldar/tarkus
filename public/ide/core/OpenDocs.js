@@ -83,7 +83,11 @@ define([
             this.currentDocChanged(newDoc);
         },
         
-        currentDocChanged: function() {
+        currentDocChanged: function(doc) {
+            this.currentDocChangedForView(doc);
+        },
+        
+        currentDocChangedForView: function() {
         },
         
         docByNode: function(node) {
@@ -122,6 +126,9 @@ define([
             if(isSelected) {
                 var nextIndex = (i == list.length) ? (i - 1) : i;
                 this.setCurrentDocument(list[nextIndex]);
+            } else {
+                // dojo for some reason deselects element after we rehashed all the content of the widget so just make sure we select it again
+                this.currentDocChangedForView(this._currentDoc);
             }
         },
         
