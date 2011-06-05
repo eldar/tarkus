@@ -139,7 +139,7 @@ define(deps, function(dojo, str, global, socketIo, actions, TemplatedWidget, Dia
             .bind("entryChanged", function(doc) {
                 mainMenu.setActionEnabled("save-node", doc.isModified);
             })
-            .bind("documentSelected", function(doc) {
+            .bind("currentDocChanged", function(doc) {
                 var text = "Save";
                 if(doc)
                     text += " \"" + doc.name + "\"";

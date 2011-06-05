@@ -97,7 +97,7 @@ define(deps, function(dojo, global, socketIo, ModelBase, openDocs, nodes) {
             if(!node.isDocument())
                 return;
             var select = function() { openDocs.setCurrentDocumentByNode(node) };
-            if(!openDocs.entryByNode(node)) {
+            if(!openDocs.docByNode(node)) {
                 this.openDocument(node, function() {
                     select();
                 });
@@ -107,7 +107,7 @@ define(deps, function(dojo, global, socketIo, ModelBase, openDocs, nodes) {
         },
         
         openDocument: function(node, onOpen) {
-            if(node.isDocument() && !openDocs.entryByNode(node)) {
+            if(node.isDocument() && !openDocs.docByNode(node)) {
                 socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
                     openDocs.open(node, e.data);
                     onOpen();
@@ -150,11 +150,6 @@ define(deps, function(dojo, global, socketIo, ModelBase, openDocs, nodes) {
     
     var model = new ProjectModel;
 /*
-    openDocs.bind("documentSelected", function(doc) {
-        if(doc)
-	        model.setCurrentNode(doc.node.id);
-    });
-    
     model.bind("currentNodeChanged", function(node) {
         // setting file in the open docs model
         if(node.isDocument())

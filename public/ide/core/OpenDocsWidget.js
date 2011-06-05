@@ -11,7 +11,8 @@ define([
         
         constructor: function(params) {
             dojo.connect(params.model, "currentDocChanged", dojo.hitch(this, function(doc) {
-                this.set("path", [this.model.root(), doc]);
+                if(doc)
+                    this.set("path", [this.model.root(), doc]);
             }));
         },
         

@@ -45,76 +45,76 @@ define([
         
         getLabel: function(item) {
             var node = item.node;
-            return node ? node.name : "";
+            if(node) {
+                return node.name + (item.isModified ? "*" : "");
+            }
+            else {
+                return "";
+            }
         },
         
         _docs: [],
-        _currentEntry: null,
+        _currentDoc: null,
         
         open: function(node, content) {
-            if(this.entryByNode(node))
+            if(this.docByNode(node))
                 return;
             var session = editor.getSession(node.docType, content);
-            var entry = new Document(node, session);
-            var self = this;
-            session.getUndoManager().on("change", function() {
-                entry.isModified = (entry.lastSaved != getCurrentDelta(session));
-                self.entryChanged(entry);
-            });
-            this.list().unshift(entry);
+            var doc = new Document(node, session);
+            session.getUndoManager().on("change", dojo.hitch(this, function() {
+                doc.isModified = (doc.lastSaved != getCurrentDelta(session));
+                this.onChange(doc);
+            }));
+            this.list().unshift(doc);
             this.notifyChildrenChanged(this.root());
         },
         
-        entryChanged: function(entry) {
-        },
-        
         setCurrentDocumentByNode: function(node) {
-            this.setCurrentDocument(this.entryByNode(node));
+            this.setCurrentDocument(this.docByNode(node));
         },
         
-        setCurrentDocument: function(newEntry) {
-            if(this._currentEntry == newEntry)
+        setCurrentDocument: function(newDoc) {
+            if(this._currentDoc == newDoc)
                 return;
-            this._currentEntry = newEntry;
+            this._currentDoc = newDoc;
             var ace = editor.current();
             ace.setVisible(true);
-            ace.editor.setSession(newEntry.session);
+            ace.editor.setSession(newDoc.session);
             ace.resize();
-            this.currentDocChanged(newEntry);
+            this.currentDocChanged(newDoc);
         },
         
         currentDocChanged: function() {
         },
         
-        entryByNode: function(node) {
+        docByNode: function(node) {
             var len = this.list().length;
             for(var i = 0; i < len; i++) {
-                var entry = this.list()[i];
-                if(node == entry.node)
-                    return entry;
+                var doc = this.list()[i];
+                if(node == doc.node)
+                    return doc;
             }
             return null;
         },
         
         closeDocumentByNode: function(node) {
-            var entry = this.entryByNode(node);
-            if(entry)
-                this.closeDocument(entry.id);
+            var doc = this.docByNode(node);
+            if(doc)
+                this.closeDocument(doc.id);
         },
         
-        closeDocument: function(id) {
-            var entry = this.entryById(id);
-            if(!entry)
+        closeDocument: function(doc) {
+            if(!doc)
                 return;
-            var isSelected = (entry == this._currentEntry);
-            var i = this._docs.indexOf(entry);
+            var isSelected = (doc == this._currentDoc);
+            var i = this._docs.indexOf(doc);
             this._docs.splice(i, 1);
 //            this.trigger("documentClosed", id);
             if(this._docs.length == 0) {
                 global.env.editor.setSession(global.env.getEmptySession());
                 global.env.setEditorVisible(false);
-                this._currentEntry = null;
-//                this.trigger("documentSelected", null);
+                this._currentDoc = null;
+                this.currentDocChanged(null);
                 return;
             }
             if(isSelected) {
@@ -124,20 +124,21 @@ define([
         },
         
         handleNodeRenamed: function(node) {
-            var entry = this.entryByNode(node);
-            entry.session.setMode(global.env.modeForDocType(node.docType));
+            var doc = this.docByNode(node);
+            doc.session.setMode(global.env.modeForDocType(node.docType));
+            this.onChange(doc);
         },
         
         saveNode: function() {
-            var entry = this._currentEntry;
-            if(!entry)
+            var doc = this._currentDoc;
+            if(!doc)
                 return;
-            if(!entry.isModified)
+            if(!doc.isModified)
                 return;
-            entry.setInitialSaveState();
-            this.entryChanged(entry); 
-            var object = _.extend(entry.node.pathDefinition(), {
-                content: entry.session.getValue()
+            doc.setInitialSaveState();
+            this.onChange(doc); 
+            var object = _.extend(doc.node.pathDefinition(), {
+                content: doc.session.getValue()
             });
             socketIo.send("saveFile", object);
         }
