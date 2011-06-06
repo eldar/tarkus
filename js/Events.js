@@ -1,7 +1,116 @@
 var _ = require("./Global")._;
 var unittest = require("./Unittest");
 
-function callNormalized(sender, signalName, receiver, slotOrName, call) {
+function resolvePropertyReference(object, propNameOrValue, pred) {
+
+    var result = {};
+    var origObject = object;
+    
+    if (_.isString(propNameOrValue)) {
+        result.name = propNameOrValue;
+
+        do {
+            var propDesc = Object.getOwnPropertyDescriptor(object, propNameOrValue);
+            if (!_.isUndefined(propDesc)) {
+                result.value = propDesc.value; // TODO: how standard is property descriptor layout?
+                break;                
+            }
+            object = Object.getPrototypeOf(object);
+        } while(!_.isUndefined(object));
+        
+        
+        if (_.isUndefined(result.value))
+            throw new Error(origObject + " has no property \"" + propValueOrName + "\"");
+        
+    } else {
+        // propNameOrValue is not a property name, try to match it against a property value        
+        if (_.isUndefined(pred)) {
+            pred = function(value) {
+                var propData = propNameOrValue.__data;
+                return  value === propNameOrValue || (!_.isUndefined(propData) && propData.originalValue === value);
+            }
+        }    
+        
+        var propName;
+        do {
+            var propNames = Object.getOwnPropertyNames(object);
+            propName = _.detect(propNames, function(name) {
+                // TODO: not so clean
+                result.value = object[name];                
+                return pred(result.value);              
+            });
+            if (!_.isUndefined(propName))
+                break;
+                
+            object = Object.getPrototypeOf(object);
+        } while(!_.isUndefined(object));
+        
+        if (_.isUndefined(propName))        
+            throw new Error("Cannot resolve " + propNameOrValue + " to a property of " + origObject);
+        result.name = propName;
+    }
+    
+    result.isOwnProperty = object === origObject; 
+    return result;
+}
+
+unittest(function(assert) {
+    var Foo = function() { this.foo = 42 }
+    Foo.prototype.bar = 43;
+    var obj = new Foo();
+    var prop = resolvePropertyReference(obj, "foo");
+    assert.ok(prop.value == 42);
+    assert.ok(prop.isOwnProperty);
+    assert.ok(prop.name == "foo");
+    
+    prop = resolvePropertyReference(obj, 42);
+    assert.ok(prop.value == 42);
+    assert.ok(prop.isOwnProperty);
+    assert.ok(prop.name == "foo");
+    
+    prop = resolvePropertyReference(obj, "bar");    
+    assert.ok(prop.value == 43);
+    assert.ok(!prop.isOwnProperty);
+    assert.ok(prop.name == "bar");
+    
+    prop = resolvePropertyReference(obj, 43);    
+    assert.ok(prop.value == 43);
+    assert.ok(!prop.isOwnProperty);
+    assert.ok(prop.name == "bar");
+    
+    assert.throws(function() {
+        resolvePropertyReference(obj, "baz");
+    });
+    
+    assert.throws(function() {
+        resolvePropertyReference(obj, 44);
+    });
+});
+
+function getPropertyData(object, propNameOrValue, create) {
+    /*
+
+    if (!_.isString(propNameOrValue)) {
+        var propData = prop.__data;
+        if (propData && propData.owner === object)
+            return propData;
+    }
+
+    if (_.isUndefined(create))
+        create = true;
+
+    prop = resolvePropertyReference(object, propNameOrValue);
+    
+    if (prop.isOwnProperty) {
+        var propData = prop.value.__data;
+        if (!_.isUndefined(propData))
+            return propData;
+    }
+    */
+}
+
+/*
+function normalizeArgs(sender, signalName, receiver, slotOrSlotName, call) {
     var slot, signal = sender[signalName];
 
     if (!_.isFunction(signal))
@@ -9,13 +118,13 @@ function callNormalized(sender, signalName, receiver, slotOrName, call) {
     else if (!signal.__name)
         signal.__name = signalName;
 
-    if (_.isString(slotOrName)) {       
-        slot = receiver[slotOrName];
+    if (_.isString(slotOrSlotName)) {       
+        slot = receiver[slotOrSlotName];
         if (!_.isFunction(slot))
-            throw new Error(receiver + " has no slot function \"" + slotOrName + "\"");
-    } else if (_.isFunction(slotOrName))
-        slot = slotOrName;        
-    else if (_.isFunction(receiver) && slotOrName === undefined) {
+            throw new Error(receiver + " has no slot function \"" + slotOrSlotName + "\"");
+    } else if (_.isFunction(slotOrSlotName))
+        slot = slotOrSlotName;        
+    else if (_.isFunction(receiver) && slotOrSlotName === undefined) {
         slot = receiver;        
         receiver = undefined;
     } else
@@ -24,7 +133,7 @@ function callNormalized(sender, signalName, receiver, slotOrName, call) {
     call(sender, signal, receiver, slot);
 }
 
-function _connect(sender, signal, receiver, slot) {
+function connectImpl(sender, signal, receiver, slot) {
     var slots = signal.__slots;
     if (!slots) {
         var origSignal = signal;        
@@ -32,37 +141,62 @@ function _connect(sender, signal, receiver, slot) {
             var args = arguments;
             origSignal.apply(sender, args);
             _.each(slots, function(slotItem) {
-                slotItem[1].apply(slotItem[0], args);
+                slotItem.slot.apply(slotItem.receiver, args);
             });         
         }
         _.extend(signal, origSignal);
-        signal.__origSignal = origSignal;
         slots = signal.__slots = [];
     }
-    slots.push([ receiver, slot ]);
+    slots.push([ receiver: receiver, slot: slot ]);
 }
 
-function _disconnect(sender, signal, receiver, slot) {
+function disconnectImpl(sender, signal, receiver, slot) {
     var slots = signal.__slots;
     var idx = -1;
     if (slots) {
         idx = _.find(slots, function(slotItem) {            
-            return receiver === slotItem[0] && slot === slotItem[1];
+            return receiver === slotItem.receiver && slot === slotItem.receiver;
         });           
     }
     if (idx === undefined)
         throw new Error("Slot not connected");
     else
         slots.splice(idx, 1);
-    //TODO: restore origSignal when slot count drops to zero.
 }
 
-function connect(sender, signalName, receiver, slotOrName) {
-    callNormalized(sender, signalName, receiver, slotOrName, _connect);
+function disconnectAll(object) {
+    //disconnect signals
+    _.each(object, function(prop)) {
+        if (prop.__slots) {
+            _.each()
+        }
+
+    });
+    //disconnect slots
+    var slots = [];
+    _.each(object, function(slot)) {
+        var signals = slot.__signals;
+        
+        if (senders) {
+            _.each(senders, function(sender) {
+                if (sender === this)
+                    
+
+            }, this);
+        }
+    }, this);
+
 }
 
-function disconnect(sender, signalName, receiver, slotOrName) {
-    callNormalized(sender, signalName, receiver, slotOrName, _disconnect);
+function connect(sender, signalName, receiver, slotOrSlotName) {
+    normalizeArgs(sender, signalName, receiver, slotOrSlotName, connectImpl);
+}
+
+function disconnect(sender, signalName, receiver, slotOrSlotName) {
+    if (arguments.length == 1)
+        disconnectAll(sender);
+    else        
+        normalizeArgs(sender, signalName, receiver, slotOrSlotName, disconnectImpl);
 }
 
 exports.connect = connect;
@@ -103,5 +237,6 @@ unittest(function(assert) {
     assert.ok(test1.fooCalls[0] == 43);
     assert.ok(test2.barCalls.length == 0);
 });
+*/
 
 
