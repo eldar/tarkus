@@ -1,140 +1,118 @@
 var deps = [
-    "core/global",
-//    "core/open-docs",
-    "core/io",
+    "dojo",
+    "core/Global",
+    "core/Io",
+    "core/ModelBase",
+    "ide/core/OpenDocs",
     "ide/project/Nodes"
 ];
 
-define(deps, function(global, /*openDocs, */socketIo, nodes) {
+define(deps, function(dojo, global, socketIo, ModelBase, openDocs, nodes) {
 
     var Node = nodes.Node;
 
     var ROOT_NAME = "root-node";
     
-    var ProjectModel = Backbone.Model.extend({
-        self: {},
+    var ProjectModel = dojo.declare(ModelBase, {
         currentNode: null,
         currentProject: null,
         
-        initialize: function() {
-            this.self = new Node(ROOT_NAME);
+        constructor: function() {
+            this._root = new Node(ROOT_NAME);
+        },
+        
+        root: function() {
+            return this._root;
         },
 
-        addNodeNotify: function(node) {
-            this.change({
-                command : "add",
-                node: node
-            });
-        },
-        
         _newProject: function(name) {
-            var node = new Node(name, nodes.Type.Project);
-            node.setParent(this.self);
-            this.addNodeNotify(node);
-            return node;
+            return new Node(name, nodes.Type.Project, this.root());
         },
         
-        newProject: function(name) {
+        creteNewProject: function(name) {
             var node = this._newProject(name);
+            this.notifyChildrenChanged(this.root());
             socketIo.send("projectCreate", { projectName: name});
-            this.setCurrentNode(node.id);
+            return node;
         },
         
         _openDir: function(parent, dataNode) {
             var self = this;
-            _.each(dataNode.files, function(file) {
-                self.newNode(file, nodes.Type.File, parent);
-            });
             _.each(dataNode.dirs, function(content, name) {
-                var dirNode = self.newNode(name, nodes.Type.Folder, parent);
+                var dirNode = new Node(name, nodes.Type.Folder, parent);
                 self._openDir(dirNode, content);
+            });
+            _.each(dataNode.files, function(file) {
+                new Node(file, nodes.Type.File, parent);
             });
         },
         
-        openProject: function(name) {
+        openProject: function(name, onOpen) {
             if(this.projectByName(name))
                 return;
-            var self = this;
-            socketIo.request("projectOpen", { projectName: name }, function(e) {
-                var project = self._newProject(name);
-                self._openDir(project, e.data);
-                self.setCurrentNode(project.id);
-                self.trigger("trigger_openNode", project);
-            });
+            socketIo.request("projectOpen", { projectName: name }, dojo.hitch(this, function(e) {
+                var project = this._newProject(name);
+                this._openDir(project, e.data);
+                this.notifyChildrenChanged(this.root());
+                if(onOpen)
+                   onOpen(project);
+            }));
         },
         
         projectByName: function(name) {
-            var list = _.filter(this.self.children, function(node) { return node.name == name; });
+            var list = _.filter(this.root().children, function(node) { return node.name == name; });
             return list.length > 0 ? list[0] : null;
         },
-
-        newNode: function(name, type, parentNode) {
-            var current = this.currentNode;
-            var parent = parentNode || (current.isFolder() ? current : current.parent);
-            var sameName = false;
+        
+        checkExists: function(parent, name) {
+            var exists = false;
             _.each(parent.children, function(node) {
                 if(node.name === name)
-                    sameName = true;
+                    exists = true;
             });
-            if(sameName) {
-                alert("File with name " + name + " already exists");
-                return null;
-            }
-            var node = new Node(name, type);
-            node.setParent(parent);
-            this.addNodeNotify(node);
-            return node;
-        },
-        
-        newFile: function(name) {
-            this._createFilePath(this.newNode(name, nodes.Type.File), "fileCreate");
+            return exists;
         },
 
-        newFolder: function(name) {
-            this._createFilePath(this.newNode(name, nodes.Type.Folder), "folderCreate");
+        createNewNode: function(name, parent, isFile) {
+            var type = isFile ? nodes.Type.File : nodes.Type.Folder;
+            var action = isFile ? "fileCreate" : "folderCreate";
+            return this._createFilePath(new Node(name, type, parent), action);
         },
         
         _createFilePath: function(node, command) {
             if(!node)
                 return;
+            this.notifyChildrenChanged(node.parent);
             socketIo.send(command, node.pathDefinition());
-            this.trigger("trigger_openNode", node.parent);
-            this.setCurrentNode(node.id);
+            return node;
         },
         
         getNodeById: function(id) {
-            return this.self.find(function(node) {
+            return this.root().find(function(node) {
                 return node.id == id;
             });
         },
         
-        setCurrentNode: function(id) {
-            this.currentNode = this.getNodeById(id);
-            var node = this.currentNode;
-            this.currentProject = node.getProject();
-
-            var signalSent = false;
-            var self = this;
-            var sendSignal = function() {
-                self.trigger("currentNodeChanged", node);
+        openAndSelectDocument: function(node) {
+            if(!node.isDocument())
+                return;
+            var select = function() { openDocs.setCurrentDocumentByNode(node) };
+            if(!openDocs.docByNode(node)) {
+                this.openDocument(node, function() {
+                    select();
+                });
+            } else {
+                select();
             }
-            if(node.isDocument()) {
-                if(!openDocs.entryByNode(node)) {
-                    signalSent = true;
-                    socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
-//                        openDocs.open(node, e.data);
-                        sendSignal();
-                    });
-                }
-            }
-            if(!signalSent)
-                sendSignal();
         },
         
-        triggerRename: function() {
-            if(!this.currentNode)
-                return;
-            this.trigger("trigger_rename", this.currentNode);
+        openDocument: function(node, onOpen) {
+            if(node.isDocument() && !openDocs.docByNode(node)) {
+                socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
+                    openDocs.open(node, e.data);
+                    onOpen();
+                });
+            }
         },
         
         closeCurrentProject: function() {
@@ -142,7 +120,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
             if(!project)
                 return;
             project.iterate(function(node) {
-//                openDocs.closeDocumentByNode(node);
+                openDocs.closeDocumentByNode(node);
             });
             this.removeNode(project);
             this.currentProject = null;
@@ -150,7 +128,7 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
         
         removeNode: function(node) {
             var siblings = node.parent.children;
-            this.trigger("trigger_remove", node);
+//            this.trigger("trigger_remove", node);
             node.setParent(null);
         },
         
@@ -165,18 +143,13 @@ define(deps, function(global, /*openDocs, */socketIo, nodes) {
                 return false;
             node.setName(newName);
             // change syntax highlighting
-            this.trigger("nodeRenamed", node);
+//            this.trigger("nodeRenamed", node);
             return true;
         }
     });
     
     var model = new ProjectModel;
 /*
-    openDocs.bind("documentSelected", function(doc) {
-        if(doc)
-	        model.setCurrentNode(doc.node.id);
-    });
-    
     model.bind("currentNodeChanged", function(node) {
         // setting file in the open docs model
         if(node.isDocument())

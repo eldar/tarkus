@@ -1,173 +1,55 @@
 define([
     "dojo",
     "ide/core/MainArea",
+    "ide/core/OpenDocs",
+    "ide/project/Nodes",
     "ide/project/Model",
     "dijit/Tree"
-], function(dojo, mainArea, model, Tree) {
+], function(dojo, mainArea, openDocs, nodes, model, Tree) {
 
-    var data = {
-        label: "rootElem",
-        id: "root-elem",
-        children:
-        [/*{
-            label: 'Something',
-            id: '1',
-            children: [{
-                label: 'Life',
-                id: '1.1',
-            },
-            {
-                label: 'Liberty',
-                id: '1.2'
-            }]
+    var Type = nodes.Type;
+    
+    var tree = new Tree({
+        model: model,
+        autoExpand: false,
+        showRoot: false,
+        persist: false,
+        
+        getIconClass: function(node, opened) {
+            if(node.type === Type.File)
+                return "";
+            return ((!node || this.model.mayHaveChildren(node))) && opened ? "dijitFolderOpened" : "dijitFolderClosed";
         },
-        {
-            label: 'Some links',
-            id: '2',
-            children: [{
-                label: 'Life',
-                id: '2.1'
-            },
-            {
-                label: 'Liberty',
-                id: '2.2'
-            }]
-        },*/
-        {
-            label: 'Childless',
-            id: '3',
-            children: []
-        }]
-    };
+      
+        getIconStyle: function(node) {
+            if(node.type !== Type.File)
+                return {};
+            return {
+                backgroundImage: "url('" + this.getIconUrl(node) + "')",
+                'height': '16px',
+                'width': '16px'
+            };
+        },
 
-    var MyModel = dojo.declare(null, {
-        root: data,
-        
-        getRoot: function(onItem, onError){
-            onItem(this.root);
+        getIconUrl: function(node) {
+            var icon;
+            switch(node.docType) {
+                case "js":
+                    icon = "icons/images/js.png"; break;
+                case "css":
+                    icon = "icons/images/css.png"; break;
+                default:
+                    icon = "icons/images/unknown.png"; break;
+            }
+            return icon;
         },
         
-        mayHaveChildren: function(item){
-            return item.children;
-        },
-        
-        getChildren: function(parentItem, callback, onError){
-            callback(parentItem.children);
-        },
-        
-        getLabel: function(item){
-            return item.label;
-        },
-                
-        isItem: function(something){
-            var elem = something.id;
-            return elem != null;
-        },
-        
-        getIdentity: function(item){
-            return item.id;
+        onDblClick: function(node) {
+            model.openAndSelectDocument(node);
         }
         
     });
-
-    var treeModel = new MyModel();
-    
-    var MyTree = dojo.declare(Tree, {
-    });
-    
-    new MyTree({
-        model: treeModel,
-        autoExpand: false
-    }).placeAt(mainArea.left.domNode);
+    tree.placeAt(mainArea.left.top.domNode);
+    return tree;
 });
 
-/*
-    var rawdata =
-    [{
-        label: 'Something',
-        id: '1',
-        children: [{
-            label: 'Life',
-            id: '1.1'
-        },
-        {
-            label: 'Liberty',
-            id: '1.2'
-        }]
-    },
-    {
-        label: 'Some links',
-        id: '2',
-        children: [{
-            label: 'Life',
-            id: '2.1'
-        },
-        {
-            label: 'Liberty',
-            id: '2.2'
-        }]
-    },
-    {
-        label: 'Childless',
-        id: '3'
-    }];
-
-    var store = new dojo.data.ItemFileWriteStore({
-        data: {
-            identifier: 'id',
-            label: 'label',
-            items: rawdata
-        }
-    });
-    store.fetchItemByIdentity({identity: '3', onItem: function(item) {
-        store.newItem({label: 'New Item', id: '3.1'}, {parent: item, attribute:'children'});
-    }})
-    
-    var treeModel = new dijit.tree.ForestStoreModel({
-        store: store
-    });
-    
-    new dijit.Tree({
-        model: treeModel,
-        showRoot: false,
-    }).placeAt(mainArea.left.domNode);
-*/
-
-/*
-    var data =
-    {
-    identifier: 'id',
-    label: 'name',
-    items: [
-        { id: 'AS', name:'Asia', type:'continent',
-          children:[{_reference:'CN'}, {_reference:'IN'}, {_reference:'RU'}, {_reference:'MN'}] },
-        { id: 'CN', name:'China', type:'country' },
-        { id: 'IN', name:'India', type:'country' },
-        { id: 'RU', name:'Russia', type:'country' },
-        { id: 'MN', name:'Mongolia', type:'country' },
-        { id: 'EU', name:'Europe', type:'continent',
-          children:[{_reference:'DE'}, {_reference:'FR'}, {_reference:'ES'}, {_reference:'IT'}] },
-        { id: 'DE', name:'Germany', type:'country' },
-        { id: 'FR', name:'France', type:'country' },
-        { id: 'ES', name:'Spain', type:'country' },
-        { id: 'IT', name:'Italy', type:'country' },
-    ]};
-
-    var store = new dojo.data.ItemFileReadStore({
-        data: data
-    });
-    
-    var treeModel = new dijit.tree.ForestStoreModel({
-        store: store,
-        query: {
-            "type": "continent"
-        },
-        rootId: "root",
-        rootLabel: "Continents",
-        childrenAttrs: ["children"]
-    });
-    
-    new dijit.Tree({
-        model: treeModel
-    }).placeAt(mainArea.left.domNode);
-*/

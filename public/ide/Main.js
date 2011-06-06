@@ -20,10 +20,11 @@ require([
     onLoadPilot(function() {
         require.ready(function() { // on DOM loads
             require([
-                "core/global",
+                "core/Global",
                 "ide/core/MainArea",
                 "ide/core/MainMenu",
-                "core/editor",
+                "ide/core/Editor",
+                "ide/core/OpenDocsWidget",
                 "ide/project/Handlers",
                 "ide/project/Tree"
             ]);

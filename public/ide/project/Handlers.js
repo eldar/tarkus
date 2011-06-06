@@ -1,17 +1,19 @@
 var deps = [
     "dojo",
-    "core/global",
-    "core/io",
-    "ide/core/Actions",
+    "core/Global",
+    "core/Io",
+    "util/sprintf",
     "ui/TemplatedWidget",
     "dijit/Dialog",
     "dijit/form/Button",
-    "text!ide/project/OpenProjectDialog.html",
-//    "core/open-docs",
+    "ide/core/Actions",
+    "ide/core/OpenDocs",
     "ide/project/Model",
+    "ide/project/Tree",
+    "text!ide/project/OpenProjectDialog.html"
 ];
 
-define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, Button, OpenProjectTemplate, /*openDocs,*/ model) {
+define(deps, function(dojo, global, socketIo, str, TemplatedWidget, Dialog, Button, actions, openDocs, model, tree, OpenProjectTemplate) {
 
 //dijit.getEnclosingWidget(this.domNode.parentNode)
     var openDialog = new dijit.Dialog({
@@ -27,8 +29,67 @@ define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, 
     openDialog.startup();
 
     dojo.connect(actions.file.openProject, "triggered", function() {
-        openDialog.show();
+        //openDialog.show();
+        model.openProject("haha", function(node) {
+            var treeNodes = tree.getNodesByItem(node);
+            tree._expandNode(_.first(treeNodes), false);
+        });
     });
+    
+    dojo.connect(actions.file.newProject, "triggered", function() {
+        var name = prompt("Please, select project name");
+        if(!name)
+            return;
+        var node = model.creteNewProject(name);
+        tree.set("path", [model.root(), node]);
+    });
+    
+    var newSomething = function(isFile) {
+        var path = tree.get("path");
+        if(path.length === 0)
+            return;
+        var selected = _.last(path);
+        var parent = selected.isFolder() ? selected : selected.parent;
+        var fileName = prompt(str.sprintf("Please, select %s name", isFile ? "file" : "folder"));
+        if(!fileName)
+            return;
+            
+        if(model.checkExists(parent, fileName)) {
+            alert("File with name " + name + " already exists");
+            return;
+        }
+        var node = model.createNewNode(fileName, parent, isFile);
+        tree.set("path", node.fullObjectPath());
+        return node;
+    };
+    
+    dojo.connect(actions.file.newFile, "triggered", function() {
+        var node = newSomething(true);
+        model.openAndSelectDocument(node);
+    });
+    
+    dojo.connect(actions.file.newFolder, "triggered", function() {
+        newSomething(false);
+    });
+
+    var saveAct = actions.file.save;
+    var updateSaveSensitivity = function(doc) {
+        saveAct.set("disabled", doc ? !doc.isModified() : true);
+    };
+    dojo.connect(saveAct, "triggered", function() {
+        openDocs.saveNode();
+    });
+    dojo.connect(openDocs, "onChange", function(doc) {
+        updateSaveSensitivity(doc);
+    });
+    dojo.connect(openDocs, "currentDocChanged", function(doc) {
+        var text = "Save";
+        if(doc)
+            text += " \"" + openDocs.getLabel(doc) + "\"";
+        saveAct.set("label", text);
+        updateSaveSensitivity(doc);
+    });
+    
 /*        
         var OpenProjectDialog = _.inherits(Object, {
             constructor: function() {
@@ -78,31 +139,6 @@ define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, 
         
         var mainMenu = global.mainMenu;
         
-        mainMenu.addCallback("new-project", function() {
-            var projName = prompt("Please, select project name");
-            if(!projName)
-                return;
-            model.newProject(projName);
-        });
-
-        mainMenu.addCallback("new-file", function() {
-            if(!model.currentNode)
-                return;
-            var fileName = prompt("Please, select file name");
-            if(!fileName)
-                return;
-            model.newFile(fileName);
-        });
-
-        mainMenu.addCallback("new-folder", function() {
-            if(!model.currentNode)
-                return;
-            var folderName = prompt("Please, select folder name");
-            if(!folderName)
-                return;
-            model.newFolder(folderName);
-        });
-
         mainMenu.addCallback("open-project", function() {
             openProjectDialog.run(function(project) {
                 if(project)
@@ -110,26 +146,10 @@ define(deps, function(dojo, global, socketIo, actions, TemplatedWidget, Dialog, 
             });
         });
 
-        mainMenu.addCallback("save-node", function() {
-            openDocs.saveNode();
-        });
-
         mainMenu.addCallback("close-project", function() {
             model.closeCurrentProject();
         });
         
-        openDocs
-            .bind("entryChanged", function(doc) {
-                mainMenu.setActionEnabled("save-node", doc.isModified);
-            })
-            .bind("documentSelected", function(doc) {
-                var text = "Save";
-                if(doc)
-                    text += " \"" + doc.name + "\"";
-                mainMenu.setActionText("save-node", text);
-            });
-            */
-/*
         mainMenu.addCallback("rename-node", function() {
             model.triggerRename();
         });

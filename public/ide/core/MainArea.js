@@ -15,7 +15,10 @@ define(deps, function (dojo, parser, dijit, bodyView) {
 
     return {
         container: dijit.byId("mainLayout"),
-        left: dijit.byId("leftPane"),
+        left: {
+           top: dijit.byId("leftTopPane"),
+           bottom: dijit.byId("leftBottomPane")
+        },
         center: dijit.byId("centerPane")
     };
 });

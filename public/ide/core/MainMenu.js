@@ -15,9 +15,9 @@ define(deps, function (dojo, MenuBar, PopupMenuBarItem, Menu, MenuItem, MenuSepa
     var fileMenu = dijit.byId("fileMenu");
     
     var fileNew = new Menu();
-    fileNew.addChild(actions.file.newProject.makeMenuItem());
-    fileNew.addChild(actions.file.newFile.makeMenuItem());
-    fileNew.addChild(actions.file.newFolder.makeMenuItem());
+    fileNew.addChild(actions.file.newProject.makeMenuItem({label: "Project..."}));
+    fileNew.addChild(actions.file.newFile.makeMenuItem({label: "File..."}));
+    fileNew.addChild(actions.file.newFolder.makeMenuItem({label: "Folder"}));
     fileMenu.addChild(new PopupMenuItem({label: "New", popup: fileNew}));
 
     fileMenu.addChild(actions.file.openProject.makeMenuItem());

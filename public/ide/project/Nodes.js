@@ -1,4 +1,7 @@
-define(["core/global"], function(global) {
+define([
+    "dojo",
+    "core/Global"
+], function(dojo, global) {
     var Type = {
         Folder : 1,
         Project : 2,
@@ -25,13 +28,13 @@ define(["core/global"], function(global) {
         };
     };
     
-    var NodeImpl = _.inherits(Object, {
-        constructor: function(name, type) {
+    var NodeImpl = dojo.declare(null, {
+        constructor: function(name, type, parent) {
             this.type = type;
-            this.parent = null;
+            this.setParent(parent);
             this.children = [];
+            global.makeUnique(this, "pn_");
             this.id = _.uniqueId("project_node_");
-            this.session = null;
             this.setName(name);
         },
         
@@ -74,7 +77,7 @@ define(["core/global"], function(global) {
             if(parent) {
                 parent.children.push(this);
             };
-            this.parent = parent;
+            this.parent = parent || null;
         },
 
         iterate: function(callback) {
@@ -114,16 +117,22 @@ define(["core/global"], function(global) {
             return result;
         },
         
+        fullObjectPath: function() {
+            var result = [];
+            var node = this;
+            while(node) {
+                result.unshift(node);
+                node = node.parent;
+            }
+            return result;
+        },
+        
         getProject: function() {
             var node = this;
             while(node.parent.parent) {
                 node = node.parent;
             }
             return node;
-        },
-        
-        getDom: function() {
-            return $("#" + this.id);
         },
         
         pathDefinition: function() {
