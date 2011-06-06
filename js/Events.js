@@ -16,18 +16,18 @@ function resolvePropertyReference(object, propNameOrValue, pred) {
                 break;                
             }
             object = Object.getPrototypeOf(object);
-        } while(!_.isUndefined(object));
+        } while(object !== null);
         
         
         if (_.isUndefined(result.value))
             throw new Error(origObject + " has no property \"" + propValueOrName + "\"");
         
-    } else {
-        // propNameOrValue is not a property name, try to match it against a property value        
+    } else { // propNameOrValue is not a property name, try to match it against a property value 
+               
         if (_.isUndefined(pred)) {
             pred = function(value) {
-                var propData = propNameOrValue.__data;
-                return  value === propNameOrValue || (!_.isUndefined(propData) && propData.originalValue === value);
+                var propData = value.__data;                
+                return  value === propNameOrValue || (!_.isUndefined(propData) && propData.originalValue === propNameOrValue);
             }
         }    
         
@@ -43,7 +43,7 @@ function resolvePropertyReference(object, propNameOrValue, pred) {
                 break;
                 
             object = Object.getPrototypeOf(object);
-        } while(!_.isUndefined(object));
+        } while(object !== null);
         
         if (_.isUndefined(propName))        
             throw new Error("Cannot resolve " + propNameOrValue + " to a property of " + origObject);
@@ -88,7 +88,6 @@ unittest(function(assert) {
 });
 
 function getPropertyData(object, propNameOrValue, create) {
-    /*
 
     if (!_.isString(propNameOrValue)) {
         var propData = prop.__data;
@@ -106,8 +105,52 @@ function getPropertyData(object, propNameOrValue, create) {
         if (!_.isUndefined(propData))
             return propData;
     }
-    */
+    
+    if (!create)
+        return undefined;
+    
+    var origValue = prop.value;
+    if (_.isFunction(origValue)) {
+        var slots = [];        
+        var newValue = object[prop.name] = function() {
+            var args = arguments;
+            origValue.apply(object, args);
+            _.each(slots, function(slot) {
+                slot.value.apply(slot.receiver, args);
+            });                        
+        }
+        
+        return newValue.__data = {
+            slots: slots, // slots connected to this function
+            signals: [], // signals connected to this function
+            originalValue: origValue,
+            owner: object
+        };
+    }
+    
+    // TODO: add implementations for other property types.
+    return undefined;
 }
+
+unittest(function(assert) {
+    var fooCalled = 0;
+    var Foo = function() {
+        this.foo = function() {
+            ++fooCalled;
+        }
+    }
+    Foo.prototype.bar = function() {
+    }
+    var foo = new Foo();
+    var origFoo = foo.foo;
+    var data = getPropertyData(foo, "foo");
+    assert.ok(data.originalValue === origFoo);
+    assert.ok(origFoo !== foo.foo);
+    data.x = 42;
+    data = getPropertyData(foo, foo.foo);
+    assert.ok(data.x == 42);
+    data = getPropertyData(foo, data.originalValue);
+});
 
 /*
 function normalizeArgs(sender, signalName, receiver, slotOrSlotName, call) {
