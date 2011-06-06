@@ -43,7 +43,7 @@ define(deps, function(dojo, global) {
     });
     
     socket.on("disconnect", function() {
-        alert("we are disconnected!");
+        console.log("we are disconnected!");
     });
     
     socket.connect();    
