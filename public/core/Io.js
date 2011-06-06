@@ -42,6 +42,10 @@ define(deps, function(dojo, global) {
         }
     });
     
+    socket.on("disconnect", function() {
+        alert("we are disconnected!");
+    });
+    
     socket.connect();    
     return handler;
 });
