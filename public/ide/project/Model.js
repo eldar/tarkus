@@ -7,13 +7,13 @@ var deps = [
     "ide/project/Nodes"
 ];
 
-define(deps, function(dojo, global, socketIo, ModelBase, openDocs, nodes) {
+define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
 
     var Node = nodes.Node;
 
     var ROOT_NAME = "root-node";
     
-    var ProjectModel = dojo.declare(ModelBase, {
+    var ProjectModel = dojo.declare(Model.ModelBase, {
         currentNode: null,
         currentProject: null,
         

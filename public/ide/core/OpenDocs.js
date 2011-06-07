@@ -4,7 +4,7 @@ define([
     "core/Io",
     "core/ModelBase",
     "ide/core/Editor"
-], function(dojo, global, socketIo, ModelBase, editor) {
+], function(dojo, global, socketIo, Model, editor) {
 
     var getCurrentDelta = function(session) {
         var stack = session.getUndoManager().$undoStack;
@@ -33,7 +33,7 @@ define([
         }
     });
     
-    var OpenDocuments = dojo.declare(ModelBase, {
+    var OpenDocuments = dojo.declare(Model.ModelBase, {
         constructor: function() {
             this._fakeRoot = new Document(null, null);
             this._fakeRoot.children = [];
@@ -50,7 +50,7 @@ define([
         getLabel: function(item) {
             var node = item.node;
             if(node) {
-                return node.name + (item.isModified() ? "*" : "");
+                return (item.isModified() ? "*" : "") + node.name;
             }
             else {
                 return "";

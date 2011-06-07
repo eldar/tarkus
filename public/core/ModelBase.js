@@ -1,5 +1,8 @@
-define(["dojo"], function() {
-    return dojo.declare(null, {
+define([
+    "dojo",
+    "core/Global"
+], function(dojo, global) {
+    var ModelBase = dojo.declare(null, {
         // reimplementation of dijit.tree.model
 
         getRoot: function(onItem, onError) {
@@ -36,4 +39,34 @@ define(["dojo"], function() {
 			}));
 		}
     });
+    
+    var ListModel = dojo.declare(ModelBase, {
+        constructor: function() {
+            this._root = {
+                children: []
+            };
+        },
+        
+        root: function() {
+            return this._root;
+        },
+        
+        setData: function(data) {
+            var children = [];
+            _.each(data, function(name) {
+                var item = {
+                    name: name
+                };
+                global.makeUnique(item, "lw_");
+                children.push(item);
+            });
+            this.root().children = children;
+            this.notifyChildrenChanged(this.root());
+        }
+    });
+    
+    return {
+        ModelBase: ModelBase,
+        ListModel: ListModel
+    }
 })

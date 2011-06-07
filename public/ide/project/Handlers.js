@@ -1,7 +1,8 @@
-var deps = [
+define([
     "dojo",
     "core/Global",
     "core/Io",
+    "core/ModelBase",
     "util/sprintf",
     "ui/TemplatedWidget",
     "dijit/Dialog",
@@ -10,32 +11,63 @@ var deps = [
     "ide/core/OpenDocs",
     "ide/project/Model",
     "ide/project/Tree",
-    "text!ide/project/OpenProjectDialog.html"
-];
+    "text!ide/project/OpenProjectDialog.html",
+    "dijit/Tree",
+    "dijit/layout/ContentPane"
+], function(dojo, global, socketIo, Model, str, TemplatedWidget, Dialog,
+            Button, actions, openDocs, model, tree, OpenProjectTemplate, Tree) {
 
-define(deps, function(dojo, global, socketIo, str, TemplatedWidget, Dialog, Button, actions, openDocs, model, tree, OpenProjectTemplate) {
-
-//dijit.getEnclosingWidget(this.domNode.parentNode)
-    var openDialog = new dijit.Dialog({
+    var OpenDialog = dojo.declare(Dialog, {
         content: new TemplatedWidget({
-            templateString: OpenProjectTemplate
+            templateString: OpenProjectTemplate,
+            
+            postCreate: function() {
+               var self = this;
+               this.listData = new Model.ListModel();
+               this.list = new Tree({
+                   model: this.listData,
+                   autoExpand: false,
+                   showRoot: false,
+                   persist: false,
+                   getIconClass: function() { return ""; },
+                   onDblClick: function() {
+                       self.getParent().hide();
+                       self.onOk();
+                   }
+               }, this.listWidgetNode);
+            },
+            
+            getParent: function() {
+                return dijit.getEnclosingWidget(this.domNode.parentNode);
+            },
+            
+            onOk: function() {
+                var name = _.last(this.list.get("path")).name;
+                this.getParent().itemSelected(name);
+            }
         }),
-        
+
         title: "Open Project",
         
-        style: "width: 200px"
+        style: "width: 200px;"
     });
+    
+    var openDialog = new OpenDialog();
 
     openDialog.startup();
-
-    dojo.connect(actions.file.openProject, "triggered", function() {
-        //openDialog.show();
-        var name = prompt("Please, specify project name");
+    dojo.connect(openDialog, "itemSelected", function(name) {
         if(!name)
             return;
         model.openProject(name, function(node) {
             var treeNodes = tree.getNodesByItem(node);
             tree._expandNode(_.first(treeNodes), false);
+        });
+    });
+
+    dojo.connect(actions.file.openProject, "triggered", function() {
+        socketIo.request("getProjectList", {}, function(e) {
+            openDialog.content.listData.setData(e.data.list);
+            openDialog.show();
         });
     });
     
@@ -94,71 +126,8 @@ define(deps, function(dojo, global, socketIo, str, TemplatedWidget, Dialog, Butt
     });
     
 /*        
-        var OpenProjectDialog = _.inherits(Object, {
-            constructor: function() {
-                this.self = $("#open-project-dialog");
-                var self = this;
-                this.self.dialog({
-                    height: 300,
-                    modal: true,
-                    autoOpen: false,
-                    buttons: {
-                        "Ok": function() { self._onOk() },
-                        "Cancel": function() { self._onCancel(); }
-                    }
-                });
-                this.projectList = this.self.find("#project-list");
-                this.projectList.listWidget();
-            },
-            
-            run: function(callback) {
-                this._onFinish = callback;
-                this.projectList.listWidget("clear");
-                this.self.dialog("open");
-                var self = this;
-                socketIo.request("getProjectList", {}, function(e) {
-                    _.each(e.data.list, function(elem) {
-                        self.projectList.listWidget("createNode", "last", { "data" : { "title" : elem } });
-                    });
-                });
-            },
-            
-            _close: function(value) {
-                this.self.dialog("close");
-                this._onFinish(value);
-            },
-            
-            _onOk: function() {
-                var list = this.projectList;
-                this._close(list.listWidget("getTitle", list.listWidget("selectedNode")));
-            },
-            
-            _onCancel: function() {
-                this._close("");
-            }
-        });
-        
-        var openProjectDialog = new OpenProjectDialog();
-        
-        var mainMenu = global.mainMenu;
-        
-        mainMenu.addCallback("open-project", function() {
-            openProjectDialog.run(function(project) {
-                if(project)
-                    model.openProject(project);
-            });
-        });
-
         mainMenu.addCallback("close-project", function() {
             model.closeCurrentProject();
-        });
-        
-        mainMenu.addCallback("rename-node", function() {
-            model.triggerRename();
-        });
-
-        mainMenu.addCallback("remove-node", function() {
-            model.triggerRemove();
         });
 */
 
