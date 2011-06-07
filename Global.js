@@ -49,7 +49,11 @@ _.mixin({
         subClass.superProto = superClass.prototype;            
          
         return subClass;
-    },    
+    },
+    
+    isUndefinedOrNull: function(value) {
+        return _.isUndefined(value) || value === null;
+    }    
 });
 
 exports._ = _;

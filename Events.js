@@ -2,7 +2,7 @@ var _ = require("./Global")._;
 var unittest = require("./Unittest");
 
 function resolvePropertyReference(object, propNameOrValue, pred) {
-
+    
     var result = {};
     var origObject = object;
     
@@ -22,8 +22,8 @@ function resolvePropertyReference(object, propNameOrValue, pred) {
         if (_.isUndefined(result.value))
             throw new Error(origObject + " has no property \"" + propValueOrName + "\"");
         
-    } else { // propNameOrValue is not a property name, try to match it against a property value 
-               
+    } else { // propNameOrValue is not a property name, try to match it against a property value
+    
         if (_.isUndefined(pred)) {
             pred = function(value) {
                 var propData = value.__data;                
@@ -89,6 +89,9 @@ unittest(function(assert) {
 
 function getPropertyData(object, propNameOrValue, create) {
 
+    if (_.isUndefinedOrNull(object))
+        object = global;
+
     if (!_.isString(propNameOrValue)) {
         var propData = prop.__data;
         if (propData && propData.owner === object)
@@ -97,7 +100,7 @@ function getPropertyData(object, propNameOrValue, create) {
 
     if (_.isUndefined(create))
         create = true;
-
+        
     prop = resolvePropertyReference(object, propNameOrValue);
     
     if (prop.isOwnProperty) {
@@ -123,13 +126,60 @@ function getPropertyData(object, propNameOrValue, create) {
         return newValue.__data = {
             slots: slots, // slots connected to this function
             signals: [], // signals connected to this function
+            wasOwnProperty: prop.isOwnProperty,
             originalValue: origValue,
-            owner: object
+            owner: object            
         };
     }
     
     // TODO: add implementations for other property types.
     return undefined;
+}
+
+function deletePropertyData(propertyData) {
+    
+    var origValue = propData.originalValue;
+    if (_.isFunction(origValue)) {
+        //TODO: disconnect signals/slots
+    }
+    
+    var owner = propData.owner;     
+    if (propData.wasOwnProperty)
+        owner[propName] = origValue;
+    else
+        delete owner[propName];
+}
+
+function connectAdapted(signalData, slotData) {
+}
+
+function disconnectAdapted(signalData, slotData) {
+}
+
+function adaptArgs(sender, signalNameOrValue, slot, slotNameOrValue, next) {
+
+    function adjustContext(object, propNameOrValue, next) {
+                   
+        
+        return getPropertyData(object, propNameOrValue);
+    }
+    
+    if (_.isUndefined(slotNameOrValue)) {
+        slotNameOrValue = slot;
+        slot = undefined;
+    }
+    
+    var signalData = adjustContext(sender, signalNameOrValue);
+    var slotData = adjustContext(slot, slotNameOrValue);
+    next(signal, slot);
+}
+
+function connect(sender, signalNameOrValue, slot, slotNameOrValue) {
+    adaptArgs(sender, signalNameOrValue, slot, slotNameOrValue, connectAdapted);
+}
+
+function connect(sender, signalNameOrValue, slot, slotNameOrValue) {
+    adaptArgs(sender, signalNameOrValue, slot, slotNameOrValue, disconnectAdapted);
 }
 
 unittest(function(assert) {
@@ -149,7 +199,10 @@ unittest(function(assert) {
     data.x = 42;
     data = getPropertyData(foo, foo.foo);
     assert.ok(data.x == 42);
-    data = getPropertyData(foo, data.originalValue);
+    data = getPropertyData(foo, origFoo);
+    assert.ok(data.x == 42);
+    
+    
 });
 
 /*
