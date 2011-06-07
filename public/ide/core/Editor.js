@@ -8,6 +8,7 @@ var deps = [
     "ace/edit_session",
     "ace/mode/javascript",
     "ace/mode/css",
+    "ace/mode/html",
     "ace/mode/text",
     "ace/undomanager",
     "core/Global",
@@ -16,7 +17,7 @@ var deps = [
     
 
 define(deps, function(dojo, canon, event, editor, renderer,
-    theme, editSession, jsMode, cssMode, textMode, undoManager, global, mainArea) {
+    theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, mainArea) {
 
     var Editor = editor.Editor;
     var Renderer = renderer.VirtualRenderer;
@@ -24,6 +25,7 @@ define(deps, function(dojo, canon, event, editor, renderer,
 
     var JavaScriptMode = jsMode.Mode;
     var CssMode = cssMode.Mode;
+    var HtmlMode = htmlMode.Mode;
     var TextMode = textMode.Mode;
     var UndoManager = undoManager.UndoManager;
 
@@ -72,6 +74,9 @@ define(deps, function(dojo, canon, event, editor, renderer,
                 break;
             case "css":
                 mode = new CssMode();
+                break;
+            case "html":
+                mode = new HtmlMode();
                 break;
             default:
                 mode = new TextMode();

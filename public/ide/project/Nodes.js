@@ -53,6 +53,7 @@ define([
             switch(ext) {
                 case "js":
                 case "css":
+                case "html":
                     dType = ext;
                     break;
                 default:

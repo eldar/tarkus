@@ -38,6 +38,8 @@ define([
                     icon = "icons/images/js.png"; break;
                 case "css":
                     icon = "icons/images/css.png"; break;
+                case "html":
+                    icon = "icons/images/html.png"; break;
                 default:
                     icon = "icons/images/unknown.png"; break;
             }
