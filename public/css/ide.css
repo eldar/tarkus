@@ -10,7 +10,9 @@ html, body {
 
 #mainLayout { width: 100%; height: 100%; }
 
-.dijitMenuItemLabel, .dijitMenuItem {
+.dijitMenuItemLabel, .dijitMenuItem, .dijitButton,
+.dijitButtonNode, .dijitButtonNode .dijitReset,
+.dijitTree {
     outline: none;
     cursor: default;
 }
@@ -61,4 +63,43 @@ html, body {
 
 .close-button:active {
     background-position: 28px 0;
+}
+
+/* Toolbutton style */
+
+.claro .dijitToolButton .dijitButtonNode {
+	padding:3px 3px 3px 3px;
+	border: 0px;
+}
+
+/* hover status */
+.claro .dijitToolButtonHover .dijitButtonNode {
+	border: 1px solid #bbbbbb;
+	padding:2px 2px 2px 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+/* checked status */
+.claro .dijitToolButtonActive .dijitButtonNode {
+	background-color: #cccccc;
+	border: 1px solid #bbbbbb;
+	padding:2px 2px 2px 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+/* disabled status */
+
+.claro .dijitToolButtonDisabled {
+	background-image: none;
+	outline: none;
+}
+
+.claro .dijitToolButtonDisabled .dijitButtonNode { 
+	background-position:0 -149px;
+	background-color: @disabled-background-color;
+	border: solid 1px @disabled-border-color;
+	color: @disabled-text-color;
+	.box-shadow(0 0 0 rgba(0,0,0,0));
 }

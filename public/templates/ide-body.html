@@ -1,5 +1,5 @@
 <div dojoType="dijit.layout.BorderContainer" design="headline" gutters="false" liveSplitters="true" id="mainLayout">
-    <div id="header" data-dojo-type="dijit.MenuBar" data-dojo-props="region:'top'" id="menuBar">
+    <div data-dojo-type="dijit.MenuBar" data-dojo-props="region:'top'" id="menuBar">
         <div data-dojo-type="dijit.PopupMenuBarItem">
             <span>File</span>
             <div data-dojo-type="dijit.Menu" id="fileMenu"></div>
@@ -8,11 +8,12 @@
             <span>Edit</span>
             <div data-dojo-type="dijit.Menu" id="editMenu"></div>
         </div>
+        <span dojoType="dijit.ToolbarSeparator"></span>
     </div>
     <div dojoType="dijit.layout.ContentPane" splitter="true" region="left" style="width: 200px; padding: 0px;" id="leftPane">
         <div dojoType="dijit.layout.BorderContainer" design="headline" gutters="false" liveSplitters="true" id="leftLayout">
-            <div dojoType="dijit.layout.ContentPane" splitter="true" region="top" style="padding: 0px; height:50%" id="leftTopPane" class="rightBottomBorder"></div>
-            <div dojoType="dijit.layout.ContentPane" splitter="true" region="center" style="padding: 0px; height:50%" id="leftBottomPane" class="rightTopBorder"></div>
+            <div dojoType="dijit.layout.ContentPane" splitter="true" region="top" style="padding: 0px; height:65%" id="leftTopPane" class="rightBottomBorder"></div>
+            <div dojoType="dijit.layout.ContentPane" splitter="true" region="center" style="padding: 0px; height:35%" id="leftBottomPane" class="rightTopBorder"></div>
         </div>
     </div>
     <div dojoType="dijit.layout.ContentPane" splitter="true" region="center" style="padding: 0px;" id="centerPane" class="leftBorder">
