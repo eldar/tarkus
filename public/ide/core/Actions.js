@@ -5,7 +5,7 @@ define(["ui/Action"], function (Action) {
             newFile: new Action({ label: "New File..."}),
             newFolder: new Action({ label: "New Folder..."}),
             openProject: new Action({ label: "Open Project..."}),
-            save: new Action({ label: "Save", disabled: true }),
+            save: new Action({ label: "Save", iconClass: "dijitEditorIcon dijitEditorIconSave", disabled: true }),
             closeProject: new Action({ label: "Close Project"}),
         },
         edit: {

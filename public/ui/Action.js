@@ -1,10 +1,11 @@
 var deps = [
     "dojo",
     "dojo/Stateful",
-    "dijit/MenuItem"
+    "dijit/MenuItem",
+    "ui/ToolButton"
 ];
 
-define(deps, function (dojo, Stateful, MenuItem) {
+define(deps, function (dojo, Stateful, MenuItem, ToolButton) {
 
     dojo.declare("Action", Stateful, {
 
@@ -29,7 +30,18 @@ define(deps, function (dojo, Stateful, MenuItem) {
             var itemParams = dojo.mixin(this._params, {
                 onClick: dojo.hitch(this, "triggered")
             }, params);
-            var item = MenuItem(itemParams, srcNodeRef);
+            var item = new MenuItem(itemParams, srcNodeRef);
+            this._widgets.push(item);
+            return item;
+        },
+        
+        makeToolButton: function(params, srcNodeRef) {
+            var itemParams = dojo.mixin(this._params, {
+                onClick: dojo.hitch(this, "triggered")
+            }, params);
+            var item = new ToolButton(dojo.mixin(itemParams, {
+                showLabel: false // even turned off by default in ToolButton class, for some reason it shows up, thus enforce it
+            }), srcNodeRef);
             this._widgets.push(item);
             return item;
         },
