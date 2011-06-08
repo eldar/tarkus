@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+var optParser = require("./OptionParser");
+
+var schema = {
+    stopOnArgument: 2,
+    definitions: [
+        { short: 'v', long: 'verbose', attributes: '+', brief: 'Verbosity levels (can be used repeatedly).' },
+    ]
+}
+
+var options = optParser.parse(process.argv, schema);
