@@ -1,12 +1,43 @@
 #!/usr/bin/env node
 
 var optParser = require("./OptionParser");
+var _ = require("./Global")._;
+var path = require("path");
 
-var schema = {
+var appName = "tarkus";
+var commandPath = "./" + appName + "Commands";
+
+var commands = [
+    { name: "init", moduleName: "Init", brief: "Create an environment" }
+];
+
+var schema = {    
     stopOnArgument: 2,
     definitions: [
-        { short: 'v', long: 'verbose', attributes: '+', brief: 'Verbosity levels (can be used repeatedly).' },
+        { short: "h", long: "help", brief: "Print this message", callback: function(parser) {
+            console.log("Usage: " + appName + " [options] command [command options]");
+            console.log("Options:");
+            parser.printOptions();
+            console.log("Commands:");
+            _.each(commands, function(command) {
+                console.log("\t" + command.name + "\t" + command.brief);
+            });
+        }}
     ]
 }
 
 var options = optParser.parse(process.argv, schema);
+
+/*
+var commandName = process.argv[2];
+_.each(commands, function(command) {    
+    if (command.name == ) {
+        require(path.join(path));
+    }
+    throw new Error("Unknown command " + command.name + ");
+}
+*/
+
+
+
+

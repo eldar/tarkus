@@ -53,7 +53,47 @@ _.mixin({
     
     isUndefinedOrNull: function(value) {
         return _.isUndefined(value) || value === null;
-    }    
+    },
+    
+    /*
+        Inserts elements of the source array at the specified index
+        into the target array. If the position is not specified, the elements of the source array
+        will be appended to the end of the target array.
+    */
+    insert: function(target, source, index) {        
+        var len = source.length;                
+        if (len > 0) {
+            if (_.isUndefined(index))
+                index = target.length;            
+            target.length += len;
+            
+            console.log("index: ", index, ", len: ", len);            
+            _.move(target, index + len, index, target.len - index);     
+            for (var i = 0; i < len; ++i, ++index)
+                target[index] = source[i];
+        }
+    },
+    
+    /*
+        Copies count elements of the supplied array from sourceIndex to
+        targetIndex. Target and source aray segments are allowed to overlap.
+    */
+    move: function(array, targetIndex, sourceIndex, count) {
+        if (_.isUndefined(count))
+            count = array.length - sourceIndex;
+        else if (targetIndex == sourceIndex || count == 0)
+            return;
+            
+        if (targetIndex < sourceIndex) {
+            for (; count > 0; --count)
+                array[targetIndex++] = array[sourceIndex++];
+        } else {
+            targetIndex += count;
+            sourceIndex += count;
+            for (; count > 0; --count)
+                array[targetIndex--] = array[sourceIndex--];
+        }
+    }
 });
 
 exports._ = _;
