@@ -1,11 +1,12 @@
 define([
     "dojo",
     "ide/core/MainArea",
+    "ide/core/Actions",
     "ide/core/OpenDocs",
     "ide/project/Nodes",
     "ide/project/Model",
     "dijit/Tree"
-], function(dojo, mainArea, openDocs, nodes, model, Tree) {
+], function(dojo, mainArea, actions, openDocs, nodes, model, Tree) {
 
     var Type = nodes.Type;
     
@@ -48,8 +49,14 @@ define([
         
         onDblClick: function(node) {
             model.openAndSelectDocument(node);
-        }
+        },
         
+        onClick: function(node) {
+            var action = actions.file.closeProject;
+            action.set("label", 'Close Project "' + node.getProject().name + '"');
+            action.set("disabled", false);
+            model.updateCurrentProject(node);
+        }
     });
     tree.placeAt(mainArea.left.top.domNode);
     return tree;

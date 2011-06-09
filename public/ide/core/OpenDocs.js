@@ -105,9 +105,7 @@ define([
         },
         
         closeDocumentByNode: function(node) {
-            var doc = this.docByNode(node);
-            if(doc)
-                this.closeDocument(doc.id);
+            this.closeDocument(this.docByNode(node));
         },
         
         closeDocument: function(doc) {

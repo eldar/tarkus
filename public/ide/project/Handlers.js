@@ -125,10 +125,7 @@ define([
         updateSaveSensitivity(doc);
     });
     
-/*        
-        mainMenu.addCallback("close-project", function() {
-            model.closeCurrentProject();
-        });
-*/
-
+    dojo.connect(actions.file.closeProject, "triggered", function() {
+        model.closeCurrentProject();
+    });
 });

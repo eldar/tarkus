@@ -115,6 +115,10 @@ define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
             }
         },
         
+        updateCurrentProject: function(node) {
+            this.currentProject = node.getProject();
+        },
+        
         closeCurrentProject: function() {
             var project = this.currentProject;
             if(!project)
@@ -122,14 +126,9 @@ define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
             project.iterate(function(node) {
                 openDocs.closeDocumentByNode(node);
             });
-            this.removeNode(project);
+            project.setParent(null);
             this.currentProject = null;
-        },
-        
-        removeNode: function(node) {
-            var siblings = node.parent.children;
-//            this.trigger("trigger_remove", node);
-            node.setParent(null);
+            this.notifyChildrenChanged(this.root());
         },
         
         renameNode: function(id, newName) {
@@ -142,27 +141,9 @@ define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
             if(foundSame)
                 return false;
             node.setName(newName);
-            // change syntax highlighting
-//            this.trigger("nodeRenamed", node);
             return true;
         }
     });
     
-    var model = new ProjectModel;
-/*
-    model.bind("currentNodeChanged", function(node) {
-        // setting file in the open docs model
-        if(node.isDocument())
-            openDocs.setCurrentDocument(node);
-
-        // update Close Project menu item
-        global.mainMenu.setActionText("close-project", 'Close Project "' + node.getProject().name + '"');
-    });
-
-    model.bind("nodeRenamed", function(node) {
-        if(node.isDocument())
-            openDocs.handleNodeRenamed(node);
-    });
-*/    
-    return model;
+    return new ProjectModel;
 });
