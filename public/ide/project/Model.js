@@ -119,16 +119,41 @@ define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
             this.currentProject = node.getProject();
         },
         
-        closeCurrentProject: function() {
+        closeCurrentProject: function(prompt) {
             var project = this.currentProject;
             if(!project)
                 return;
+            var allDocs = [];
             project.iterate(function(node) {
-                openDocs.closeDocumentByNode(node);
+                var doc = openDocs.docByNode(node);
+                if(doc)
+                    allDocs.push(doc);
             });
-            project.setParent(null);
-            this.currentProject = null;
-            this.notifyChildrenChanged(this.root());
+            
+            var self = this;
+            var doClose = function() {
+                project.setParent(null);
+                self.currentProject = null;
+                self.notifyChildrenChanged(self.root());
+            };
+            
+            var unsavedDocs = _.filter(allDocs, function(doc) { return doc.isModified(); });
+            if(unsavedDocs.length > 0) {
+                prompt(_.map(unsavedDocs, function(doc) { return doc.name(); }), function(save, forSave) {
+                    if(save) {
+                        _.each(unsavedDocs, function(doc, i) {
+                            if(forSave[i])
+                                openDocs.saveDocument(doc);
+                        });
+                    }
+                    _.each(unsavedDocs, function(doc, i) {
+                        openDocs.closeDocument(doc);
+                    });
+                    doClose();
+                });
+            } else {
+                doClose();
+            }
         },
         
         renameNode: function(id, newName) {

@@ -6,16 +6,16 @@ define([
     "util/sprintf",
     "ui/TemplatedWidget",
     "dijit/Dialog",
-    "dijit/form/Button",
     "ide/core/Actions",
     "ide/core/OpenDocs",
+    "ide/core/ConfirmDialog",
     "ide/project/Model",
     "ide/project/Tree",
     "text!ide/project/OpenProjectDialog.html",
     "dijit/Tree",
     "dijit/layout/ContentPane"
 ], function(dojo, global, socketIo, Model, str, TemplatedWidget, Dialog,
-            Button, actions, openDocs, model, tree, OpenProjectTemplate, Tree) {
+            actions, openDocs, confirmDialog, model, tree, OpenProjectTemplate, Tree) {
 
     var OpenDialog = dojo.declare(Dialog, {
         content: new TemplatedWidget({
@@ -53,8 +53,8 @@ define([
     });
     
     var openDialog = new OpenDialog();
-
     openDialog.startup();
+
     dojo.connect(openDialog, "itemSelected", function(name) {
         if(!name)
             return;
@@ -112,7 +112,7 @@ define([
         saveAct.set("disabled", doc ? !doc.isModified() : true);
     };
     dojo.connect(saveAct, "triggered", function() {
-        openDocs.saveNode();
+        openDocs.saveCurrentDocument();
     });
     dojo.connect(openDocs, "onChange", function(doc) {
         updateSaveSensitivity(doc);
@@ -126,6 +126,6 @@ define([
     });
     
     dojo.connect(actions.file.closeProject, "triggered", function() {
-        model.closeCurrentProject();
+        model.closeCurrentProject(dojo.hitch(confirmDialog.multi, "promptClose"));
     });
 });

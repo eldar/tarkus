@@ -1,13 +1,13 @@
 define([
     "dojo",
-    "ide/core/OpenDocs",
     "dijit/Tree",
+    "ide/core/OpenDocs",
     "ide/core/MainArea",
-], function(dojo, openDocs, Tree, mainArea) {
-
+    "ide/core/ConfirmDialog"
+], function(dojo, Tree, openDocs, mainArea, confirmDialog) {
+    
     var ClosableNode = dojo.declare(dijit._TreeNode, {
         postCreate: function() {
-            console.log(this.rowNode);
             var button = dojo.create("div", {
                 style: {
                     float: "right",
@@ -26,7 +26,7 @@ define([
             });
             
             dojo.connect(button, "onclick", dojo.hitch(this, function(event) {
-                openDocs.closeDocument(this.item);
+                openDocs.closeDocumentPrompt(this.item, dojo.hitch(confirmDialog.single, "promptClose"));
                 dojo.stopEvent(event);
             }));
         }

@@ -25,7 +25,7 @@ define([
         },
         
         name: function() {
-            return node.name;
+            return this.node.name;
         },
         
         isModified: function() {
@@ -104,19 +104,32 @@ define([
             return null;
         },
         
-        closeDocumentByNode: function(node) {
-            this.closeDocument(this.docByNode(node));
+        closeDocumentPrompt: function(doc, prompt) {
+            if(!doc)
+                return;
+            
+            var self = this;
+            if(doc.isModified()) {
+                prompt(doc.name(), function(save) {
+                    if(save)
+                        self.saveDocument(doc);
+                    self.closeDocument(doc);
+                });
+            } else {
+                this.closeDocument(doc);
+            }
         },
         
         closeDocument: function(doc) {
-            if(!doc)
-                return;
             var isSelected = (doc == this._currentDoc);
+
+            // delete document from the model
             var list = this.list();
             var i = list.indexOf(doc);
             list.splice(i, 1);
             this.notifyChildrenChanged(this.root());
 
+            // hide the Editor widget and set current document to null
             if(list.length == 0) {
                 var ace = editor.current();
                 ace.editor.setSession(editor.getEmptySession());
@@ -125,6 +138,8 @@ define([
                 this.currentDocChanged(null);
                 return;
             }
+            
+            // select next document after the closed one
             if(isSelected) {
                 var nextIndex = (i == list.length) ? (i - 1) : i;
                 this.setCurrentDocument(list[nextIndex]);
@@ -140,10 +155,13 @@ define([
             this.onChange(doc);
         },
         
-        saveNode: function() {
+        saveCurrentDocument: function() {
             var doc = this._currentDoc;
-            if(!doc)
-                return;
+            if(doc)
+                this.saveDocument(doc);            
+        },
+        
+        saveDocument: function(doc) {
             if(!doc.isModified())
                 return;
             doc.setInitialSaveState();
