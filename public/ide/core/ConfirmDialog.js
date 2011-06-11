@@ -29,12 +29,7 @@ define([
     
     var CheckableNode = dojo.declare(dijit._TreeNode, {
         postCreate: function() {
-            this.checkBox = new dijit.form.CheckBox({
-                checked: true,
-                onChange: function(b) {
-//                    alert('onChange called with parameter = ' + b + ', and widget value = ' + checkBox.attr('value'));
-                }
-            });
+            this.checkBox = new dijit.form.CheckBox({ checked: true });
             this.checkBox.placeAt(this.expandoNode, "after")
         }
     });
