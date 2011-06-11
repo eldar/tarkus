@@ -1,10 +1,10 @@
 define([
     "dojo",
-    "dijit/Tree",
+    "ui/List",
     "ide/core/OpenDocs",
     "ide/core/MainArea",
     "ide/core/ConfirmDialog"
-], function(dojo, Tree, openDocs, mainArea, confirmDialog) {
+], function(dojo, List, openDocs, mainArea, confirmDialog) {
     
     var ClosableNode = dojo.declare(dijit._TreeNode, {
         postCreate: function() {
@@ -32,11 +32,7 @@ define([
         }
     });
 
-    var OpenWidget = dojo.declare(Tree, {
-        autoExpand: false,
-        showRoot: false,
-        persist: false,
-        
+    var OpenWidget = dojo.declare(List, {
         constructor: function(params) {
             dojo.connect(params.model, "currentDocChangedForView", dojo.hitch(this, function(doc) {
                 if(doc)
@@ -44,10 +40,6 @@ define([
             }));
         },
         
-        getIconClass: function(node, opened) {
-            return "";
-        },
-      
         onClick: function(doc) {
             openDocs.setCurrentDocument(doc);
         },

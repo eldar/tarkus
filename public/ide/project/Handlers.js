@@ -5,17 +5,16 @@ define([
     "core/ModelBase",
     "util/sprintf",
     "ui/TemplatedWidget",
+    "ui/List",
     "dijit/Dialog",
     "ide/core/Actions",
     "ide/core/OpenDocs",
     "ide/core/ConfirmDialog",
     "ide/project/Model",
     "ide/project/Tree",
-    "text!ide/project/OpenProjectDialog.html",
-    "dijit/Tree",
-    "dijit/layout/ContentPane"
-], function(dojo, global, socketIo, Model, str, TemplatedWidget, Dialog,
-            actions, openDocs, confirmDialog, model, tree, OpenProjectTemplate, Tree) {
+    "text!ide/project/OpenProjectDialog.html"
+], function(dojo, global, socketIo, Model, str, TemplatedWidget, List, Dialog,
+            actions, openDocs, confirmDialog, model, tree, OpenProjectTemplate) {
 
     var OpenDialog = dojo.declare(Dialog, {
         content: new TemplatedWidget({
@@ -24,12 +23,8 @@ define([
             postCreate: function() {
                var self = this;
                this.listData = new Model.ListModel();
-               this.list = new Tree({
+               this.list = new List({
                    model: this.listData,
-                   autoExpand: false,
-                   showRoot: false,
-                   persist: false,
-                   getIconClass: function() { return ""; },
                    onDblClick: function() {
                        self.getParent().hide();
                        self.onOk();
