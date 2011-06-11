@@ -132,6 +132,9 @@ define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
             
             var self = this;
             var doClose = function() {
+                _.each(allDocs, function(doc, i) {
+                    openDocs.closeDocument(doc);
+                });
                 project.setParent(null);
                 self.currentProject = null;
                 self.notifyChildrenChanged(self.root());
@@ -146,9 +149,6 @@ define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
                                 openDocs.saveDocument(doc);
                         });
                     }
-                    _.each(unsavedDocs, function(doc, i) {
-                        openDocs.closeDocument(doc);
-                    });
                     doClose();
                 });
             } else {
