@@ -31,6 +31,7 @@ There are three areas of styling for the Menu:
 */
 .claro .dijitMenuBar {
   border: 1px solid #b5bcc7;
+  border-top-width: 0;
   margin: 0;
   padding: 0;
   background-color: #efefef;
@@ -44,7 +45,7 @@ There are three areas of styling for the Menu:
 .claro .dijitMenu {
   background-repeat: repeat-y;
   background-color: #ffffff;
-  border: 1px solid #769dc0;
+  border: 1px solid #999999;
   /* so adjoining borders of MenuBar/ComboBox and Menu overlap, avoiding double border */
 
   margin: -1px 0;
@@ -76,11 +77,10 @@ There are three areas of styling for the Menu:
 }
 /* hover over a MenuBarItem */
 .claro .dijitMenuPassive .dijitMenuItemHover, .claro .dijitMenuPassive .dijitMenuItemSelected {
-  background-color: #abd6ff;
-  border: solid 1px #769dc0;
-  background-position: 0 0;
+  background-color: #cfe5fa;
+  border: solid 0px #cfe5fa;
   color: #000000;
-  padding: 5px 9px 6px;
+  padding: 6px 10px 7px;
 }
 .claro .dijitMenuPassive .dijitMenuItemActive {
   background-position: 0 -177px;
@@ -90,10 +90,9 @@ There are three areas of styling for the Menu:
 }
 /* MenuBarItem that has been selected and menu drops down from it */
 .claro .dijitMenuActive .dijitMenuItemHover, .claro .dijitMenuActive .dijitMenuItemSelected {
-  border: solid 1px #769dc0;
+  border: solid 1px #cfe5fa;
   padding: 5px 9px 6px;
-  background-color: #abd6ff;
-  background-position: 0 0;
+  background-color: #cfe5fa;
   color: #000000;
 }
 .dj_ie .claro .dijitMenuActive .dijitMenuItemHover,
@@ -105,7 +104,7 @@ There are three areas of styling for the Menu:
   margin-top: -3px;
 }
 .claro .dijitMenuActive .dijitMenuItemActive {
-  background-color: #7dbefa;
+  background-color: #abd6ff;
   background-position: 0 -177px;
 }
 .claro .dijitMenuItemActive {
@@ -171,7 +170,7 @@ There are three areas of styling for the Menu:
 .claro .dijitComboBoxMenu .dijitMenuItemSelected {
   color: #000000;
   border-color: #769dc0;
-  background-color: #abd6ff;
+  background-color: #cfe5fa;
 }
 .claro .dijitComboBoxMenuActive .dijitMenuItemSelected {
   background-position: 0 -177px;

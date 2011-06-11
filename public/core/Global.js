@@ -5,7 +5,6 @@ var deps = [
 ];
 
 define(deps, function() {
-
     return {
         makeUnique: function(obj, prefix) {
             obj.id = _.uniqueId(prefix);

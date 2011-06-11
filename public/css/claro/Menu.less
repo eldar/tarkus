@@ -48,7 +48,7 @@ There are three areas of styling for the Menu:
 .claro .dijitMenu {
 	background-repeat:repeat-y;
 	background-color:@menu-background-color;
-	border: 1px solid @popup-border-color;
+	border: 1px solid #999999;
 
 	/* so adjoining borders of MenuBar/ComboBox and Menu overlap, avoiding double border */
 	margin: -1px 0;
@@ -81,10 +81,9 @@ There are three areas of styling for the Menu:
 .claro .dijitMenuPassive .dijitMenuItemHover,
 .claro .dijitMenuPassive .dijitMenuItemSelected {
 	background-color: @hovered-background-color;
-	border:solid 1px @hovered-border-color;
-	background-position:0 0;
+	border:solid 0px;
 	color:@text-color;
-	padding: 5px 9px 6px;
+	padding: 6px 10px 7px;
 }
 .claro .dijitMenuPassive .dijitMenuItemActive{
 	background-position:0 -177px;
@@ -97,10 +96,9 @@ There are three areas of styling for the Menu:
 /* MenuBarItem that has been selected and menu drops down from it */
 .claro .dijitMenuActive .dijitMenuItemHover,
 .claro .dijitMenuActive .dijitMenuItemSelected {
-	border:solid 1px @hovered-border-color;
-	padding: 5px 9px 6px;
+	border:solid 0px;
+	padding: 6px 10px 7px;
 	background-color: @hovered-background-color;
-	background-position:0 0;
 	color:@hovered-text-color;
 }
 .dj_ie .claro .dijitMenuActive .dijitMenuItemHover,
