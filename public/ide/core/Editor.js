@@ -1,4 +1,4 @@
-var deps = [
+define([
     "dojo",
     "pilot/canon",
     "pilot/event",
@@ -13,10 +13,7 @@ var deps = [
     "ace/undomanager",
     "core/Global",
     "ide/core/MainArea"
-];
-    
-
-define(deps, function(dojo, canon, event, editor, renderer,
+], function(dojo, canon, event, editor, renderer,
     theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, mainArea) {
 
     var Editor = editor.Editor;

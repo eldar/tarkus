@@ -44,9 +44,9 @@ define([
             openDocs.setCurrentDocument(doc);
         },
         
-	    _createTreeNode: function(args){
-		    return new ClosableNode(args);
-	    }
+        _createTreeNode: function(args) {
+            return new ClosableNode(args);
+        }
         
     });
     var tree = new OpenWidget({ model: openDocs });
