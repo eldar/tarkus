@@ -109,8 +109,10 @@ define([
         onEditingFinished: function() {
             if(!this.textBox)
                 return;
+            var newValue = this.textBox.attr("value");
             this.textBox.destroy();
             dojo.style(this.labelNode, { display: "inline"});
+            this.supressEvents = false;
         }        
     });
 
