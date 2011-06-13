@@ -7,9 +7,10 @@ define([
     "ide/project/Nodes",
     "ide/project/Model",
     "dijit/Tree",
+    "dijit/tree/_dndSelector",
     "dijit/Menu",
     "dijit/form/TextBox"
-], function(dojo, FixedTreeNode, mainArea, actions, openDocs, nodes, model, Tree, Menu, TextBox) {
+], function(dojo, FixedTreeNode, mainArea, actions, openDocs, nodes, model, Tree, _dndSelector, Menu, TextBox) {
 
     var selectedItem = null;
 
@@ -35,13 +36,11 @@ define([
         
         onKeyPressHandler: function(e) {
             if(e.charOrCode == dojo.keys.ENTER) {
-//                console.log("enter pressed");
                 this._scheduleFinish();
             }
         },
         
         onBlurHandler: function(e) {
-//            console.log("onblur event");
             this._scheduleFinish();
         },
         
@@ -73,21 +72,19 @@ define([
         },
         
         _onClick: function(e) {
-//            console.log("TreeNode._onClick");
-            if(!this.supressEvents) {
-//                console.log("TreeNode.handling further");
+            if(!this.tree._supressEvents) {
                 this.tree._onClick(this, e);
             }
         },
 
         _onDblClick: function(evt) {
-            if(!this.supressEvents) {
+            if(!this.tree._supressEvents) {
                 this.tree._onDblClick(this, evt);
             }
         },
         
         createEditBox: function() {
-            this.supressEvents = true;
+            this.tree._supressEvents = true;
             var width = this.labelNode.style.width;
             dojo.style(this.labelNode, { display: "none"});
 
@@ -112,10 +109,17 @@ define([
             var newValue = this.textBox.attr("value");
             this.textBox.destroy();
             dojo.style(this.labelNode, { display: "inline"});
-            this.supressEvents = false;
+            this.tree._supressEvents = false;
         }        
     });
 
+    dojo.declare("tarkus._dndSelector", _dndSelector, {
+        onMouseDown: function(e) {
+            if(!this.tree._supressEvents)
+                this.inherited(arguments);
+        }
+    });
+    
     var Type = nodes.Type;
     
     var tree = new Tree({
@@ -123,6 +127,8 @@ define([
         autoExpand: false,
         showRoot: false,
         persist: false,
+        
+        dndController: "tarkus._dndSelector",
         
         _createTreeNode: function(args) {
             return new ProjectNode(args);

@@ -1,7 +1,18 @@
 var fs = require("fs");
 var _ = require("./Global")._;
 
-var PROJECTS_DIR = "/data/tarkus/projects";
+var PROJECTS_DIR = "/var/tarkus/eldar";
+
+var ignoreDirs = [".git", ".hg", ".svn"];
+
+var isValidDirectory = function(name) {
+    var result = true;
+    _.each(ignoreDirs, function(ignored) {
+        if(name === ignored)
+            result = false;
+    });
+    return result;
+}
 
 var HandlerObj = function(socket) {
     this._socket = socket;
@@ -15,7 +26,7 @@ var getDirStructure = function(path) {
     _.each(list, function(elem) {
         var stat = fs.lstatSync(path + "/" + elem);
         console.log(elem);
-        if(stat.isDirectory())
+        if(stat.isDirectory() && isValidDirectory(elem))
             res.dirs[elem] = getDirStructure(path + "/" + elem);
         else if(stat.isFile())
             res.files.push(elem)
