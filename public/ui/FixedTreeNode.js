@@ -1,7 +1,8 @@
 define([
     "dojo",
+    "dijit/Tree"
 ], function(dojo) {
-    return dojo.declare(null, {
+    return dojo.declare(dijit._TreeNode, {
         _trackMouseState: function(/*DomNode*/ node, /*String*/ clazz){
             var hovering=false, active=false;
             this._focused = false;

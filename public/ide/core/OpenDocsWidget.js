@@ -1,12 +1,13 @@
 define([
     "dojo",
     "ui/List",
+    "ui/FixedTreeNode",
     "ide/core/OpenDocs",
     "ide/core/MainArea",
     "ide/core/ConfirmDialog"
-], function(dojo, List, openDocs, mainArea, confirmDialog) {
+], function(dojo, List, FixedTreeNode, openDocs, mainArea, confirmDialog) {
     
-    var ClosableNode = dojo.declare(dijit._TreeNode, {
+    var ClosableNode = dojo.declare(FixedTreeNode, {
         postCreate: function() {
             var button = dojo.create("div", {
                 style: {

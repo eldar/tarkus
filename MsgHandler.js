@@ -84,14 +84,12 @@ HandlerObj.prototype = {
 //            if (err) throw err;
             console.log("read file");
             msg.data = buffer.toString("utf8");
-            console.log(msg.data);
             self._respond(msg);
         });
     },
     
     saveFile: function(msg) {
         var data = msg.data;
-        console.log(data.content);
         var path = this._nodeFullPath(data);
         console.log("writing to file " + path);
         fs.writeFile(path, data.content);

@@ -1,6 +1,7 @@
 define([
     "dojo",
     "ui/FixedTreeNode",
+    "ui/ResizableTextBox",
     "ide/core/MainArea",
     "ide/core/Actions",
     "ide/core/OpenDocs",
@@ -8,9 +9,8 @@ define([
     "ide/project/Model",
     "dijit/Tree",
     "dijit/tree/_dndSelector",
-    "dijit/Menu",
-    "dijit/form/TextBox"
-], function(dojo, FixedTreeNode, mainArea, actions, openDocs, nodes, model, Tree, _dndSelector, Menu, TextBox) {
+    "dijit/Menu"
+], function(dojo, FixedTreeNode, ResizableTextBox, mainArea, actions, openDocs, nodes, model, Tree, _dndSelector, Menu) {
 
     var selectedItem = null;
 
@@ -25,9 +25,8 @@ define([
         label: "Delete",
     }));
     pMenu.startup();
-
-    var TreeEditBox = dojo.declare(TextBox, {
-
+    
+    var TreeEditBox = dojo.declare(ResizableTextBox, {
         postCreate: function() {
             this.inherited(arguments);
             dojo.connect(this, "onKeyPress", this, "onKeyPressHandler");
@@ -35,12 +34,14 @@ define([
         },
         
         onKeyPressHandler: function(e) {
+            this.inherited(arguments);
             if(e.charOrCode == dojo.keys.ENTER) {
                 this._scheduleFinish();
             }
         },
         
         onBlurHandler: function(e) {
+            this.inherited(arguments);
             this._scheduleFinish();
         },
         
@@ -54,8 +55,7 @@ define([
         }
     });
 
-    var ProjectNode = dojo.declare([dijit._TreeNode, FixedTreeNode], {
-    
+    var ProjectNode = dojo.declare(FixedTreeNode, {
         constructor: function() {
             this.supressEvents = false;
         },
@@ -100,6 +100,7 @@ define([
                 }
             });
             this.textBox.placeAt(this.labelNode, "before");
+            this.textBox.startup();
             this.textBox.focus();
         },
         
