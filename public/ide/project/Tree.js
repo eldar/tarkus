@@ -31,26 +31,33 @@ define([
             this.inherited(arguments);
             dojo.connect(this, "onKeyPress", this, "onKeyPressHandler");
             dojo.connect(this, "onBlur", this, "onBlurHandler");
+            //this.watch("value", function (propName, oldValue, newValue) { ... })
         },
         
         onKeyPressHandler: function(e) {
             this.inherited(arguments);
-            if(e.charOrCode == dojo.keys.ENTER) {
-                this._scheduleFinish();
+            var result = true;
+            switch(e.charOrCode) {
+                case dojo.keys.ENTER:
+                    result = true;
+                case dojo.keys.ESCAPE:
+                    result = false;
+                    this._scheduleFinish(result);
+                    break;
             }
         },
         
         onBlurHandler: function(e) {
             this.inherited(arguments);
-            this._scheduleFinish();
+            this._scheduleFinish(true);
         },
         
-        _scheduleFinish: function() {
+        _scheduleFinish: function(success) {
 		    if(!this._finishTimer) {
 			    this._finishTimer = setTimeout(dojo.hitch(this, function() {
 				    delete this._finishTimer;
-				    this.treeItem.onEditingFinished();
-			    }), 1);
+				    this.treeItem.onEditingFinished(success);
+			    }), 0);
 		    }
         }
     });
@@ -104,7 +111,7 @@ define([
             this.textBox.focus();
         },
         
-        onEditingFinished: function() {
+        onEditingFinished: function(success) {
             if(!this.textBox)
                 return;
             var newValue = this.textBox.attr("value");
@@ -123,7 +130,7 @@ define([
     
     var Type = nodes.Type;
     
-    var tree = new Tree({
+    var ProjectTree = dojo.declare(Tree, {
         model: model,
         autoExpand: false,
         showRoot: false,
@@ -178,8 +185,11 @@ define([
         },
         
         _onKeyPress: function(e) {
+            if(!this._supressEvents)
+                this.inherited(arguments);
         }
     });
+    var tree = new ProjectTree();
     tree.placeAt(mainArea.left.top.domNode);
     return tree;
 });

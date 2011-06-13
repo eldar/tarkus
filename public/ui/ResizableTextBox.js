@@ -12,12 +12,11 @@ define([
     var ResizableTextBox = dojo.declare(TextBox, {
         intermediateChanges: true,
         
-        comfortZone: 15,
+        comfortZone: 20,
         minWidth: 50,
         maxWidth: 500,
         
         startup: function() {
-            console.log("Resizable startup");
             this.inherited(arguments);
             var input = this.domNode;
             this.testSubject = dojo.create("div", {
