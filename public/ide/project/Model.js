@@ -173,9 +173,9 @@ define([
             });
             var self = this;
             socketIo.request("renamePath", msg, function(e) {
-                node.setName(label);
-                self.onChange(node);
             });
+            node.setName(label);
+            self.onChange(node);
         }
     });
     var model = new ProjectModel;
