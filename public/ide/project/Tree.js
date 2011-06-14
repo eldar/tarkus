@@ -8,9 +8,8 @@ define([
     "ide/project/Nodes",
     "ide/project/Model",
     "dijit/Tree",
-    "dijit/tree/_dndSelector",
     "dijit/Menu"
-], function(dojo, FixedTreeNode, ResizableTextBox, mainArea, actions, openDocs, nodes, model, Tree, _dndSelector, Menu) {
+], function(dojo, FixedTreeNode, ResizableTextBox, mainArea, actions, openDocs, nodes, model, Tree, Menu) {
 
     var selectedItem = null;
 
@@ -29,8 +28,13 @@ define([
     var TreeEditBox = dojo.declare(ResizableTextBox, {
         postCreate: function() {
             this.inherited(arguments);
-            dojo.connect(this, "onKeyPress", this, "onKeyPressHandler");
-            dojo.connect(this, "onBlur", this, "onBlurHandler");
+            dojo.forEach(["onmousedown", "onmouseup", "onclick", "onkeypress"], function(name){ 
+                this.connect(this.domNode, name, function(evt) { 
+                    evt.stopPropagation(); 
+                });
+            }, this);
+            this.connect(this, "onKeyPress", "onKeyPressHandler");
+            this.connect(this, "onBlur", "onBlurHandler");
             //this.watch("value", function (propName, oldValue, newValue) { ... })
         },
         
@@ -63,10 +67,6 @@ define([
     });
 
     var ProjectNode = dojo.declare(FixedTreeNode, {
-        constructor: function() {
-            this.supressEvents = false;
-        },
-    
         postCreate: function() {
             dojo.connect(this.rowNode, "oncontextmenu", dojo.hitch(this, "onContextMenu"));
         },
@@ -78,21 +78,14 @@ define([
             dojo.stopEvent(e);
         },
         
-        _onClick: function(e) {
-            if(!this.tree._supressEvents) {
-                this.tree._onClick(this, e);
-            }
-        },
-
         _onDblClick: function(evt) {
-            if(!this.tree._supressEvents) {
+            if(!this._supressEvents) {
                 this.tree._onDblClick(this, evt);
             }
         },
-        
+
         createEditBox: function() {
-            this.tree._supressEvents = true;
-            var width = this.labelNode.style.width;
+            this._supressEvents = true;
             dojo.style(this.labelNode, { display: "none"});
 
             var self = this;
@@ -117,17 +110,10 @@ define([
             var newValue = this.textBox.attr("value");
             this.textBox.destroy();
             dojo.style(this.labelNode, { display: "inline"});
-            this.tree._supressEvents = false;
+            delete this._supressEvents;
         }        
     });
 
-    dojo.declare("tarkus._dndSelector", _dndSelector, {
-        onMouseDown: function(e) {
-            if(!this.tree._supressEvents)
-                this.inherited(arguments);
-        }
-    });
-    
     var Type = nodes.Type;
     
     var ProjectTree = dojo.declare(Tree, {
@@ -135,8 +121,6 @@ define([
         autoExpand: false,
         showRoot: false,
         persist: false,
-        
-        dndController: "tarkus._dndSelector",
         
         _createTreeNode: function(args) {
             return new ProjectNode(args);
@@ -182,11 +166,6 @@ define([
             action.set("label", 'Close Project "' + node.getProject().name + '"');
             action.set("disabled", false);
             model.updateCurrentProject(node);
-        },
-        
-        _onKeyPress: function(e) {
-            if(!this._supressEvents)
-                this.inherited(arguments);
         }
     });
     var tree = new ProjectTree();
