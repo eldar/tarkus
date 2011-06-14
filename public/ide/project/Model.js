@@ -167,9 +167,15 @@ define([
             return true;
         },
         
-        setLabel: function(item, label) {
-            item.setName(label);
-            this.onChange(item);
+        setLabel: function(node, label) {
+            var msg = _.extend(node.pathDefinition(), {
+                newPath: node.parent.pathDefinition().path + "/" + label
+            });
+            var self = this;
+            socketIo.request("renamePath", msg, function(e) {
+                node.setName(label);
+                self.onChange(node);
+            });
         }
     });
     var model = new ProjectModel;

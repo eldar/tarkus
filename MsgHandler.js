@@ -44,9 +44,13 @@ HandlerObj.prototype = {
     },
     
     _nodeFullPath: function(data) {
-        var path = data.path.replace(/^\s*|\/*\s*$/g, '');
+        return this._fullPath(data.projectName, data.path);
+    },
+
+    _fullPath: function(projectName, relativePath) {
+        var path = relativePath.replace(/^\s*|\/*\s*$/g, '');
         console.log("relative path " + path);
-        return this._projectDir(data.projectName) + "/" + path;
+        return this._projectDir(projectName) + "/" + path;
     },
     
     _respond: function(msg) {
@@ -107,7 +111,19 @@ HandlerObj.prototype = {
         console.log(list);
         msg.data = { list: list};
         this._respond(msg);
-    }
+    },
+    
+    renamePath: function(msg) {
+        var data = msg.data;
+        var path = this._nodeFullPath(data);
+        var newPath = this._fullPath(data.projectName, data.newPath);
+        var self = this;
+        console.log("old path " + path);
+        console.log("new path " + newPath);
+        fs.rename(path, newPath, function(err) {
+            self._respond(msg);
+        });
+    },
 }
 
 exports.MsgHandler = function(socket) {
