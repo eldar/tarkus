@@ -26,7 +26,6 @@ define([
                     left: "-9999px",
                     width: 'auto',
                     fontSize: dojo.style(input, 'fontSize'),
-                    fontFamily: dojo.style(input, 'fontFamily'),
                     fontWeight: dojo.style(input, 'fontWeight'),
                     letterSpacing: dojo.style(input, 'letterSpacing'),
                     whiteSpace: 'nowrap'
