@@ -149,8 +149,10 @@ define([
             }
         },
         
-        handleNodeRenamed: function(node) {
+        handleNodeChange: function(node) {
             var doc = this.docByNode(node);
+            if(!doc)
+                return;
             doc.session.setMode(editor.modeForDocType(node.docType));
             this.onChange(doc);
         },

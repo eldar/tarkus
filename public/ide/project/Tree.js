@@ -40,15 +40,15 @@ define([
         
         onKeyPressHandler: function(e) {
             this.inherited(arguments);
-            var result = true;
+            var result = 0;
             switch(e.charOrCode) {
                 case dojo.keys.ENTER:
-                    result = true;
+                    result = 2; break;
                 case dojo.keys.ESCAPE:
-                    result = false;
-                    this._scheduleFinish(result);
-                    break;
-            }
+                    result = 1; break;
+            };
+            if(result > 0)
+                this._scheduleFinish(result > 1);
         },
         
         onBlurHandler: function(e) {
@@ -93,8 +93,7 @@ define([
                 treeItem: self,
                 name: "editName",
                 value: this.tree.model.getLabel(this.item),
-                style: {
-                    width: "100px",
+                style: { //FIXME remove styling into css
                     marginLeft: "4px",
                     marginRight: "4px"
                 }
@@ -109,6 +108,10 @@ define([
                 return;
             var newValue = this.textBox.attr("value");
             this.textBox.destroy();
+            var oldValue = this.tree.model.getLabel(this.item);
+            if(success && (oldValue !== newValue)) {
+                this.tree.model.setLabel(this.item, newValue);
+            }
             dojo.style(this.labelNode, { display: "inline"});
             delete this._supressEvents;
         }        

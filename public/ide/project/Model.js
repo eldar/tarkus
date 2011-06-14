@@ -1,13 +1,11 @@
-var deps = [
+define([
     "dojo",
     "core/Global",
     "core/Io",
     "core/ModelBase",
     "ide/core/OpenDocs",
     "ide/project/Nodes"
-];
-
-define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
+], function(dojo, global, socketIo, Model, openDocs, nodes) {
 
     var Node = nodes.Node;
 
@@ -167,8 +165,15 @@ define(deps, function(dojo, global, socketIo, Model, openDocs, nodes) {
                 return false;
             node.setName(newName);
             return true;
+        },
+        
+        setLabel: function(item, label) {
+            item.setName(label);
+            this.onChange(item);
         }
     });
+    var model = new ProjectModel;
     
-    return new ProjectModel;
+    dojo.connect(model, "onChange", openDocs, "handleNodeChange");
+    return model;
 });
