@@ -22,6 +22,9 @@ define([
     }));
     pMenu.addChild(new dijit.MenuItem({
         label: "Delete",
+        onClick: function() {
+            model.deleteNode(selectedItem.item);
+        }
     }));
     pMenu.startup();
     
@@ -169,6 +172,13 @@ define([
             action.set("label", 'Close Project "' + node.getProject().name + '"');
             action.set("disabled", false);
             model.updateCurrentProject(node);
+        },
+        
+        selectedDataNode: function() {
+            var path = tree.get("path");
+            if(path.length === 0)
+                return null;
+            return _.last(path);
         }
     });
     var tree = new ProjectTree();

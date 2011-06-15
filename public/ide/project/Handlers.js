@@ -75,10 +75,9 @@ define([
     });
     
     var newSomething = function(isFile) {
-        var path = tree.get("path");
-        if(path.length === 0)
+        var selected = tree.selectedDataNode();
+        if(!selected)
             return;
-        var selected = _.last(path);
         var parent = selected.isFolder() ? selected : selected.parent;
         var fileName = prompt(str.sprintf("Please, select %s name", isFile ? "file" : "folder"));
         if(!fileName)
