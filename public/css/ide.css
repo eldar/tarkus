@@ -113,3 +113,11 @@ html, body {
 .arrowLeft {
     background-position: 16px;
 }
+
+.searchBar {
+  width: 100%;
+  border-top: solid #9f9f9f 1px;
+  background-color:#e8e8e8;
+  background-image:-webkit-linear-gradient(#e8e8e8,#f0f0f0,#e8e8e8);
+  background-image:-moz-linear-gradient(#e8e8e8,#f0f0f0,#e8e8e8);
+}
