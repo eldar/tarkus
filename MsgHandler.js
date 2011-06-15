@@ -25,7 +25,7 @@ var getDirStructure = function(path) {
     var list = fs.readdirSync(path);
     _.each(list, function(elem) {
         var stat = fs.lstatSync(path + "/" + elem);
-        console.log(elem);
+//        console.log(elem);
         if(stat.isDirectory() && isValidDirectory(elem))
             res.dirs[elem] = getDirStructure(path + "/" + elem);
         else if(stat.isFile())
@@ -102,7 +102,7 @@ HandlerObj.prototype = {
     projectOpen: function(msg) {
         var path = this._projectDir(msg.data.projectName);
         msg.data = getDirStructure(path);
-        console.log(msg.data);
+//        console.log(msg.data);
         this._respond(msg);
     },
     
@@ -124,6 +124,16 @@ HandlerObj.prototype = {
             self._respond(msg);
         });
     },
+    
+    deletePath: function(msg) {
+        var data = msg.data;
+        var path = this._nodeFullPath(data);
+        console.log("deleting " + path);
+        var self = this;
+        fs.unlink(path, function() {
+            self._respond(msg);
+        });
+    }
 }
 
 exports.MsgHandler = function(socket) {

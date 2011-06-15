@@ -173,9 +173,20 @@ define([
             });
             var self = this;
             socketIo.request("renamePath", msg, function(e) {
+                // TODO check for any errors
             });
             node.setName(label);
             self.onChange(node);
+        },
+        
+        deleteNode: function(node) {
+            openDocs.closeDocument(openDocs.docByNode(node));
+            socketIo.request("deletePath", node.pathDefinition(), function(e) {
+                // TODO check for any errors
+            });
+            var parent = node.parent;
+            node.setParent(null);
+            this.notifyChildrenChanged(parent);
         }
     });
     var model = new ProjectModel;

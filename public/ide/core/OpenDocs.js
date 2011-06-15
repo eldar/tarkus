@@ -121,6 +121,8 @@ define([
         },
         
         closeDocument: function(doc) {
+            if(!doc)
+                return;
             var isSelected = (doc == this._currentDoc);
 
             // delete document from the model
