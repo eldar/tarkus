@@ -11,6 +11,8 @@ define([
     "dijit/Menu"
 ], function(dojo, FixedTreeNode, ResizableTextBox, mainArea, actions, openDocs, nodes, model, Tree, Menu) {
 
+    var Type = nodes.Type;
+
     var selectedItem = null;
 
     var pMenu = new Menu();
@@ -23,7 +25,9 @@ define([
     pMenu.addChild(new dijit.MenuItem({
         label: "Delete",
         onClick: function() {
-            model.deleteNode(selectedItem.item);
+            var node = selectedItem.item;
+            if(node.type !== Type.Project)
+                model.deleteNode(node);
         }
     }));
     pMenu.startup();
@@ -120,8 +124,6 @@ define([
         }        
     });
 
-    var Type = nodes.Type;
-    
     var ProjectTree = dojo.declare(Tree, {
         model: model,
         autoExpand: false,
