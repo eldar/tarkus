@@ -12,9 +12,16 @@ define([
     "ace/mode/text",
     "ace/undomanager",
     "core/Global",
-    "ide/core/MainArea"
+    "ide/core/MainArea",
+    "dijit/layout/BorderContainer",
+    "dijit/layout/ContentPane",
+    "ui/TemplatedWidget",
+    "text!ide/find/QuickFind.html",
+    "dijit/form/TextBox",
+    "ui/ToolButton"
 ], function(dojo, canon, event, editor, renderer,
-    theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, mainArea) {
+    theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, mainArea,
+    BorderContainer, ContentPane, TemplatedWidget, QuickSearchTemplate) {
 
     var Editor = editor.Editor;
     var Renderer = renderer.VirtualRenderer;
@@ -25,6 +32,21 @@ define([
     var HtmlMode = htmlMode.Mode;
     var TextMode = textMode.Mode;
     var UndoManager = undoManager.UndoManager;
+
+    var bc = new BorderContainer({id: "editorLayout", design: "headline", gutters: false, style: "border: 0px; height: 100%; " });
+    dojo.body().appendChild(bc.domNode);
+    bc.placeAt(mainArea.center.domNode);
+    
+    bc.placeAt(mainArea.center.domNode);
+
+    var centerPane = new ContentPane({id: "centerEditor", region: "center", style:"padding: 0px;"});
+    bc.addChild(centerPane);
+    
+    var bottomPane = new ContentPane({id: "bottomEditor", region: "bottom", splitter: false, style:"padding: 0px;"});
+    bc.addChild(bottomPane);
+    
+    var findBar = new TemplatedWidget({ templateString: QuickSearchTemplate });
+    findBar.placeAt(bottomPane.domNode);
 
     var AceWidget = dojo.declare(dijit._Widget,
     {
@@ -42,11 +64,12 @@ define([
 
         setVisible:  function(visible) {
             var value = visible ? "block" : "none";
-            dojo.style(this.domNode, { display: value});
+            dojo.style(bc.domNode, { display: value});
+            bc.resize();
         }
     });
-        
-    var aceWidget = new AceWidget().placeAt(mainArea.center.domNode);
+    
+    var aceWidget = new AceWidget().placeAt(centerPane.domNode);
     dojo.style(aceWidget.domNode, {
         "height": "100%",
         "width": "100%"
