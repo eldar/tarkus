@@ -185,6 +185,7 @@ define([
     });
     var tree = new ProjectTree();
     tree.placeAt(mainArea.left.top.domNode);
+    mainArea.left.top.resize(); // otherwise the tree scrollbars doesn't appear until next resize
     return tree;
 });
 

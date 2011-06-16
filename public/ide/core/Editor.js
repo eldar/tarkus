@@ -12,6 +12,7 @@ define([
     "ace/mode/text",
     "ace/undomanager",
     "core/Global",
+    "ide/core/Environment",
     "ide/core/MainArea",
     "dijit/layout/BorderContainer",
     "dijit/layout/ContentPane",
@@ -20,7 +21,7 @@ define([
     "dijit/form/TextBox",
     "ui/ToolButton"
 ], function(dojo, canon, event, editor, renderer,
-    theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, mainArea,
+    theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, env, mainArea,
     BorderContainer, ContentPane, TemplatedWidget, QuickSearchTemplate) {
 
     var Editor = editor.Editor;
@@ -44,10 +45,69 @@ define([
     
     var bottomPane = new ContentPane({id: "bottomEditor", region: "bottom", splitter: false, style:"padding: 0px;"});
     bc.addChild(bottomPane);
-    
-    var findBar = new TemplatedWidget({ templateString: QuickSearchTemplate });
-    findBar.placeAt(bottomPane.domNode);
 
+    var editor = null;
+    var setVisible = function(widget, visible) {
+        var value = visible ? "block" : "none";
+        dojo.style(widget.domNode, { display: value});
+        bc.resize();
+    };
+
+    var findBar = new TemplatedWidget({
+        templateString: QuickSearchTemplate,
+        
+        postCreate: function() {
+            this.connect(this.findTextBox, "onKeyPress", "onFindKeyPressHandler");
+            this._findText = "";
+        },
+        
+        onFindKeyPressHandler: function(e) {
+            switch(e.charOrCode) {
+                case dojo.keys.ENTER:
+                    this.findNext();
+                    break;
+                case dojo.keys.ESCAPE:
+                    setVisible(bottomPane, false);
+                    break;
+            };
+        },
+        
+        ace: function() {
+            return editor.current().editor;
+        },
+        
+        initFind: function(text) {
+            this.findTextBox.set("value", text);
+        },
+        
+        findNext: function() {
+            if(this._findText !== this.findTextBox.get("value")) {
+                this.find();
+            } else {
+                this.ace().findNext();
+            }
+        },
+        
+        findPrevious: function() {
+            this.ace().findPrevious()
+        },
+        
+        find: function() {
+            var ace = editor.current().editor;
+            this._findText = this.findTextBox.get("value");
+            ace.find(this._findText, {
+              backwards: false,
+              wrap: true,
+              caseSensitive: false,
+              wholeWord: false,
+              regExp: false
+            });
+        }
+    });
+
+    findBar.placeAt(bottomPane.domNode);
+    setVisible(bottomPane, false);
+    
     var AceWidget = dojo.declare(dijit._Widget,
     {
         editor: null,
@@ -63,9 +123,7 @@ define([
         },
 
         setVisible:  function(visible) {
-            var value = visible ? "block" : "none";
-            dojo.style(bc.domNode, { display: value});
-            bc.resize();
+            setVisible(bc, visible);
         }
     });
     
@@ -77,8 +135,24 @@ define([
     aceWidget.resize();
     aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
     aceWidget.setVisible(false);
+    
+    canon.addCommand({
+        name: 'Find in Current File',
+        bindKey: {
+            win: 'Ctrl-F',
+            mac: 'Command-F',
+            sender: "editor"
+        },
+        exec: function(env, args, request) {
+            var ace = editor.current().editor;
+            var text = ace.getSession().doc.getTextRange(ace.getSelectionRange());
+            setVisible(bottomPane, true);
+            findBar.findTextBox.focus();
+            findBar.initFind(text);
+        }
+    })
 
-    var editor = {
+    editor = {
         _current: aceWidget,
         
         current: function() {

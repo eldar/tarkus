@@ -7,11 +7,11 @@
         Find:
     </td>
     <td>
-        <input type="text" dojoType="dijit.form.TextBox">
+        <div data-dojo-type="dijit.form.TextBox" data-dojo-attach-point="findTextBox"></div>
     </td>
     <td>
-        <button data-dojo-type="ui.ToolButton" type="button" data-dojo-props="iconClass:'arrowLeft', showLabel:false"></button>
-        <button data-dojo-type="ui.ToolButton" type="button" data-dojo-props="iconClass:'arrowRight', showLabel:false"></button>
+        <div data-dojo-type="ui.ToolButton" data-dojo-props="iconClass:'arrowLeft', showLabel:false" data-dojo-attach-event="onClick:findPrevious">Find Previous</div>
+        <div data-dojo-type="ui.ToolButton" data-dojo-props="iconClass:'arrowRight', showLabel:false" data-dojo-attach-event="onClick:findNext">Find Next</div>
     </td>
     <td>
     </td>
@@ -23,11 +23,12 @@
         Replace with:
     </td>
     <td>
-        <input type="text" dojoType="dijit.form.TextBox">
+        <div data-dojo-type="dijit.form.TextBox"></div>
     </td>
     <td>
-        <button data-dojo-type="ui.ToolButton" type="button" data-dojo-props="iconClass:'arrowLeft', showLabel:false"></button>
-        <button data-dojo-type="ui.ToolButton" type="button" data-dojo-props="iconClass:'arrowRight', showLabel:false">&gt;</button>
+        <div data-dojo-type="ui.ToolButton">Replace</div>
+        <div data-dojo-type="ui.ToolButton">Replace &amp; Find</div>
+        <div data-dojo-type="ui.ToolButton">Replace All</div>
     </td>
     <td>
     </td>
