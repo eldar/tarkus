@@ -20,10 +20,10 @@ define([
             dojo.place(button, this.rowNode, "first");
 
             dojo.connect(this.domNode, "onmouseenter", function() {
-                dojo.style(button, { display: "block"});
+                dojo.setVisible(button, true);
             });
             dojo.connect(this.domNode, "onmouseleave", function() {
-                dojo.style(button, { display: "none"});
+                dojo.setVisible(button, false);
             });
             
             dojo.connect(button, "onclick", dojo.hitch(this, function(event) {

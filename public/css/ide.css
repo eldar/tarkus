@@ -114,6 +114,12 @@ html, body {
     background-position: 16px;
 }
 
+.darkClose {
+    background-image: url("../icons/images/darkclose.png");
+    width: 16px;
+    height: 16px;
+}
+
 .searchBar {
   width: 100%;
   border-top: solid #9f9f9f 1px;

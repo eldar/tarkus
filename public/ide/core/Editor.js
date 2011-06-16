@@ -34,24 +34,23 @@ define([
     var TextMode = textMode.Mode;
     var UndoManager = undoManager.UndoManager;
 
-    var bc = new BorderContainer({id: "editorLayout", design: "headline", gutters: false, style: "border: 0px; height: 100%; " });
-    dojo.body().appendChild(bc.domNode);
-    bc.placeAt(mainArea.center.domNode);
-    
+    var bc = new BorderContainer({gutters: false, style: "border: 0px; height: 100%; " });
     bc.placeAt(mainArea.center.domNode);
 
-    var centerPane = new ContentPane({id: "centerEditor", region: "center", style:"padding: 0px;"});
+    var setVisible = function(widget, visible) {
+        dojo.setVisible(widget.domNode, visible);
+        bc.resize();
+    };
+
+    var centerPane = new ContentPane({region: "center", style:"padding: 0px;"});
     bc.addChild(centerPane);
     
-    var bottomPane = new ContentPane({id: "bottomEditor", region: "bottom", splitter: false, style:"padding: 0px;"});
+    var bottomPane = new ContentPane({
+        region: "bottom", splitter: false, style:"padding: 0px;",
+    });
     bc.addChild(bottomPane);
 
     var editor = null;
-    var setVisible = function(widget, visible) {
-        var value = visible ? "block" : "none";
-        dojo.style(widget.domNode, { display: value});
-        bc.resize();
-    };
 
     var findBar = new TemplatedWidget({
         templateString: QuickSearchTemplate,
@@ -61,13 +60,17 @@ define([
             this._findText = "";
         },
         
+        closePane: function() {
+            setVisible(bottomPane, false);
+        },
+        
         onFindKeyPressHandler: function(e) {
             switch(e.charOrCode) {
                 case dojo.keys.ENTER:
                     this.findNext();
                     break;
                 case dojo.keys.ESCAPE:
-                    setVisible(bottomPane, false);
+                    this.closePane();
                     break;
             };
         },
