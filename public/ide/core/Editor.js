@@ -80,7 +80,10 @@ define([
         },
         
         initFind: function(text) {
-            this.findTextBox.set("value", text);
+            this.findTextBox.focus();
+            if(text)
+                this.findTextBox.set("value", text);
+            this.findTextBox.focusNode.select();
         },
         
         findNext: function() {
@@ -150,7 +153,6 @@ define([
             var ace = editor.current().editor;
             var text = ace.getSession().doc.getTextRange(ace.getSelectionRange());
             setVisible(bottomPane, true);
-            findBar.findTextBox.focus();
             findBar.initFind(text);
         }
     })
