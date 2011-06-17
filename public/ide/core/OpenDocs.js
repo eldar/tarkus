@@ -77,10 +77,11 @@ define([
         },
         
         setCurrentDocument: function(newDoc) {
+            var ace = editor.current();
+            ace.editor.focus();
             if(this._currentDoc == newDoc)
                 return;
             this._currentDoc = newDoc;
-            var ace = editor.current();
             ace.setVisible(true);
             ace.editor.setSession(newDoc.session);
             ace.resize();
@@ -93,7 +94,6 @@ define([
         
         currentDocChangedForView: function() {
         },
-        
         docByNode: function(node) {
             var len = this.list().length;
             for(var i = 0; i < len; i++) {

@@ -78,7 +78,7 @@ There are three areas of styling for the Menu:
 /* hover over a MenuBarItem */
 .claro .dijitMenuPassive .dijitMenuItemHover, .claro .dijitMenuPassive .dijitMenuItemSelected {
   background-color: #cfe5fa;
-  border: solid 0px #cfe5fa;
+  border: solid 0px;
   color: #000000;
   padding: 6px 10px 7px;
 }
@@ -90,8 +90,8 @@ There are three areas of styling for the Menu:
 }
 /* MenuBarItem that has been selected and menu drops down from it */
 .claro .dijitMenuActive .dijitMenuItemHover, .claro .dijitMenuActive .dijitMenuItemSelected {
-  border: solid 1px #cfe5fa;
-  padding: 5px 9px 6px;
+  border: solid 0px;
+  padding: 6px 10px 7px;
   background-color: #cfe5fa;
   color: #000000;
 }
@@ -130,14 +130,14 @@ There are three areas of styling for the Menu:
 }
 .claro .dijitMenuSeparatorTop {
   height: auto;
-  margin-top: 1px;
+  margin-top: 4px;
   /* prevents spacing above/below separator */
 
   border-bottom: 1px solid #b5bcc7;
 }
 .claro .dijitMenuSeparatorBottom {
   height: auto;
-  margin-bottom: 1px;
+  margin-bottom: 4px;
 }
 /* the checked menu item */
 .claro .dijitCheckedMenuItemIconChar {

@@ -62,6 +62,7 @@ define([
         
         closePane: function() {
             setVisible(bottomPane, false);
+            this.ace().focus();
         },
         
         onFindKeyPressHandler: function(e) {
