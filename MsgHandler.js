@@ -19,17 +19,22 @@ var HandlerObj = function(socket) {
 }
 
 var getDirStructure = function(path) {
-    var res = {}
-    res.files = [];
-    res.dirs = {};
+    var res = {
+        files: [],
+        dirs: []
+    };
     var list = fs.readdirSync(path);
     _.each(list, function(elem) {
         var stat = fs.lstatSync(path + "/" + elem);
 //        console.log(elem);
-        if(stat.isDirectory() && isValidDirectory(elem))
-            res.dirs[elem] = getDirStructure(path + "/" + elem);
-        else if(stat.isFile())
-            res.files.push(elem)
+        if(stat.isDirectory() && isValidDirectory(elem)) {
+            res.dirs.push({
+                name: elem,
+                content: getDirStructure(path + "/" + elem)
+            });
+        } else if(stat.isFile()) {
+            res.files.push(elem);
+        }
     });
     return res;
 };

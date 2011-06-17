@@ -36,10 +36,12 @@ define([
         
         _openDir: function(parent, dataNode) {
             var self = this;
-            _.each(dataNode.dirs, function(content, name) {
-                var dirNode = new Node(name, nodes.Type.Folder, parent);
-                self._openDir(dirNode, content);
+            dataNode.dirs.sort(function(a, b) { return (a.name > b.name) ? 1 : -1});
+            _.each(dataNode.dirs, function(dir) {
+                var dirNode = new Node(dir.name, nodes.Type.Folder, parent);
+                self._openDir(dirNode, dir.content);
             });
+            dataNode.files.sort();
             _.each(dataNode.files, function(file) {
                 new Node(file, nodes.Type.File, parent);
             });
