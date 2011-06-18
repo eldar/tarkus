@@ -12,6 +12,7 @@ define([
     "ace/mode/text",
     "ace/undomanager",
     "core/Global",
+    "ui/Keyboard",
     "ide/core/Environment",
     "ide/core/MainArea",
     "dijit/layout/BorderContainer",
@@ -21,7 +22,7 @@ define([
     "dijit/form/TextBox",
     "ui/ToolButton"
 ], function(dojo, canon, event, editor, renderer,
-    theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, env, mainArea,
+    theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, keyboard, env, mainArea,
     BorderContainer, ContentPane, TemplatedWidget, QuickSearchTemplate) {
 
     var Editor = editor.Editor;
@@ -156,7 +157,11 @@ define([
             setVisible(bottomPane, true);
             findBar.initFind(text);
         }
-    })
+    });
+
+    keyboard.bind(["Ctrl-F", "Command-F"], document, function(event) {
+        event.preventDefault();
+    });
 
     editor = {
         _current: aceWidget,
