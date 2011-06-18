@@ -1,6 +1,5 @@
 define([
     "dojo",
-    "sumo",
     "ace/edit_session",
     "ace/mode/javascript",
     "ace/mode/css",
@@ -10,7 +9,7 @@ define([
     "core/Global",
     "ide/core/MainArea",
     "ide/core/EditorComponent"
-], function(dojo, sumo, editSession, jsMode, cssMode, htmlMode, textMode, undoManager,
+], function(dojo, editSession, jsMode, cssMode, htmlMode, textMode, undoManager,
     global, mainArea, EditorComponent) {
 
     var EditSession = editSession.EditSession;

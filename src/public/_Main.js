@@ -30,4 +30,4 @@ require({
     ace : "3rdparty/ace/lib/ace",
     pilot: "3rdparty/pilot/lib/pilot"
   }
-}, ['ide/Main']);
+}, ['Main']);

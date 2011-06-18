@@ -6,82 +6,19 @@ define([
     "ace/virtual_renderer",
     "ace/theme/textmate",
     "ui/Keyboard",
+    "ui/FindBar",
     "ide/core/Environment",
     "ide/core/MainArea",
     "dijit/layout/BorderContainer",
-    "dijit/layout/ContentPane",
-    "sumo/ui/TemplatedWidget",
-    "text!ide/find/QuickFind.html",
-    "dijit/form/TextBox",
-    "sumo/ui/ToolButton"
+    "dijit/layout/ContentPane"
 ], function(dojo, sumo, canon, editor, renderer, theme,
-    keyboard, env, mainArea,
-    BorderContainer, ContentPane, TemplatedWidget, QuickSearchTemplate) {
+    keyboard, FindBar, env, mainArea,
+    BorderContainer, ContentPane) {
 
     var Editor = editor.Editor;
     var Renderer = renderer.VirtualRenderer;
 
-    var FindBar = dojo.declare(TemplatedWidget, {
-        templateString: QuickSearchTemplate,
-        
-        postCreate: function() {
-            this.connect(this.findTextBox, "onKeyPress", "onFindKeyPressHandler");
-            this._findText = "";
-        },
-        
-        closePane: function() {
-            var bc = this._borderContainer;
-            bc._setVisible(bc.bottomPane, false);
-            this.ace().focus();
-        },
-        
-        onFindKeyPressHandler: function(e) {
-            switch(e.charOrCode) {
-                case dojo.keys.ENTER:
-                    this.findNext();
-                    break;
-                case dojo.keys.ESCAPE:
-                    this.closePane();
-                    break;
-            };
-        },
-        
-        ace: function() {
-            return editor.current().editor;
-        },
-        
-        initFind: function(text) {
-            this.findTextBox.focus();
-            if(text)
-                this.findTextBox.set("value", text);
-            this.findTextBox.focusNode.select();
-        },
-        
-        findNext: function() {
-            if(this._findText !== this.findTextBox.get("value")) {
-                this.find();
-            } else {
-                this.ace().findNext();
-            }
-        },
-        
-        findPrevious: function() {
-            this.ace().findPrevious()
-        },
-        
-        find: function() {
-            var ace = editor.current().editor;
-            this._findText = this.findTextBox.get("value");
-            ace.find(this._findText, {
-              backwards: false,
-              wrap: true,
-              caseSensitive: false,
-              wholeWord: false,
-              regExp: false
-            });
-        }
-    });
-    
+    // Simple widget that just wraps Ace editor into dijit._Widget
     var AceWidget = dojo.declare(dijit._Widget,
     {
         editor: null,
@@ -97,6 +34,7 @@ define([
         }
     });
     
+    // Editor component that contains the actual ace widget and a find bar in the bottom    
     var EditorComponent = dojo.declare(BorderContainer, {
         gutters: false,
         style: "border: 0px; height: 100%; ",
@@ -113,15 +51,9 @@ define([
                 region: "bottom", splitter: false, style:"padding: 0px;"
             });
             this.addChild(this.bottomPane);
-            
-            var self = this;
-            this.findBar = new FindBar({
-                _borderContainer: self,
-                _contentPane: this.bottomPane
-            }).placeAt(this.bottomPane.domNode);
-            
             this._setVisible(this.bottomPane, false);
             
+            var self = this;
             var aceWidget = new AceWidget({_borderContainer: self}).placeAt(this.centerPane.domNode);
 
             dojo.style(aceWidget.domNode, {
@@ -132,6 +64,33 @@ define([
             aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
             
             this.editor = aceWidget.editor;
+
+            var ace = this.editor;
+
+            this.findBar = new FindBar({
+                closePane: function() {
+                    self._setVisible(self.bottomPane, false);
+                    ace.focus();
+                },
+                
+                doFind: function(text) {
+                    ace.find(text, {
+                      backwards: false,
+                      wrap: true,
+                      caseSensitive: false,
+                      wholeWord: false,
+                      regExp: false
+                    });
+                },
+                
+                findNext: function() {
+                    ace.findNext();
+                },
+                
+                findPrevious: function() {
+                    ace.findPrevious();
+                }
+            }).placeAt(this.bottomPane.domNode);
         },
         
         _setVisible: function(widget, visible) {
@@ -150,9 +109,6 @@ define([
             this.findBar.initFind(text);
         }
     });
-
-    var ideEditor = new EditorComponent().placeAt(mainArea.center.domNode);
-    ideEditor.setVisible(false);
 
     canon.addCommand({
         name: 'Find in Current File',
