@@ -1,11 +1,10 @@
 define([
     "dojo",
-    "core/Global",
+    "sumo/core/ModelBase",
     "core/Io",
-    "core/ModelBase",
     "ide/core/OpenDocs",
     "ide/project/Nodes"
-], function(dojo, global, socketIo, Model, openDocs, nodes) {
+], function(dojo, Model, socketIo, openDocs, nodes) {
 
     var Node = nodes.Node;
 

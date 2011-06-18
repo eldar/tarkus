@@ -1,7 +1,7 @@
 define([
     "dojo",
-    "core/Global"
-], function(dojo, global) {
+    "sumo"
+], function(dojo, sumo) {
     var Type = {
         Folder : 1,
         Project : 2,
@@ -33,7 +33,7 @@ define([
             this.type = type;
             this.setParent(parent);
             this.children = [];
-            global.makeUnique(this, "pn_");
+            sumo.makeUnique(this, "pn_");
             this.id = _.uniqueId("project_node_");
             this.setName(name);
         },

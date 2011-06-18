@@ -6,8 +6,8 @@ define([
     "dijit/MenuItem",
     "dijit/MenuSeparator",
     "dijit/PopupMenuItem",
-    "ui/ToolButton",
-    "ui/Action",
+    "sumo/ui/ToolButton",
+    "sumo/ui/Action",
     "ide/core/MainArea",
     "ide/core/Actions"
 ], function (dojo, MenuBar, MenuBarItem, Menu, MenuItem, MenuSeparator, PopupMenuItem, ToolButton,

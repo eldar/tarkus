@@ -1,11 +1,12 @@
 define([
     "dojo",
+    "sumo",
     "ui/List",
     "ui/FixedTreeNode",
     "ide/core/OpenDocs",
     "ide/core/MainArea",
     "ide/core/ConfirmDialog"
-], function(dojo, List, FixedTreeNode, openDocs, mainArea, confirmDialog) {
+], function(dojo, sumo, List, FixedTreeNode, openDocs, mainArea, confirmDialog) {
     
     var ClosableNode = dojo.declare(FixedTreeNode, {
         postCreate: function() {
@@ -20,10 +21,10 @@ define([
             dojo.place(button, this.rowNode, "first");
 
             dojo.connect(this.domNode, "onmouseenter", function() {
-                dojo.setVisible(button, true);
+                sumo.setVisible(button, true);
             });
             dojo.connect(this.domNode, "onmouseleave", function() {
-                dojo.setVisible(button, false);
+                sumo.setVisible(button, false);
             });
             
             dojo.connect(button, "onclick", dojo.hitch(this, function(event) {

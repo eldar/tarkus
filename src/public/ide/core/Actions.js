@@ -1,4 +1,4 @@
-define(["ui/Action"], function (Action) {
+define(["sumo/ui/Action"], function (Action) {
     return {
         file : {
             newProject: new Action({ label: "New Project..." }),

@@ -19,8 +19,8 @@ require([
     
     onLoadPilot(function() {
         require.ready(function() { // on DOM loads
+            require(["core/Global"]);
             require([
-                "core/Global",
                 "ide/core/MainArea",
                 "ide/core/MainMenu",
                 "ide/core/Editor",

@@ -1,9 +1,9 @@
 define([
     "dojo",
     "dijit/form/CheckBox",
-    "core/ModelBase",
+    "sumo/core/ModelBase",
     "util/sprintf",
-    "ui/SimpleDialog",
+    "sumo/ui/SimpleDialog",
     "ui/List"
 ], function(dojo, CheckBox, Model, str, SimpleDialog, List) {
     var single = new SimpleDialog({

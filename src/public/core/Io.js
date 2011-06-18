@@ -1,9 +1,7 @@
-var deps = [
+define([
     "dojo",
-    "core/Global",
-];
-
-define(deps, function(dojo, global) {
+    "order!socket.io/socket.io.js"
+], function(dojo) {
     var socket = new io.Socket();
     var map = {};
 

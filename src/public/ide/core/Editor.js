@@ -1,5 +1,6 @@
 define([
     "dojo",
+    "sumo",
     "pilot/canon",
     "pilot/event",
     "ace/editor",
@@ -17,11 +18,11 @@ define([
     "ide/core/MainArea",
     "dijit/layout/BorderContainer",
     "dijit/layout/ContentPane",
-    "ui/TemplatedWidget",
+    "sumo/ui/TemplatedWidget",
     "text!ide/find/QuickFind.html",
     "dijit/form/TextBox",
-    "ui/ToolButton"
-], function(dojo, canon, event, editor, renderer,
+    "sumo/ui/ToolButton"
+], function(dojo, sumo, canon, event, editor, renderer,
     theme, editSession, jsMode, cssMode, htmlMode, textMode, undoManager, global, keyboard, env, mainArea,
     BorderContainer, ContentPane, TemplatedWidget, QuickSearchTemplate) {
 
@@ -39,7 +40,7 @@ define([
     bc.placeAt(mainArea.center.domNode);
 
     var setVisible = function(widget, visible) {
-        dojo.setVisible(widget.domNode, visible);
+        sumo.setVisible(widget.domNode, visible);
         bc.resize();
     };
 

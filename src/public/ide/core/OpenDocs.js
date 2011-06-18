@@ -1,10 +1,10 @@
 define([
     "dojo",
-    "core/Global",
+    "sumo",
     "core/Io",
-    "core/ModelBase",
+    "sumo/core/ModelBase",
     "ide/core/Editor"
-], function(dojo, global, socketIo, Model, editor) {
+], function(dojo, sumo, socketIo, Model, editor) {
 
     var getCurrentDelta = function(session) {
         var stack = session.getUndoManager().$undoStack;
@@ -16,7 +16,7 @@ define([
         constructor: function(node, session) {
             this.node = node;
             this.session = session;
-            global.makeUnique(this, "od_");
+            sumo.makeUnique(this, "od_");
         },
         
         setInitialSaveState: function() {

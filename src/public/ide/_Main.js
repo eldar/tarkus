@@ -13,6 +13,12 @@ require({
       location: "dojo-release-1.6.1-src/dijit",
       main: "lib/main",
       lib: "."
+    },
+    {
+      name: "sumo",
+      location: "sumo",
+      main: "core/Main",
+      lib: "."
     }
   ],
 
