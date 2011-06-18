@@ -7,3 +7,6 @@
 [submodule "src/public/3rdparty/ace"]
 	path = src/public/3rdparty/ace
 	url = https://github.com/maxter/ace.git
+[submodule "src/public/sumo"]
+	path = src/public/sumo
+	url = https://github.com/eldar/sumo.git
