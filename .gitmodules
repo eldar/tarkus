@@ -1,0 +1,9 @@
+[submodule "src/public/3rdparty/requirejs"]
+	path = src/public/3rdparty/requirejs
+	url = https://github.com/eldar/requirejs.git
+[submodule "src/public/3rdparty/pilot"]
+	path = src/public/3rdparty/pilot
+	url = https://github.com/eldar/pilot.git
+[submodule "src/public/3rdparty/ace"]
+	path = src/public/3rdparty/ace
+	url = https://github.com/maxter/ace.git
