@@ -36,25 +36,51 @@ define([
     var TextMode = textMode.Mode;
     var UndoManager = undoManager.UndoManager;
 
-    var bc = new BorderContainer({gutters: false, style: "border: 0px; height: 100%; " });
-    bc.placeAt(mainArea.center.domNode);
-
-    var setVisible = function(widget, visible) {
-        sumo.setVisible(widget.domNode, visible);
-        bc.resize();
+    var editor = {
+        _current: null,
+        
+        current: function() {
+            return this._current;
+        },
+        
+        setCurrent: function(newCurrent) {
+            this._current = newCurrent;
+        }
     };
-
-    var centerPane = new ContentPane({region: "center", style:"padding: 0px;"});
-    bc.addChild(centerPane);
+        
+    editor.modeForDocType = function(docType) {
+        var mode;
+        switch(docType) {
+            case "js":
+                mode = new JavaScriptMode();
+                break;
+            case "css":
+                mode = new CssMode();
+                break;
+            case "html":
+                mode = new HtmlMode();
+                break;
+            default:
+                mode = new TextMode();
+        }
+        return mode;
+    };
+        
+    editor.getSession = function(docType, content) {
+        var text = content || "";
+        var session = new EditSession(text);
+        session.setMode(this.modeForDocType(docType));
+        session.setUndoManager(new UndoManager());
+        return session;
+    };
+        
+    editor.getEmptySession = function() {
+        return new EditSession("");
+    };
     
-    var bottomPane = new ContentPane({
-        region: "bottom", splitter: false, style:"padding: 0px;",
-    });
-    bc.addChild(bottomPane);
-
-    var editor = null;
-
-    var findBar = new TemplatedWidget({
+    global.editor = editor;
+    
+    var FindBar = dojo.declare(TemplatedWidget, {
         templateString: QuickSearchTemplate,
         
         postCreate: function() {
@@ -63,7 +89,8 @@ define([
         },
         
         closePane: function() {
-            setVisible(bottomPane, false);
+            var bc = this._borderContainer;
+            bc._setVisible(bc.bottomPane, false);
             this.ace().focus();
         },
         
@@ -113,9 +140,6 @@ define([
             });
         }
     });
-
-    findBar.placeAt(bottomPane.domNode);
-    setVisible(bottomPane, false);
     
     var AceWidget = dojo.declare(dijit._Widget,
     {
@@ -129,22 +153,68 @@ define([
         resize: function()
         {
             this.editor.resize();
-        },
-
-        setVisible:  function(visible) {
-            setVisible(bc, visible);
         }
     });
     
-    var aceWidget = new AceWidget().placeAt(centerPane.domNode);
-    dojo.style(aceWidget.domNode, {
-        "height": "100%",
-        "width": "100%"
+    var IdeEditor = dojo.declare(BorderContainer, {
+        gutters: false,
+        style: "border: 0px; height: 100%; ",
+        
+        postCreate: function() {
+            this.inherited(arguments);
+
+            this.centerPane = new ContentPane({
+                region: "center", style:"padding: 0px;"
+            });
+            this.addChild(this.centerPane);
+            
+            this.bottomPane = new ContentPane({
+                region: "bottom", splitter: false, style:"padding: 0px;"
+            });
+            this.addChild(this.bottomPane);
+            
+            var self = this;
+            this.findBar = new FindBar({
+                _borderContainer: self,
+                _contentPane: this.bottomPane
+            }).placeAt(this.bottomPane.domNode);
+            
+            this._setVisible(this.bottomPane, false);
+            
+            var aceWidget = new AceWidget().placeAt(this.centerPane.domNode);
+
+            dojo.style(aceWidget.domNode, {
+                "height": "100%",
+                "width": "100%"
+            });
+            aceWidget.resize();
+            aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
+            
+            this.editor = aceWidget.editor;
+        },
+        
+        _setVisible: function(widget, visible) {
+            sumo.setVisible(widget.domNode, visible);
+            this.resize();
+        },
+        
+        setVisible: function(visible) {
+            this._setVisible(this, visible);
+        },
+        
+        initFind: function() {
+            var ace = this.editor;
+            var text = ace.getSession().doc.getTextRange(ace.getSelectionRange());
+            this._setVisible(this.bottomPane, true);
+            this.findBar.initFind(text);
+        }
     });
-    aceWidget.resize();
-    aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
-    aceWidget.setVisible(false);
+
+    var ideEditor = new IdeEditor().placeAt(mainArea.center.domNode);
+    ideEditor.setVisible(false);
     
+    editor.setCurrent(ideEditor);
+
     canon.addCommand({
         name: 'Find in Current File',
         bindKey: {
@@ -153,10 +223,7 @@ define([
             sender: "editor"
         },
         exec: function(env, args, request) {
-            var ace = editor.current().editor;
-            var text = ace.getSession().doc.getTextRange(ace.getSelectionRange());
-            setVisible(bottomPane, true);
-            findBar.initFind(text);
+            editor.current().initFind();
         }
     });
 
@@ -164,44 +231,5 @@ define([
         event.preventDefault();
     });
 
-    editor = {
-        _current: aceWidget,
-        
-        current: function() {
-            return this._current;
-        }
-    };
-        
-    editor.modeForDocType = function(docType) {
-        var mode;
-        switch(docType) {
-            case "js":
-                mode = new JavaScriptMode();
-                break;
-            case "css":
-                mode = new CssMode();
-                break;
-            case "html":
-                mode = new HtmlMode();
-                break;
-            default:
-                mode = new TextMode();
-        }
-        return mode;
-    };
-        
-    editor.getSession = function(docType, content) {
-        var text = content || "";
-        var session = new EditSession(text);
-        session.setMode(this.modeForDocType(docType));
-        session.setUndoManager(new UndoManager());
-        return session;
-    };
-        
-    editor.getEmptySession = function() {
-        return new EditSession("");
-    };
-    
-    global.editor = editor;
     return editor;
 });
