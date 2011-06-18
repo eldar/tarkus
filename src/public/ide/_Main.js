@@ -18,10 +18,10 @@ require({
 
   paths: {
     views: "templates",
-    text: "requirejs/text",
-    order: "requirejs/order",
-    i18n: "requirejs/i18n",
-    ace : "ace/lib/ace",
-    pilot: "pilot/lib/pilot"
+    text: "3rdparty/requirejs/text",
+    order: "3rdparty/requirejs/order",
+    i18n: "3rdparty/requirejs/i18n",
+    ace : "3rdparty/ace/lib/ace",
+    pilot: "3rdparty/pilot/lib/pilot"
   }
 }, ['ide/Main']);
