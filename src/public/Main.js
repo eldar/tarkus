@@ -19,7 +19,7 @@ require([
     
     onLoadPilot(function() {
         require.ready(function() { // on DOM loads
-            require(["core/Global", "core/PluginManager"], function(Global, PluginManager) {
+            require(["core/Global", "core/PluginManager", "core/Ide"], function(Global, PluginManager) {
                 var pluginManager = new PluginManager({ basePath: "ide"});
                 pluginManager.load(["core", "project"]);
             });
