@@ -1,5 +1,8 @@
 define(["sumo/ui/Action"], function (Action) {
-    return {
+
+    var ide = require("core/Ide");
+
+    var actions = {
         file : {
             newProject: new Action({ label: "New Project..." }),
             newFile: new Action({ label: "New File..." }),
@@ -14,4 +17,8 @@ define(["sumo/ui/Action"], function (Action) {
             paste: new Action({ label: "Paste" }),
         }
     };
+    
+    ide.register("actions", actions);
+
+    return actions;
 });

@@ -7,17 +7,17 @@ define([
     "sumo/ui/TemplatedWidget",
     "ui/List",
     "dijit/Dialog",
-    "ide/core/Actions",
     "ide/core/ConfirmDialog",
     "text!ide/project/OpenProjectDialog.html"
 ], function(dojo, ide, socketIo, Model, str, TemplatedWidget, List, Dialog,
-            actions, confirmDialog, OpenProjectTemplate) {
+            confirmDialog, OpenProjectTemplate) {
             
     return {
         init: function() {
 
             var model = ide.query("project.model");
             var tree = ide.query("project.tree");
+            var actions = ide.query("actions");
 
             var OpenDialog = dojo.declare(Dialog, {
                 content: new TemplatedWidget({

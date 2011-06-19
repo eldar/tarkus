@@ -1,4 +1,4 @@
-var deps = [
+define([
    "dojo",
    "dojo/parser",
    "dijit",
@@ -9,13 +9,11 @@ var deps = [
    "dijit/PopupMenuBarItem",
    "dijit/ToolbarSeparator",
    "dijit/form/Button"
-];
-
-define(deps, function (dojo, parser, dijit, bodyView) {
+], function (dojo, parser, dijit, bodyView) {
     dojo.html.set(dojo.body(), bodyView);
     parser.parse();
 
-    return {
+    var mainArea = {
         container: dijit.byId("mainLayout"),
         left: {
            top: dijit.byId("leftTopPane"),
@@ -23,5 +21,9 @@ define(deps, function (dojo, parser, dijit, bodyView) {
         },
         center: dijit.byId("centerPane")
     };
+    
+    var ide = require("core/Ide");
+    ide.register("mainArea", mainArea);
+    return mainArea;
 });
 
