@@ -19,15 +19,10 @@ require([
     
     onLoadPilot(function() {
         require.ready(function() { // on DOM loads
-            require(["core/Global"]);
-            require([
-                "ide/core/MainArea",
-                "ide/core/MainMenu",
-                "ide/core/Editor",
-                "ide/core/OpenDocsWidget",
-                "ide/project/Handlers",
-                "ide/project/Tree"
-            ]);
+            require(["core/Global", "core/PluginManager"], function(Global, PluginManager) {
+                var pluginManager = new PluginManager({ basePath: "ide"});
+                pluginManager.load(["core", "project"]);
+            });
         });
     });
 });
