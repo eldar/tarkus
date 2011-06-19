@@ -1,6 +1,6 @@
 define(function() {
     return {
-        _data: [],
+        _data: {},
         
         register: function(name, obj) {
             if(!this._data[name])

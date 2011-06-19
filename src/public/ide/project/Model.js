@@ -2,9 +2,8 @@ define([
     "dojo",
     "sumo/core/ModelBase",
     "core/Io",
-    "ide/core/OpenDocs",
     "ide/project/Nodes"
-], function(dojo, Model, socketIo, openDocs, nodes) {
+], function(dojo, Model, socketIo, nodes) {
 
     var Node = nodes.Node;
 
@@ -14,8 +13,10 @@ define([
         currentNode: null,
         currentProject: null,
         
-        constructor: function() {
+        constructor: function(openDocs) {
             this._root = new Node(ROOT_NAME);
+            this.openDocs = openDocs;
+            dojo.connect(this, "onChange", this.openDocs, "handleNodeChange");
         },
         
         root: function() {
@@ -95,8 +96,9 @@ define([
         openAndSelectDocument: function(node) {
             if(!node.isDocument())
                 return;
-            var select = function() { openDocs.setCurrentDocumentByNode(node) };
-            if(!openDocs.docByNode(node)) {
+            var self = this;
+            var select = function() { self.openDocs.setCurrentDocumentByNode(node) };
+            if(!this.openDocs.docByNode(node)) {
                 this.openDocument(node, function() {
                     select();
                 });
@@ -106,9 +108,10 @@ define([
         },
         
         openDocument: function(node, onOpen) {
-            if(node.isDocument() && !openDocs.docByNode(node)) {
+            var self = this;
+            if(node.isDocument() && !this.openDocs.docByNode(node)) {
                 socketIo.request("requestFileContent", node.pathDefinition(), function(e) {
-                    openDocs.open(node, e.data);
+                    self.openDocs.open(node, e.data);
                     onOpen();
                 });
             }
@@ -123,16 +126,16 @@ define([
             if(!project)
                 return;
             var allDocs = [];
+            var self = this;
             project.iterate(function(node) {
-                var doc = openDocs.docByNode(node);
+                var doc = self.openDocs.docByNode(node);
                 if(doc)
                     allDocs.push(doc);
             });
             
-            var self = this;
             var doClose = function() {
                 _.each(allDocs, function(doc, i) {
-                    openDocs.closeDocument(doc);
+                    self.openDocs.closeDocument(doc);
                 });
                 project.setParent(null);
                 self.currentProject = null;
@@ -145,7 +148,7 @@ define([
                     if(save) {
                         _.each(unsavedDocs, function(doc, i) {
                             if(forSave[i])
-                                openDocs.saveDocument(doc);
+                                self.openDocs.saveDocument(doc);
                         });
                     }
                     doClose();
@@ -181,7 +184,7 @@ define([
         },
         
         deleteNode: function(node) {
-            openDocs.closeDocument(openDocs.docByNode(node));
+            this.openDocs.closeDocument(this.openDocs.docByNode(node));
             socketIo.request("deletePath", node.pathDefinition(), function(e) {
                 // TODO check for any errors
             });
@@ -190,8 +193,5 @@ define([
             this.notifyChildrenChanged(parent);
         }
     });
-    var model = new ProjectModel;
-    
-    dojo.connect(model, "onChange", openDocs, "handleNodeChange");
-    return model;
+    return ProjectModel;
 });
