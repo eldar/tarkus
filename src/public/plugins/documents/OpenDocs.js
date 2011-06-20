@@ -139,7 +139,7 @@ define([
             // hide the Editor widget and set current document to null
             if(list.length == 0) {
                 var ace = this.editors().current();
-                ace.editor.setSession(editor.getEmptySession());
+                ace.editor.setSession(this.editors().getEmptySession());
                 ace.setVisible(false);
                 this._currentDoc = null;
                 this.currentDocChanged(null);

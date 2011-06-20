@@ -182,7 +182,7 @@ define([
         },
         
         selectedDataNode: function() {
-            var path = tree.get("path");
+            var path = this.get("path");
             if(path.length === 0)
                 return null;
             return _.last(path);

@@ -6,7 +6,7 @@ define([
     "sumo/ui/SimpleDialog",
     "ui/List"
 ], function(dojo, CheckBox, Model, str, SimpleDialog, List) {
-    var single = new SimpleDialog({
+    var Single = dojo.declare(SimpleDialog, {
         title: "Save Changes",
 
         buttons: ["Save", "Do not Save", "Cancel"],
@@ -24,9 +24,6 @@ define([
         }
     });
     
-    single.startup();
-    
-    
     var CheckableNode = dojo.declare(dijit._TreeNode, {
         postCreate: function() {
             this.checkBox = new dijit.form.CheckBox({ checked: true });
@@ -40,8 +37,7 @@ define([
 	    }
     });
     
-    var multi = new (dojo.declare(SimpleDialog, {
-    
+    var Multi = dojo.declare(SimpleDialog, {
         buildRendering: function() {
             this.inherited(arguments);
             dojo.style(this.contentNode, {
@@ -80,12 +76,10 @@ define([
             this.show();
             this._result = result;
         }
-    }))();
-    
-    multi.startup();
+    });
     
     return {
-        single: single,
-        multi: multi
+        Single: Single,
+        Multi: Multi
     };
 });

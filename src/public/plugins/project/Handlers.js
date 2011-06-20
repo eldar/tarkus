@@ -7,10 +7,10 @@ define([
     "sumo/ui/TemplatedWidget",
     "ui/List",
     "dijit/Dialog",
-    "plugins/core/ConfirmDialog",
+    "ui/ConfirmDialog",
     "text!plugins/project/OpenProjectDialog.html"
 ], function(dojo, ide, socketIo, Model, str, TemplatedWidget, List, Dialog,
-            confirmDialog, OpenProjectTemplate) {
+            ConfirmDialog, OpenProjectTemplate) {
             
     return {
         init: function() {
@@ -104,8 +104,11 @@ define([
                 newSomething(false);
             });
 
+            var confirmDialog = new ConfirmDialog.Multi();
+            confirmDialog.startup();
+
             dojo.connect(actions.file.closeProject, "triggered", function() {
-                model.closeCurrentProject(dojo.hitch(confirmDialog.multi, "promptClose"));
+                model.closeCurrentProject(dojo.hitch(confirmDialog, "promptClose"));
             });
         }
     }

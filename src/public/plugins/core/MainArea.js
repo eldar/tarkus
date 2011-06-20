@@ -10,20 +10,23 @@ define([
    "dijit/ToolbarSeparator",
    "dijit/form/Button"
 ], function (dojo, parser, dijit, bodyView) {
-    dojo.html.set(dojo.body(), bodyView);
-    parser.parse();
+    return {
+        init: function() {
+            dojo.html.set(dojo.body(), bodyView);
+            parser.parse();
 
-    var mainArea = {
-        container: dijit.byId("mainLayout"),
-        left: {
-           top: dijit.byId("leftTopPane"),
-           bottom: dijit.byId("leftBottomPane")
-        },
-        center: dijit.byId("centerPane")
-    };
-    
-    var ide = require("core/Ide");
-    ide.register("mainArea", mainArea);
-    return mainArea;
+            var mainArea = {
+                container: dijit.byId("mainLayout"),
+                left: {
+                   top: dijit.byId("leftTopPane"),
+                   bottom: dijit.byId("leftBottomPane")
+                },
+                center: dijit.byId("centerPane")
+            };
+            
+            var ide = require("core/Ide");
+            ide.register("mainArea", mainArea);
+        }
+    }
 });
 

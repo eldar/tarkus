@@ -8,7 +8,9 @@ define([
 
     return {
         init: function() {
-
+            mainArea.init();
+            actions.init();
+            mainMenu.init();
         }
     };
 });
