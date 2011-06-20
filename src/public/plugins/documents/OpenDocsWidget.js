@@ -10,9 +10,9 @@ define([
         postCreate: function() {
             var button = dojo.create("div", {
                 style: {
-                    float: "right",
-                    display: "none",
-                    marginRight: "5px"
+                    "float": "right",
+                    "display": "none",
+                    "marginRight": "5px"
                 }
             });
             dojo.addClass(button, "close-button");
