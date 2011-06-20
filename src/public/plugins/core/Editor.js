@@ -65,6 +65,7 @@ define([
     global.editor = editor;
     
     var ideComponent = new EditorComponent().placeAt(mainArea.center.domNode);
+    ideComponent.startup();
     ideComponent.setVisible(false);
     
     editor.setCurrent(ideComponent);

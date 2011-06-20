@@ -10,26 +10,34 @@ define([
     "plugins/core/Environment",
     "plugins/core/MainArea",
     "dijit/layout/BorderContainer",
-    "dijit/layout/ContentPane"
+    "dijit/layout/ContentPane",
+    "dijit/layout/_LayoutWidget"
 ], function(dojo, sumo, canon, editor, renderer, theme,
     keyboard, FindBar, env, mainArea,
-    BorderContainer, ContentPane) {
+    BorderContainer, ContentPane, _LayoutWidget) {
 
     var Editor = editor.Editor;
     var Renderer = renderer.VirtualRenderer;
 
     // Simple widget that just wraps Ace editor into dijit._Widget
-    var AceWidget = dojo.declare(dijit._Widget,
+    var AceWidget = dojo.declare(_LayoutWidget,
     {
         editor: null,
 
         postCreate : function()
         {
-            this.editor = new Editor(new Renderer(this.domNode, theme));
+            this.editorNode = dojo.create("div");
+            dojo.place(this.editorNode, this.domNode);
+            dojo.style(this.editorNode, {
+                "height": "100%",
+                "width": "100%"
+            });
+            this.editor = new Editor(new Renderer(this.editorNode, theme));
         },
 
         resize: function()
         {
+            this.inherited(arguments);
             this.editor.resize();
         }
     });
@@ -42,24 +50,21 @@ define([
         postCreate: function() {
             this.inherited(arguments);
 
-            this.centerPane = new ContentPane({
-                region: "center", style:"padding: 0px;"
-            });
-            this.addChild(this.centerPane);
-            
+            var self = this;
+            var aceWidget = new AceWidget({_borderContainer: self, region: "center", style:"padding: 0px;"});//.placeAt(this.centerPane.domNode);
+            this.addChild(aceWidget);
+
             this.bottomPane = new ContentPane({
                 region: "bottom", splitter: false, style:"padding: 0px;"
             });
             this.addChild(this.bottomPane);
             this._setVisible(this.bottomPane, false);
             
-            var self = this;
-            var aceWidget = new AceWidget({_borderContainer: self}).placeAt(this.centerPane.domNode);
-
+/*
             dojo.style(aceWidget.domNode, {
                 "height": "100%",
                 "width": "100%"
-            });
+            });*/
             aceWidget.resize();
             aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
             
