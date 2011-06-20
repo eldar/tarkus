@@ -2,9 +2,10 @@ define([
     "dojo",
     "sumo",
     "core/Io",
-    "sumo/core/ModelBase",
-    "plugins/core/Editor"
-], function(dojo, sumo, socketIo, Model, editor) {
+    "sumo/core/ModelBase"
+], function(dojo, sumo, socketIo, Model) {
+
+    var ide = require("core/Ide");
 
     var getCurrentDelta = function(session) {
         var stack = session.getUndoManager().$undoStack;
@@ -59,10 +60,14 @@ define([
         
         _currentDoc: null,
         
+        editors: function() {
+            return ide.query("editors");
+        },
+        
         open: function(node, content) {
             if(this.docByNode(node))
                 return;
-            var session = editor.getSession(node.docType, content);
+            var session = this.editors().getSession(node.docType, content);
             var doc = new Document(node, session);
             session.getUndoManager().on("change", dojo.hitch(this, function() {
                 doc._isModified = (doc.lastSaved != getCurrentDelta(session));
@@ -77,7 +82,7 @@ define([
         },
         
         setCurrentDocument: function(newDoc) {
-            var ace = editor.current();
+            var ace = this.editors().current();
             ace.editor.focus();
             if(this._currentDoc == newDoc)
                 return;
@@ -133,7 +138,7 @@ define([
 
             // hide the Editor widget and set current document to null
             if(list.length == 0) {
-                var ace = editor.current();
+                var ace = this.editors().current();
                 ace.editor.setSession(editor.getEmptySession());
                 ace.setVisible(false);
                 this._currentDoc = null;
@@ -155,7 +160,7 @@ define([
             var doc = this.docByNode(node);
             if(!doc)
                 return;
-            doc.session.setMode(editor.modeForDocType(node.docType));
+            doc.session.setMode(this.editors().modeForDocType(node.docType));
             this.onChange(doc);
         },
         

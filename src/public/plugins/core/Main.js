@@ -1,8 +1,7 @@
 define([
     "plugins/core/MainArea",
     "plugins/core/MainMenu",
-    "plugins/core/Actions",
-    "plugins/core/Editor"
+    "plugins/core/Actions"
 ], function(mainArea, mainMenu, actions) {
 
     var ide = require("core/Ide");

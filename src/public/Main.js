@@ -21,7 +21,7 @@ require([
         require.ready(function() { // on DOM loads
             require(["core/Global", "core/PluginManager", "core/Ide"], function(Global, PluginManager) {
                 var pluginManager = new PluginManager({ basePath: "plugins"});
-                pluginManager.load(["core", "documents", "project"]);
+                pluginManager.load(["core", "editors", "documents", "project"]);
             });
         });
     });

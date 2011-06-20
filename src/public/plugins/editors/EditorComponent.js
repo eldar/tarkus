@@ -7,14 +7,11 @@ define([
     "ace/theme/textmate",
     "ui/Keyboard",
     "ui/FindBar",
-    "plugins/core/Environment",
-    "plugins/core/MainArea",
     "dijit/layout/BorderContainer",
     "dijit/layout/ContentPane",
     "dijit/layout/_LayoutWidget"
 ], function(dojo, sumo, canon, editor, renderer, theme,
-    keyboard, FindBar, env, mainArea,
-    BorderContainer, ContentPane, _LayoutWidget) {
+            keyboard, FindBar, BorderContainer, ContentPane, _LayoutWidget) {
 
     var Editor = editor.Editor;
     var Renderer = renderer.VirtualRenderer;
