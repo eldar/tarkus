@@ -3,10 +3,9 @@ define([
     "sumo",
     "ui/List",
     "ui/FixedTreeNode",
-    "plugins/core/OpenDocs",
     "plugins/core/MainArea",
     "plugins/core/ConfirmDialog"
-], function(dojo, sumo, List, FixedTreeNode, openDocs, mainArea, confirmDialog) {
+], function(dojo, sumo, List, FixedTreeNode, mainArea, confirmDialog) {
     
     var ClosableNode = dojo.declare(FixedTreeNode, {
         postCreate: function() {
@@ -28,13 +27,13 @@ define([
             });
             
             dojo.connect(button, "onclick", dojo.hitch(this, function(event) {
-                openDocs.closeDocumentPrompt(this.item, dojo.hitch(confirmDialog.single, "promptClose"));
+                this.tree.model.closeDocumentPrompt(this.item, dojo.hitch(confirmDialog.single, "promptClose"));
                 dojo.stopEvent(event);
             }));
         }
     });
 
-    var OpenWidget = dojo.declare(List, {
+    var OpenDocsWidget = dojo.declare(List, {
         constructor: function(params) {
             dojo.connect(params.model, "currentDocChangedForView", dojo.hitch(this, function(doc) {
                 if(doc)
@@ -43,7 +42,7 @@ define([
         },
         
         onClick: function(doc) {
-            openDocs.setCurrentDocument(doc);
+            this.model.setCurrentDocument(doc);
         },
         
         _createTreeNode: function(args) {
@@ -51,7 +50,5 @@ define([
         }
         
     });
-    var tree = new OpenWidget({ model: openDocs });
-    tree.placeAt(mainArea.left.bottom.domNode);
-    return tree;
+    return OpenDocsWidget;
 });

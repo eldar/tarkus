@@ -177,10 +177,5 @@ define([
         }
     });
     
-    var openDocs = new OpenDocuments;
-    
-    var ide = require("core/Ide");
-    ide.register("openDocs", openDocs);
-    
-    return openDocs;
+    return OpenDocuments;
 });

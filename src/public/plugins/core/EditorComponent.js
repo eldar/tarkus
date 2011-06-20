@@ -59,13 +59,7 @@ define([
             });
             this.addChild(this.bottomPane);
             this._setVisible(this.bottomPane, false);
-            
-/*
-            dojo.style(aceWidget.domNode, {
-                "height": "100%",
-                "width": "100%"
-            });*/
-            aceWidget.resize();
+
             aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
             
             this.editor = aceWidget.editor;

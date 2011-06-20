@@ -5,10 +5,10 @@ define([
 ], function(ProjectModel, ProjectTree, Handlers) {
 
     var ide = require("core/Ide");
-    var openDocs = ide.query("openDocs");
 
     return {
         init: function() {
+            var openDocs = ide.query("openDocs");
             var model = new ProjectModel(openDocs);
             ide.register("project.model", model);
             
