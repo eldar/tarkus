@@ -7,8 +7,8 @@ define([
     "ace/theme/textmate",
     "ui/Keyboard",
     "ui/FindBar",
-    "ide/core/Environment",
-    "ide/core/MainArea",
+    "plugins/core/Environment",
+    "plugins/core/MainArea",
     "dijit/layout/BorderContainer",
     "dijit/layout/ContentPane"
 ], function(dojo, sumo, canon, editor, renderer, theme,

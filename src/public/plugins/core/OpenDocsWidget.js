@@ -3,9 +3,9 @@ define([
     "sumo",
     "ui/List",
     "ui/FixedTreeNode",
-    "ide/core/OpenDocs",
-    "ide/core/MainArea",
-    "ide/core/ConfirmDialog"
+    "plugins/core/OpenDocs",
+    "plugins/core/MainArea",
+    "plugins/core/ConfirmDialog"
 ], function(dojo, sumo, List, FixedTreeNode, openDocs, mainArea, confirmDialog) {
     
     var ClosableNode = dojo.declare(FixedTreeNode, {

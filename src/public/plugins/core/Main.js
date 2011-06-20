@@ -1,9 +1,9 @@
 define([
-    "ide/core/MainArea",
-    "ide/core/MainMenu",
-    "ide/core/Actions",
-    "ide/core/Editor",
-    "ide/core/OpenDocsWidget",
+    "plugins/core/MainArea",
+    "plugins/core/MainMenu",
+    "plugins/core/Actions",
+    "plugins/core/Editor",
+    "plugins/core/OpenDocsWidget",
 ], function(mainArea, mainMenu, actions) {
 
     var ide = require("core/Ide");

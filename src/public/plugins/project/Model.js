@@ -2,7 +2,7 @@ define([
     "dojo",
     "sumo/core/ModelBase",
     "core/Io",
-    "ide/project/Nodes"
+    "plugins/project/Nodes"
 ], function(dojo, Model, socketIo, nodes) {
 
     var Node = nodes.Node;

@@ -7,8 +7,8 @@ define([
     "ace/mode/text",
     "ace/undomanager",
     "core/Global",
-    "ide/core/MainArea",
-    "ide/core/EditorComponent"
+    "plugins/core/MainArea",
+    "plugins/core/EditorComponent"
 ], function(dojo, editSession, jsMode, cssMode, htmlMode, textMode, undoManager,
     global, mainArea, EditorComponent) {
 

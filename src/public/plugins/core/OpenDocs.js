@@ -3,7 +3,7 @@ define([
     "sumo",
     "core/Io",
     "sumo/core/ModelBase",
-    "ide/core/Editor"
+    "plugins/core/Editor"
 ], function(dojo, sumo, socketIo, Model, editor) {
 
     var getCurrentDelta = function(session) {

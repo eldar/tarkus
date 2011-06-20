@@ -4,7 +4,7 @@ define([
     "dijit/Menu",
     "ui/FixedTreeNode",
     "ui/ResizableTextBox",
-    "ide/project/Nodes"
+    "plugins/project/Nodes"
 ], function(dojo, Tree, Menu, FixedTreeNode, ResizableTextBox, nodes) {
 
     var ide = require("core/Ide");

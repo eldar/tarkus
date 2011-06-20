@@ -7,8 +7,8 @@ define([
     "sumo/ui/TemplatedWidget",
     "ui/List",
     "dijit/Dialog",
-    "ide/core/ConfirmDialog",
-    "text!ide/project/OpenProjectDialog.html"
+    "plugins/core/ConfirmDialog",
+    "text!plugins/project/OpenProjectDialog.html"
 ], function(dojo, ide, socketIo, Model, str, TemplatedWidget, List, Dialog,
             confirmDialog, OpenProjectTemplate) {
             

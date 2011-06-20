@@ -1,7 +1,7 @@
 define([
-    "ide/project/Model",
-    "ide/project/Tree",
-    "ide/project/Handlers"
+    "plugins/project/Model",
+    "plugins/project/Tree",
+    "plugins/project/Handlers"
 ], function(ProjectModel, ProjectTree, Handlers) {
 
     var ide = require("core/Ide");
