@@ -1,4 +1,4 @@
-define(["sumo/ui/Action"], function (Action) {
+define(["ui/Action"], function (Action) {
     var ide = require("core/Ide");
 
     return {
@@ -9,7 +9,15 @@ define(["sumo/ui/Action"], function (Action) {
                     newFile: new Action({ label: "New File..." }),
                     newFolder: new Action({ label: "New Folder..." }),
                     openProject: new Action({ label: "Open Project..." }),
-                    save: new Action({ label: "Save", iconClass: "dijitEditorIcon dijitEditorIconSave", disabled: true }),
+                    save: new Action({
+                        label: "Save",
+                        iconClass: "dijitEditorIcon dijitEditorIconSave",
+                        disabled: true,
+                        keyBinding: {
+                            win: "Ctrl-S",
+                            mac: "Command-S"
+                        }
+                    }),
                     closeProject: new Action({ label: "Close Project", disabled: true }),
                 },
                 edit: {

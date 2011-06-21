@@ -5,13 +5,13 @@ define([
     "ace/editor",
     "ace/virtual_renderer",
     "ace/theme/textmate",
-    "ui/Keyboard",
+    "ui/Action",
     "ui/FindBar",
     "dijit/layout/BorderContainer",
     "dijit/layout/ContentPane",
     "dijit/layout/_LayoutWidget"
 ], function(dojo, sumo, canon, editor, renderer, theme,
-            keyboard, FindBar, BorderContainer, ContentPane, _LayoutWidget) {
+            Action, FindBar, BorderContainer, ContentPane, _LayoutWidget) {
 
     var Editor = editor.Editor;
     var Renderer = renderer.VirtualRenderer;
@@ -105,23 +105,20 @@ define([
             this.findBar.initFind(text);
         }
     });
-
-    canon.addCommand({
-        name: 'Find in Current File',
-        bindKey: {
-            win: 'Ctrl-F',
-            mac: 'Command-F',
-            sender: "editor"
-        },
-        exec: function(env, args, request) {
-            var aceWidget = dijit.getEnclosingWidget(env.editor.container);
-            var editorComponent = aceWidget._borderContainer;
-            editorComponent.initFind();
+    
+    var findAction = new Action({
+        label: 'Find in Current File',
+        keyBinding: {
+            win: "Ctrl-F",
+            mac: "Command-F",
+            extent: Action.prototype.EDITOR
         }
     });
-
-    keyboard.bind(["Ctrl-F", "Command-F"], document, function(event) {
-        event.preventDefault();
+    
+    dojo.connect(findAction, "triggered", function(env) {
+        var aceWidget = dijit.getEnclosingWidget(env.editor.container);
+        var editorComponent = aceWidget._borderContainer;
+        editorComponent.initFind();
     });
 
     return EditorComponent;

@@ -8,11 +8,10 @@ define(["dojo"], function(dojo) {
     };
 
     return {
+        
         bind: function(keyCodes, elem, handler) {
-            if(dojo.isString(keyCodes))
-                keyCodes = [keyCodes];
-            else if(!dojo.isArray(keyCodes))
-                return;
+            var isMac = (navigator.appVersion.indexOf("Mac") != -1);
+            keyCodes = [(isMac ? keyCodes.mac : keyCodes.win)];
             
             var excluded = [];
             _.each(modMap, function(value) {
