@@ -86,6 +86,8 @@
   -moz-transition-duration: 0.35s;
   transition-duration: 0.35s;
   color: #4a4a4a;
+  border-bottom: 1px solid;
+  border-bottom-color: #b5bcc7;
 }
 .claro .dijitTabHover .dijitTabInnerDiv {
   background-color: #efefef;
