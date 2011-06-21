@@ -8,16 +8,15 @@ define([
     "ui/Action",
     "ui/FindBar",
     "dijit/layout/BorderContainer",
-    "dijit/layout/ContentPane",
-    "dijit/layout/_LayoutWidget"
+    "dijit/layout/ContentPane"
 ], function(dojo, sumo, canon, editor, renderer, theme,
-            Action, FindBar, BorderContainer, ContentPane, _LayoutWidget) {
+            Action, FindBar, BorderContainer, ContentPane) {
 
     var Editor = editor.Editor;
     var Renderer = renderer.VirtualRenderer;
 
     // Simple widget that just wraps Ace editor into dijit._Widget
-    var AceWidget = dojo.declare(_LayoutWidget,
+    var AceWidget = dojo.declare(ContentPane,
     {
         editor: null,
 
@@ -51,21 +50,17 @@ define([
             var aceWidget = new AceWidget({_borderContainer: self, region: "center", style:"padding: 0px;"});//.placeAt(this.centerPane.domNode);
             this.addChild(aceWidget);
 
-            this.bottomPane = new ContentPane({
-                region: "bottom", splitter: false, style:"padding: 0px;"
-            });
-            this.addChild(this.bottomPane);
-            this._setVisible(this.bottomPane, false);
-
-            aceWidget.editor.renderer.setHScrollBarAlwaysVisible(false);
-            
-            this.editor = aceWidget.editor;
-
-            var ace = this.editor;
+            var ace = aceWidget.editor;
+            ace.renderer.setHScrollBarAlwaysVisible(false);
+            this.editor = ace;
 
             this.findBar = new FindBar({
+                region: "bottom",
+                splitter: false,
+                style: "padding: 0px;",
+                
                 closePane: function() {
-                    self._setVisible(self.bottomPane, false);
+                    self._setVisible(this, false);
                     ace.focus();
                 },
                 
@@ -86,7 +81,10 @@ define([
                 findPrevious: function() {
                     ace.findPrevious();
                 }
-            }).placeAt(this.bottomPane.domNode);
+            });
+            
+            this.addChild(this.findBar);
+            this._setVisible(this.findBar, false);
         },
         
         _setVisible: function(widget, visible) {
@@ -101,7 +99,7 @@ define([
         initFind: function() {
             var ace = this.editor;
             var text = ace.getSession().doc.getTextRange(ace.getSelectionRange());
-            this._setVisible(this.bottomPane, true);
+            this._setVisible(this.findBar, true);
             this.findBar.initFind(text);
         }
     });
