@@ -1,5 +1,5 @@
 var config = require("./Config");
-var _ = require("./Global")._;
+var _ = require("Global")._;
 var assert = config.unittest ? require("assert") : undefined;
 
 exports = module.exports = function() {

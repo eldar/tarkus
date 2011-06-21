@@ -1,47 +1,49 @@
 var unittest = require("./Unittest");
 var _ = require("./Global")._;
 
-var guard = function(scope) {
+var guard = function(context, scope) {
+    if (!scope) {
+        scope = context; 
+        context = this;
+    }
+
     var callbacks = [];
     
-    var scopeThis = {    
+    var scopeOps = {    
         failure: function(callback) {
-            callbacks.push([0, callback]);
+            callbacks.push({ type: 0, fn: callback });
         },
     
         exit: function(callback) {
-            callbacks.push([1, callback]);
+            callbacks.push({ type: 1, fn: callback });
         },
     
         success: function(callback) {
-            callbacks.push([2, callback]);
+            callbacks.push({ type: 2, fn: callback });
         }
     };
     
     try {
-        scope.call(scopeThis);
+        scope.call(context, scopeOps);
     } catch (e) {
         for (var i = callbacks.length - 1; i >= 0; i--) {
             var callback = callbacks[i];
-            var callbackType = callback[0];
-            if (callbackType < 2)
-                callback[1]();
+            if (callback.type < 2)
+                callback.fn.call(context, e);
         }
         throw e;        
     }
     
     for (var i = callbacks.length - 1; i >= 0; i--) {
         var callback = callbacks[i];
-        var callbackType = callback[0];
-        if (callbackType > 0)
-            callback[1]();
+        if (callback.type > 0)
+            callback.fn.call(context);
     }
 }
 
 exports = module.exports = guard;
 
 unittest(function(assert) {
-
     var called = [];
     function createCallback(type) {
         return function() {
@@ -57,19 +59,19 @@ unittest(function(assert) {
     var onExit = createCallback(1);
     var onSuccess = createCallback(2);
     
-    guard(function() {
-        this.success(onSuccess);
-        this.exit(onExit);
-        this.failure(onFailure);
+    guard(function(scope) {
+        scope.success(onSuccess);
+        scope.exit(onExit);
+        scope.failure(onFailure);
     });    
     assert.ok(_.isEqual(called, [1, 2]));
     
     reset();
     assert.throws(function() {    
-        guard(function() {
-            this.success(onSuccess);
-            this.exit(onExit);
-            this.failure(onFailure);
+        guard(function(scope) {
+            scope.success(onSuccess);
+            scope.exit(onExit);
+            scope.failure(onFailure);
             throw new Error();            
         });
     });    
@@ -77,35 +79,50 @@ unittest(function(assert) {
     
     reset();
     assert.throws(function() {    
-        guard(function() {
-            this.success(onSuccess);
-            this.exit(onExit);
-            this.failure(onFailure);
+        guard(function(scope) {
+            scope.success(onSuccess);
+            scope.exit(onExit);
+            scope.failure(onFailure);
             
-            guard(function() {
-                this.failure(onFailure);
-                this.success(onSuccess);
-                this.exit(onExit);                
+            guard(function(scope) {
+                scope.failure(onFailure);
+                scope.success(onSuccess);
+                scope.exit(onExit);                
                 throw new Error();            
             });         
         });
     });
     assert.ok(_.isEqual(called, [1, 0, 0, 1]));
     
-        reset();
+    reset();
     assert.throws(function() {    
-        guard(function() {
-            this.success(onSuccess);
-            this.exit(onExit);
-            this.failure(onFailure);
+        guard(function(scope) {
+            scope.success(onSuccess);
+            scope.exit(onExit);
+            scope.failure(onFailure);
             
-            guard(function() {
-                this.failure(onFailure);
-                this.success(onSuccess);
-                this.exit(onExit);
+            guard(function(scope) {
+                scope.failure(onFailure);
+                scope.success(onSuccess);
+                scope.exit(onExit);
             });
             throw new Error();         
         });
     });
     assert.ok(_.isEqual(called, [1, 2, 0, 1]));
+    
+    reset();
+    var object = {
+        bar: function() {
+            this.x = 42;
+        },
+        
+        foo: function() {
+            guard(this, function(scope) {
+                scope.exit(this.bar);
+            });
+        }
+    }
+    object.foo();
+    assert.ok(object.x == 42);
 }); 

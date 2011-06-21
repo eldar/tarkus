@@ -9,7 +9,7 @@ var socketio = require("socket.io");
 var fs = require("fs");
 var path = require("path");
 
-var _ = require("./Global")._;
+var _ = require("Global")._;
 var config = require("./Config");
 var session = require("./Session");
 var mem = require("./Memory");

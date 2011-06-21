@@ -1,5 +1,5 @@
 var StoreBase = require('connect').session.Store;
-var _ = require("./Global")._;
+var _ = require("Global")._;
 
 exports.Store = _.inherits(StoreBase, {
     constructor: function() {

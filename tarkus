@@ -1,43 +1,50 @@
 #!/usr/bin/env node
 
-var optParser = require("./OptionParser");
-var _ = require("./Global")._;
+var optParser = require("OptionParser");
+var _ = require("Global")._;
 var path = require("path");
 
-var appName = "tarkus";
-var commandPath = "./" + appName + "Commands";
+var app = {
+    name: "tarkus",
+};
 
 var commands = [
-    { name: "init", moduleName: "Init", brief: "Create an environment" }
+    { name: "init", moduleName: "Init", brief: "Create " + app.name + " environment." }
 ];
 
 var schema = {    
     stopOnArgument: 2,
     definitions: [
-        { short: "h", long: "help", brief: "Print this message", callback: function(parser) {
-            console.log("Usage: " + appName + " [options] command [command options]");
+        { short: "h", long: "help", brief: "Print this help.", callback: function(parser) {
+            console.log("Usage: " + app.name + " [options] command [command options]");
             console.log("Options:");
             parser.printOptions();
-            console.log("Commands:");
-            _.each(commands, function(command) {
+            console.log("Frequently used commands:");
+            _.each(commands.slice(0, 10), function(command) {
                 console.log("\t" + command.name + "\t" + command.brief);
             });
+            console.log("\nFor command-specific help, use '" + app.name + " command --help'");
+            process.exit(0);
         }}
     ]
 }
 
-var options = optParser.parse(process.argv, schema);
+var arguments = process.argv;
+app.options = optParser.parse(arguments, schema);
+app.binaryName = arguments[0];
+app.workDir = arguments[1];
 
-/*
-var commandName = process.argv[2];
+var commandName = app.commandName = arguments[2];
+if (!commandName)
+    throw new Error("Command name is required.\nUse '" + app.name + " --help' to get the list of frequently used commands.");
+
+app.arguments = arguments.slice(2, arguments.length);
+
 _.each(commands, function(command) {    
-    if (command.name == ) {
-        require(path.join(path));
-    }
-    throw new Error("Unknown command " + command.name + ");
-}
-*/
+    if (command.name == commandName) {
+        require(command.moduleName)(app);
+        process.exit(0);
+    }    
+});
 
-
-
-
+throw new Error("Unknown command '" + commandName + "'.");

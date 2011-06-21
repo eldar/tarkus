@@ -1,4 +1,4 @@
-var _ = require("./Global")._;
+var _ = require("Global")._;
 var unittest = require("./Unittest");
 
 function resolvePropertyReference(object, propNameOrValue, pred) {
