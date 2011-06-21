@@ -1,12 +1,12 @@
-[submodule "public/pilot"]
-	path = public/pilot
-	url = https://github.com/eldar/pilot.git
-[submodule "public/ace"]
-	path = public/ace
-	url = https://github.com/maxter/ace.git
-[submodule "public/requirejs"]
-	path = public/requirejs
+[submodule "src/public/3rdparty/requirejs"]
+	path = src/public/3rdparty/requirejs
 	url = https://github.com/eldar/requirejs.git
-[submodule "public/underscore"]
-	path = public/underscore
-	url = https://github.com/maxter/underscore.git
+[submodule "src/public/3rdparty/pilot"]
+	path = src/public/3rdparty/pilot
+	url = https://github.com/eldar/pilot.git
+[submodule "src/public/3rdparty/ace"]
+	path = src/public/3rdparty/ace
+	url = https://github.com/maxter/ace.git
+[submodule "src/public/sumo"]
+	path = src/public/sumo
+	url = https://github.com/eldar/sumo.git
