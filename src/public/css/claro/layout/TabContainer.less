@@ -105,9 +105,6 @@
 .claro .dijitTabHover .dijitTabContent {
 	border-color: @hovered-border-color;
 }
-.claro .dijitTabActive .dijitTabContent {
-	border-color: @pressed-border-color;
-}
 .claro .dijitTabChecked .dijitTabContent {
 	color:@selected-text-color;			// todo: redundant with .claro .dijitTabChecked .dijitTabInnerDiv above?
 	border-color: @border-color;			// don't use @selected-border-color because need to match border of TabContainer
@@ -141,9 +138,8 @@
 	min-width: 60px;
 	text-align: center;
 }
-.claro .dijitTabContainerTop-tabs .dijitTabChecked .dijitTabContent {
-	padding-bottom: 4px;
-	padding-top: 6px;
+.claro .dijitTabContainerTop-tabs .dijitTab .dijitTabContent div {
+    outline: none;
 }
 
 /* normal status */

@@ -1,7 +1,8 @@
 define([
     "plugins/documents/OpenDocs",
-    "plugins/documents/OpenDocsWidget"
-], function(OpenDocuments, OpenDocsWidget) {
+    "plugins/documents/OpenDocsWidget",
+    "plugins/documents/TabView"
+], function(OpenDocuments, OpenDocsWidget, TabView) {
 
     var ide = require("core/Ide");
     var openDocs = ide.query("openDocs");
@@ -35,6 +36,19 @@ define([
             var mainArea = ide.query("mainArea");
             var widget = new OpenDocsWidget({ model: openDocs });
             widget.placeAt(mainArea.left.bottom.domNode);
+
+            var tabs = new TabView({
+                model: openDocs,
+                tabPosition: "top",
+                useMenu: true,
+                dir: "ltr",
+                tabPosition: false,
+                nested:false
+            });
+            tabs.placeAt(mainArea.tabPane.domNode);
+            tabs.addButton(0);
+            tabs.addButton(1);
+            mainArea.centerContainer.resize();
         }
     };
 });

@@ -88,30 +88,27 @@
   color: #4a4a4a;
 }
 .claro .dijitTabHover .dijitTabInnerDiv {
-  background-color: #abd6ff;
+  background-color: #cfe5fa;
   -webkit-transition-duration: 0.25s;
   -moz-transition-duration: 0.25s;
   transition-duration: 0.25s;
   color: #000000;
 }
 .claro .dijitTabActive .dijitTabInnerDiv {
-  background-color: #7dbefa;
+  background-color: #abd6ff;
   color: #000000;
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   transition-duration: 0.1s;
 }
 .claro .dijitTabChecked .dijitTabInnerDiv {
-  background-color: #cfe5fa;
+  background-color: #abd6ff;
   color: #000000;
 }
 .claro .dijitTabContent {
   border: 1px solid #b5bcc7;
 }
 .claro .dijitTabHover .dijitTabContent {
-  border-color: #769dc0;
-}
-.claro .dijitTabActive .dijitTabContent {
   border-color: #769dc0;
 }
 .claro .dijitTabChecked .dijitTabContent {
@@ -146,9 +143,8 @@
   min-width: 60px;
   text-align: center;
 }
-.claro .dijitTabContainerTop-tabs .dijitTabChecked .dijitTabContent {
-  padding-bottom: 4px;
-  padding-top: 6px;
+.claro .dijitTabContainerTop-tabs .dijitTab .dijitTabContent div {
+  outline: none;
 }
 /* normal status */
 .claro .dijitTabContainerTop-tabs .dijitTabInnerDiv {
@@ -321,10 +317,10 @@
   background-position: bottom;
 }
 .claro .tabStripButtonHover {
-  background-color: #abd6ff;
+  background-color: #cfe5fa;
 }
 .claro .tabStripButtonActive {
-  background-color: #7dbefa;
+  background-color: #abd6ff;
 }
 .claro .dijitTabStripIcon {
   height: 15px;
@@ -415,7 +411,7 @@
   padding: 3px;
   border: solid 1px #769dc0;
   background-position: 0 105px;
-  background-color: #cfe5fa;
+  background-color: #abd6ff;
 }
 .claro .dijitTabContainerTabListNested .dijitTabChecked .tabLabel {
   text-decoration: none;

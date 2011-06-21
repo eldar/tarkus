@@ -21,7 +21,10 @@ define([
                    top: dijit.byId("leftTopPane"),
                    bottom: dijit.byId("leftBottomPane")
                 },
-                center: dijit.byId("centerPane")
+                center: dijit.byId("centerPane"),
+                editorPane: dijit.byId("editorPane"),
+                tabPane: dijit.byId("tabPane"),
+                centerContainer: dijit.byId("centerContainer")
             };
             
             var ide = require("core/Ide");
