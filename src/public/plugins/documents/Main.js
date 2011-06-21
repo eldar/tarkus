@@ -48,6 +48,11 @@ define([
             tabs.placeAt(mainArea.tabPane.domNode);
             tabs.addButton(0);
             tabs.addButton(1);
+/*            var footer = dojo.create("div", {
+                style: "border-bottom-width: 1px solid; height: 5px; display: block"
+            });
+            dojo.place(footer, mainArea.tabPane.domNode);
+*/
             mainArea.centerContainer.resize();
         }
     };
