@@ -78,7 +78,7 @@
   display: none;
 }
 .claro .dijitTabInnerDiv {
-  background-color: #efefef;
+  background-color: #e5e5e5;
   -webkit-transition-property: background-color, border;
   -moz-transition-property: background-color, border;
   transition-property: background-color, border;
@@ -88,28 +88,21 @@
   color: #4a4a4a;
 }
 .claro .dijitTabHover .dijitTabInnerDiv {
-  background-color: #cfe5fa;
+  background-color: #efefef;
   -webkit-transition-duration: 0.25s;
   -moz-transition-duration: 0.25s;
   transition-duration: 0.25s;
   color: #000000;
 }
-.claro .dijitTabActive .dijitTabInnerDiv {
-  background-color: #abd6ff;
-  color: #000000;
-  -webkit-transition-duration: 0.1s;
-  -moz-transition-duration: 0.1s;
-  transition-duration: 0.1s;
-}
 .claro .dijitTabChecked .dijitTabInnerDiv {
-  background-color: #abd6ff;
+  background-color: #ffffff;
   color: #000000;
 }
 .claro .dijitTabContent {
   border: 1px solid #b5bcc7;
 }
 .claro .dijitTabHover .dijitTabContent {
-  border-color: #769dc0;
+  border-color: #b5bcc7;
 }
 .claro .dijitTabChecked .dijitTabContent {
   color: #000000;
@@ -137,9 +130,6 @@
 .claro .dijitTabContainerTop-tabs .dijitTabContent {
   padding: 3px 6px;
   border-bottom-width: 0;
-  background-image: url("images/tabTop.png");
-  background-position: 0 0;
-  background-repeat: repeat-x;
   min-width: 60px;
   text-align: center;
 }
@@ -283,8 +273,8 @@
 /** end right tab **/
 /** round corner **/
 .claro .dijitTabContainerTop-tabs .dijitTabInnerDiv, .claro .dijitTabContainerTop-tabs .dijitTabContent {
-  -moz-border-radius: 2px 2px 0 0;
-  border-radius: 2px 2px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
 }
 .claro .dijitTabContainerBottom-tabs .dijitTabInnerDiv, .claro .dijitTabContainerBottom-tabs .dijitTabContent {
   -moz-border-radius: 0 0 2px 2px;
