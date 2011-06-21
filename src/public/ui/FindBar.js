@@ -1,13 +1,15 @@
 define([
     "dojo",
     "sumo",
-    "sumo/ui/TemplatedWidget",
+    "dijit/layout/ContentPane",
+    "dijit/_Templated",
     "text!ui/FindBar.html",
     "dijit/form/TextBox",
     "sumo/ui/ToolButton"
-], function(dojo, sumo, TemplatedWidget, FindBarTemplate) {
+], function(dojo, sumo, ContentPane, _Templated, FindBarTemplate) {
 
-    return dojo.declare(TemplatedWidget, {
+    return dojo.declare([ContentPane, _Templated], {
+        widgetsInTemplate: true,
         templateString: FindBarTemplate,
         
         postCreate: function() {
