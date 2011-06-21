@@ -78,11 +78,15 @@
 	/* set the spacer invisible.  note that height:0 doesn't work on IE/quirks, it's still 10px. */
 	display: none;
 }
+
+@tab-background-colour: #e5e5e5;
+@tab-background-colour-selected: #ffffff;
+
 .claro .dijitTabInnerDiv {
-	background-color:#e5e5e5;
+	background-color: @tab-background-colour;
 	.transition-property(background-color, border);
  	.transition-duration(.35s);
-	color:@unselected-text-color;
+	color: @unselected-text-color;
 }
 .claro .dijitTabHover .dijitTabInnerDiv {
 	background-color:#efefef;
@@ -91,7 +95,7 @@
 }
 
 .claro .dijitTabChecked .dijitTabInnerDiv {
-	background-color:#ffffff;
+	background-color:@tab-background-colour-selected;
 	color:@selected-text-color;
 }
 
