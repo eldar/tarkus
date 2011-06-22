@@ -73,8 +73,21 @@ define([
                 doc._isModified = (doc.lastSaved != getCurrentDelta(session));
                 this.onChange(doc);
             }));
-            this.list().unshift(doc);
+            var previousSize = this.list().length;
+            this.list().push(doc);
+            this.notifyInsertRow(previousSize, doc);
+        },
+        
+        notifyInsertRow: function(row, item) {
+            this.rowInserted(row, item);
             this.notifyChildrenChanged(this.root());
+        },
+        
+        rowInserted: function(row, item) {
+        },
+        
+        getToolTip: function(item) {
+            return item.node.fullPath();
         },
         
         setCurrentDocumentByNode: function(node) {

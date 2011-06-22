@@ -3,13 +3,20 @@ define([
     "dijit/layout/TabController"
 ], function(dojo, TabController) {
     return dojo.declare(TabController, {
-		addButton: function(insertIndex) {
-			var cls = dojo.getObject(this.buttonWidget);
+        
+        postCreate: function() {
+            this.inherited(arguments);
+            this.connect(this.model, "rowInserted", "onInsertRow");
+        },
+        
+        onInsertRow: function(row, item) {
+            var mdl = this.model;
+    		var cls = dojo.getObject(this.buttonWidget);
 			var button = new cls({
-				label: "button1",
+				label: mdl.getLabel(item),
 				showLabel: true,
 				closeButton: true,
-				title: "button1 title",
+				title: mdl.getToolTip(item),
 				dir: "ltr"
 			});
 			dijit.setWaiState(button.focusNode, "selected", "false");
@@ -18,9 +25,13 @@ define([
 			    self.selectButton(button);
 			});
 
-			this.addChild(button, insertIndex);
-		},
-		
+			this.addChild(button, row);
+            this.sizeChanged();
+        },
+        
+        sizeChanged: function() {
+        },
+        
 		selectButton: function(button){
 			if(this._currentButton){
 				var oldButton = this._currentButton;

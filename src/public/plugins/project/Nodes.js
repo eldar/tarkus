@@ -17,9 +17,6 @@ define([
     };
     
     var stripNodePath = function(fullPath) {
-        // stripping of root node name
-        var i = fullPath.indexOf("/");
-        fullPath = fullPath.substr(i+1);
         // splitting path into project name and relative path
         i = fullPath.indexOf("/");
         return {
@@ -116,6 +113,11 @@ define([
                 result = node.name + "/" + result;
                 node = node.parent;
             }
+            // strip of root node
+            var i = result.indexOf("/");
+            result = result.substr(i+1);
+            // trim forward slashes
+            result = result.replace(/^\/+|\/+$/g, '');
             return result;
         },
         
