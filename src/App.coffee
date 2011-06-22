@@ -2,6 +2,9 @@
 #
 # Ensure app is properly configured before it is accessed in other modules.
 
+#require("coffee-script")
+
+
 express = require("express")
 socketio = require("socket.io")
 fs = require("fs")
@@ -55,7 +58,7 @@ app.configure(->
     app.register(".html", require(__dirname + "/jqtpl/jqtpl"))
     
     # network settings
-    app.port = if process.argv.length > 2 then process.argv[2] else 8080    
+    app.port = if process.argv.length > 2 then process.argv[2] else 8080
     app.host = undefined    
 )
 
@@ -64,6 +67,8 @@ app.configure(->
 app.postConfigure = ->
 
 app.configure("development", ->
+    app.use(express.compiler(src: config.dirs.public, enable: ["coffeescript"]))
+        
     app.use(express.errorHandler(
             dumpExceptions: true,
             showStack:      true
