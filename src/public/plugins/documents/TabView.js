@@ -5,6 +5,7 @@ define([
     return dojo.declare(TabController, {
         
         postCreate: function() {
+            this._docToButton = {};
             this.inherited(arguments);
             this.connect(this.model, "rowInserted", "onInsertRow");
         },
@@ -19,12 +20,19 @@ define([
 				title: mdl.getToolTip(item),
 				dir: "ltr"
 			});
+
+            button.__tarkus_document = item;
+            this._docToButton[item] = button;
+            
 			dijit.setWaiState(button.focusNode, "selected", "false");
 			var self = this;
 			this.connect(button, 'onMouseDown', function() {
-			    self.selectButton(button);
+                self.model.setCurrentDocument(button.__tarkus_document);
+        	    self.selectButton(button);
 			});
-
+            dojo.connect(this.model, "currentDocChangedForView", function(doc) {
+        	    self.selectButton(self._docToButton[doc]);
+            });
 			this.addChild(button, row);
             this.sizeChanged();
         },
@@ -32,8 +40,11 @@ define([
         sizeChanged: function() {
         },
         
-		selectButton: function(button){
-			if(this._currentButton){
+		selectButton: function(button) {
+            if(this._currentButton === button)
+                return;
+                
+			if(this._currentButton) {
 				var oldButton = this._currentButton;
 				oldButton.set('checked', false);
 				dijit.setWaiState(oldButton.focusNode, "selected", "false");

@@ -112,6 +112,7 @@ define([
         
         currentDocChangedForView: function() {
         },
+        
         docByNode: function(node) {
             var len = this.list().length;
             for(var i = 0; i < len; i++) {
