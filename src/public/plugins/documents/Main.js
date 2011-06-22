@@ -1,8 +1,9 @@
 define([
     "plugins/documents/OpenDocs",
     "plugins/documents/OpenDocsWidget",
-    "plugins/documents/TabView"
-], function(OpenDocuments, OpenDocsWidget, TabView) {
+    "plugins/documents/TabView",
+    "ui/ConfirmDialog"
+], function(OpenDocuments, OpenDocsWidget, TabView, ConfirmDialog) {
 
     var ide = require("core/Ide");
     var openDocs = ide.query("openDocs");
@@ -33,6 +34,13 @@ define([
                 updateSaveSensitivity(doc);
             });
 
+            var confirmDialog = new ConfirmDialog.Single();
+            confirmDialog.startup();
+            confirmDialog.closeWithPrompt = function(item) {
+                openDocs.closeDocumentPrompt(item, dojo.hitch(confirmDialog, "promptClose"));
+            };
+            ide.register("documents.confirmDialog", confirmDialog);
+
             var mainArea = ide.query("mainArea");
             var widget = new OpenDocsWidget({ model: openDocs });
             widget.placeAt(mainArea.left.bottom.domNode);
@@ -46,14 +54,15 @@ define([
                 nested:false
             });
             tabs.placeAt(mainArea.tabPane.domNode);
-            tabs.addButton(0);
-            tabs.addButton(1);
 /*            var footer = dojo.create("div", {
                 style: "border-bottom-width: 1px solid; height: 5px; display: block"
             });
             dojo.place(footer, mainArea.tabPane.domNode);
-*/
+*/          
             mainArea.centerContainer.resize();
+            dojo.connect(tabs, "sizeChanged", function() {
+                mainArea.centerContainer.resize();
+            });
         }
     };
 });

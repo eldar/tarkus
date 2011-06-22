@@ -73,8 +73,29 @@ define([
                 doc._isModified = (doc.lastSaved != getCurrentDelta(session));
                 this.onChange(doc);
             }));
-            this.list().unshift(doc);
+            var previousSize = this.list().length;
+            this.list().push(doc);
+            this.notifyInsertRow(previousSize, doc);
+        },
+        
+        notifyInsertRow: function(row, item) {
+            this.rowInserted(row, item);
             this.notifyChildrenChanged(this.root());
+        },
+        
+        rowInserted: function(row, item) {
+        },
+
+        notifyRemoveRow: function(row) {
+            this.rowRemoved(row);
+            this.notifyChildrenChanged(this.root());
+        },
+        
+        rowRemoved: function(row) {
+        },
+        
+        getToolTip: function(item) {
+            return item.node.fullPath();
         },
         
         setCurrentDocumentByNode: function(node) {
@@ -99,6 +120,7 @@ define([
         
         currentDocChangedForView: function() {
         },
+        
         docByNode: function(node) {
             var len = this.list().length;
             for(var i = 0; i < len; i++) {
@@ -134,7 +156,7 @@ define([
             var list = this.list();
             var i = list.indexOf(doc);
             list.splice(i, 1);
-            this.notifyChildrenChanged(this.root());
+            this.notifyRemoveRow(doc);
 
             // hide the Editor widget and set current document to null
             if(list.length == 0) {
