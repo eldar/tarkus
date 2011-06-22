@@ -54,6 +54,7 @@ define([
                 case "js":
                 case "css":
                 case "html":
+                case "coffee":
                     dType = ext;
                     break;
                 default:
