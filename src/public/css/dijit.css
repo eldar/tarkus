@@ -1340,7 +1340,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 
 .dijitTab {
 	position:relative;
-	cursor:pointer;
+	cursor:default;
 	white-space:nowrap;
 	z-index:3;
 }

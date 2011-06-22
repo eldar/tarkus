@@ -11,7 +11,7 @@ define([
             ide.register("editors", editors);
             
             var mainArea = ide.query("mainArea");
-            var ideComponent = new EditorComponent().placeAt(mainArea.center.domNode);
+            var ideComponent = new EditorComponent().placeAt(mainArea.editorPane.domNode);
             ideComponent.startup();
             ideComponent.setVisible(false);
             
