@@ -12,6 +12,18 @@ define([
             this.inherited(arguments);
             this.connect(this.model, "rowInserted", "onInsertRow");
             this.connect(this.model, "rowRemoved", "onRemoveRow");
+            this.connect(this.model, "onChange", "updateDocument");
+            var self = this;
+            this.connect(this.model, "currentDocChangedForView", function(doc) {
+                if(doc)
+                    self.selectButton(self._docToButton[doc.id]);
+            });
+        },
+        
+        updateDocument: function(doc) {
+            var button = this._docToButton[doc.id];
+            button.set("label", this.model.getLabel(doc));
+            button.set("title", this.model.getToolTip(doc));
         },
         
         onInsertRow: function(row, item) {
@@ -30,21 +42,20 @@ define([
             
 			dijit.setWaiState(button.focusNode, "selected", "false");
 			var self = this;
-			this.connect(button, 'onMouseDown', function() {
-                self.model.setCurrentDocument(button.__tarkus_document);
-        	    self.selectButton(button);
-			});
-            
             var confirmDialog = ide.query("documents.confirmDialog");
 
-            this.connect(button, 'onClickCloseButton', function() {
+            this.connect(button, 'onMouseDown', function() {
+                self.model.setCurrentDocument(button.__tarkus_document);
+			});
+
+            this.connect(button, 'onMouseUp', function(event) {
+                dojo.stopEvent(event);
+    		});
+
+            this.connect(button, 'onClickCloseButton', function(event) {
                 confirmDialog.closeWithPrompt(button.__tarkus_document);
             });
             
-            this.connect(this.model, "currentDocChangedForView", function(doc) {
-                if(doc)
-        	        self.selectButton(self._docToButton[doc.id]);
-            });
 			this.addChild(button, row);
             this.sizeChanged();
         },
