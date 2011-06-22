@@ -2,11 +2,12 @@ define([
     "dojo",
     "ace/edit_session",
     "ace/mode/javascript",
+    "ace/mode/coffee",
     "ace/mode/css",
     "ace/mode/html",
     "ace/mode/text",
     "ace/undomanager"
-], function(dojo, editSession, jsMode, cssMode, htmlMode, textMode, undoManager) {
+], function(dojo, editSession, jsMode, coffeeMode, cssMode, htmlMode, textMode, undoManager) {
 
     var EditSession = editSession.EditSession;
 
@@ -15,6 +16,7 @@ define([
     var HtmlMode = htmlMode.Mode;
     var TextMode = textMode.Mode;
     var UndoManager = undoManager.UndoManager;
+    var CoffeeMode = coffeeMode.Mode;
 
     var Editors = dojo.declare(null, {
         _current: null,
@@ -38,6 +40,9 @@ define([
                     break;
                 case "html":
                     mode = new HtmlMode();
+                    break;
+                case "coffee":
+                    mode = new CoffeeMode();
                     break;
                 default:
                     mode = new TextMode();
