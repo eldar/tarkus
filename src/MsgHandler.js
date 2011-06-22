@@ -60,7 +60,7 @@ HandlerObj.prototype = {
     
     _respond: function(msg) {
         msg.type = "response";
-        this._socket.send(msg);
+        this._socket.emit("ideMessage", msg);
     },
 
     projectCreate : function(msg) {
