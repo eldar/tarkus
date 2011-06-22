@@ -98,6 +98,10 @@ define([
             return item.node.fullPath();
         },
         
+        focusEditor: function() {
+            this.editors().current().editor.focus();
+        },
+        
         setCurrentDocumentByNode: function(node) {
             this.setCurrentDocument(this.docByNode(node));
         },

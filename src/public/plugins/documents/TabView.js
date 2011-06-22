@@ -49,6 +49,7 @@ define([
 			});
 
             this.connect(button, 'onMouseUp', function(event) {
+                self.model.focusEditor(button.__tarkus_document);
                 dojo.stopEvent(event);
     		});
 
