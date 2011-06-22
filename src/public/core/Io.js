@@ -2,13 +2,13 @@ define([
     "dojo",
     "order!socket.io/socket.io.js"
 ], function(dojo) {
-    var socket = new io.Socket();
+    var socket = io.connect();
     var map = {};
 
     var handler = {
         
         send: function(name, data) {
-            socket.send({
+            socket.emit("ideMessage", {
                 name: name,
                 data: data
             });
@@ -22,14 +22,16 @@ define([
         }
     };
     
-    socket.on("connect", function() {
+    socket.on("connect", function() {               
         handler.request("startSession", {                
                 sessionId: dojo.cookie("tarkus-session-id"),
                 userAgent: navigator.userAgent
             });
+
+        console.log("connected");
     });
 
-    socket.on("message", function(msg) {
+    socket.on("ideMessage", function(msg) {
         if(msg.type === "response") {
             var name = msg.name;
             if(map[name]) {
@@ -44,6 +46,5 @@ define([
         console.log("we are disconnected!");
     });
     
-    socket.connect();    
     return handler;
 });

@@ -67,7 +67,10 @@ app.configure(->
 app.postConfigure = ->
 
 app.configure("development", ->
-    app.use(express.compiler(src: config.dirs.public, enable: ["coffeescript"]))
+    app.use express.compiler
+        src: config.dirs.public
+        dest: config.dirs.compiledJs
+        enable: ["coffeescript"]
         
     app.use(express.errorHandler(
             dumpExceptions: true,
@@ -97,13 +100,13 @@ app.get("/favicon.ico", (req, res) ->
 
 app.run()
 
-app.socket = socketio.listen(app)
-app.socket.on("connection", (client) ->
+app.io = socketio.listen(app)
+app.io.sockets.on("connection", (client) ->
     console.log("socket connected")
     
     msgHandlerObj = new msgHandler.MsgHandler(client)
     
-    client.on("message", (msg) ->    
+    client.on("ideMessage", (msg) ->    
         console.log("message received \"" + msg.name + "\"")        
         
         if msg.name == "startSession"
