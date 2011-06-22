@@ -85,6 +85,14 @@ define([
         
         rowInserted: function(row, item) {
         },
+
+        notifyRemoveRow: function(row) {
+            this.rowRemoved(row);
+            this.notifyChildrenChanged(this.root());
+        },
+        
+        rowRemoved: function(row) {
+        },
         
         getToolTip: function(item) {
             return item.node.fullPath();
@@ -148,7 +156,7 @@ define([
             var list = this.list();
             var i = list.indexOf(doc);
             list.splice(i, 1);
-            this.notifyChildrenChanged(this.root());
+            this.notifyRemoveRow(doc);
 
             // hide the Editor widget and set current document to null
             if(list.length == 0) {

@@ -1,8 +1,9 @@
 define([
     "plugins/documents/OpenDocs",
     "plugins/documents/OpenDocsWidget",
-    "plugins/documents/TabView"
-], function(OpenDocuments, OpenDocsWidget, TabView) {
+    "plugins/documents/TabView",
+    "ui/ConfirmDialog"
+], function(OpenDocuments, OpenDocsWidget, TabView, ConfirmDialog) {
 
     var ide = require("core/Ide");
     var openDocs = ide.query("openDocs");
@@ -32,6 +33,13 @@ define([
                 saveAct.set("label", text);
                 updateSaveSensitivity(doc);
             });
+
+            var confirmDialog = new ConfirmDialog.Single();
+            confirmDialog.startup();
+            confirmDialog.closeWithPrompt = function(item) {
+                openDocs.closeDocumentPrompt(item, dojo.hitch(confirmDialog, "promptClose"));
+            };
+            ide.register("documents.confirmDialog", confirmDialog);
 
             var mainArea = ide.query("mainArea");
             var widget = new OpenDocsWidget({ model: openDocs });

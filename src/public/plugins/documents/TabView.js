@@ -2,12 +2,16 @@ define([
     "dojo",
     "dijit/layout/TabController"
 ], function(dojo, TabController) {
+
+    var ide = require("core/Ide");
+
     return dojo.declare(TabController, {
         
         postCreate: function() {
             this._docToButton = {};
             this.inherited(arguments);
             this.connect(this.model, "rowInserted", "onInsertRow");
+            this.connect(this.model, "rowRemoved", "onRemoveRow");
         },
         
         onInsertRow: function(row, item) {
@@ -20,9 +24,9 @@ define([
 				title: mdl.getToolTip(item),
 				dir: "ltr"
 			});
-
+            
             button.__tarkus_document = item;
-            this._docToButton[item] = button;
+            this._docToButton[item.id] = button;
             
 			dijit.setWaiState(button.focusNode, "selected", "false");
 			var self = this;
@@ -30,8 +34,16 @@ define([
                 self.model.setCurrentDocument(button.__tarkus_document);
         	    self.selectButton(button);
 			});
-            dojo.connect(this.model, "currentDocChangedForView", function(doc) {
-        	    self.selectButton(self._docToButton[doc]);
+            
+            var confirmDialog = ide.query("documents.confirmDialog");
+
+            this.connect(button, 'onClickCloseButton', function() {
+                confirmDialog.closeWithPrompt(button.__tarkus_document);
+            });
+            
+            this.connect(this.model, "currentDocChangedForView", function(doc) {
+                if(doc)
+        	        self.selectButton(self._docToButton[doc.id]);
             });
 			this.addChild(button, row);
             this.sizeChanged();
@@ -56,6 +68,20 @@ define([
 			dijit.setWaiState(newButton.focusNode, "selected", "true");
 			this._currentButton = newButton;
 			newButton.focusNode.setAttribute("tabIndex", "0");
+		},
+        
+		onRemoveRow: function(doc) {
+			// disconnect connections related to page being removed
+//			dojo.forEach(this.pane2connects[page.id], dojo.hitch(this, "disconnect"));
+//			delete this.pane2connects[page.id];
+
+			var button = this._docToButton[doc.id];
+			if(button) {
+				this.removeChild(button);
+				delete this._docToButton[doc.id];
+				button.destroy();
+                this._currentButton = null;
+			}
 		},
     });
 });

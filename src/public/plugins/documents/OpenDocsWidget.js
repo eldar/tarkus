@@ -2,10 +2,11 @@ define([
     "dojo",
     "sumo",
     "ui/List",
-    "ui/FixedTreeNode",
-    "ui/ConfirmDialog"
+    "ui/FixedTreeNode"
 ], function(dojo, sumo, List, FixedTreeNode, ConfirmDialog) {
     
+    var ide = require("core/Ide");
+
     var ClosableNode = dojo.declare(FixedTreeNode, {
         postCreate: function() {
             var button = dojo.create("div", {
@@ -25,11 +26,10 @@ define([
                 sumo.setVisible(button, false);
             });
             
-            var confirmDialog = new ConfirmDialog.Single();
-            confirmDialog.startup();
+            var confirmDialog = ide.query("documents.confirmDialog");
             
             dojo.connect(button, "onclick", dojo.hitch(this, function(event) {
-                this.tree.model.closeDocumentPrompt(this.item, dojo.hitch(confirmDialog, "promptClose"));
+                confirmDialog.closeWithPrompt(this.item);
                 dojo.stopEvent(event);
             }));
         }
