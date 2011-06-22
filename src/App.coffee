@@ -21,69 +21,59 @@ events = require("./Events")
 app = express.createServer()
 exports.app = app
 
-app.run = ->
-    @listen(@port, @host)
-    console.log("%s is listening on port %d", config.appName, @port)
-
 # Application configuration
 app.configure(->    
-    app.httpHandler = handler.createHandler(handlersDir : config.dirs.httpHandlers)
-    app.messageHandler = handler.createHandler(handlersDir : config.dirs.messageHandlers)
+    @httpHandler = handler.createHandler(handlersDir : config.dirs.httpHandlers)
+    @messageHandler = handler.createHandler(handlersDir : config.dirs.messageHandlers)
      
-    app.use(express.methodOverride())    
-    app.use(express.bodyParser())
-    app.use(express.cookieParser())
+    @use express.methodOverride()    
+    @use express.bodyParser()
+    @use express.cookieParser()
     
-    app.sessionOptions =
+    @sessionOptions =
         secret: "42"
         key: "tarkus-session-id"
         store: new session.Store()
         cookie: { httpOnly: false }
  
-    app.sessionMiddleware = express.session(app.sessionOptions)    
-    app.use(app.sessionMiddleware)
+    @sessionMiddleware = express.session @sessionOptions    
+    @use @sessionMiddleware
     
-    #app.use(_.bind(app.httpHandler.handle, app.httpHandler))
-    app.use(app.router)
-    app.use(express.static(config.dirs.public))
+    #@use _.bind(@httpHandler.handle, @httpHandler)
     
-    # common view and tmplate settings
-    app.set("views", config.dirs.views)
-    app.set("view engine", "html")
-    app.set('view options',
+    if @settings.env == "development"    
+        @use express.compiler
+            src: config.dirs.public            
+            enable: ["coffeescript"]        
+    
+    @use @router
+    @use express.static(config.dirs.public)
+    
+    # common view and template settings
+    @set("views", config.dirs.views)
+    @set("view engine", "html")
+    @set('view options',
             layout: false
         )
         
-    console.log()
-    app.register(".html", require(__dirname + "/jqtpl/jqtpl"))
+    @register(".html", require(__dirname + "/jqtpl/jqtpl"))    
+    
+    if @settings.env == "development"
+        @use express.errorHandler
+            dumpExceptions: true
+            showStack: true
+    else
+        @use express.errorHandler()
     
     # network settings
-    app.port = if process.argv.length > 2 then process.argv[2] else 8080
-    app.host = undefined    
+    @port = if process.argv.length > 2 then process.argv[2] else 8080
+    @host = undefined    
 )
 
-# Configuration code run after
-# environment specific callbacks.
-app.postConfigure = ->
-
-app.configure("development", ->
-    app.use express.compiler
-        src: config.dirs.public
-        dest: config.dirs.compiledJs
-        enable: ["coffeescript"]
-        
-    app.use(express.errorHandler(
-            dumpExceptions: true,
-            showStack:      true
-        ))
-        
-    app.postConfigure()
+app.configure("development", ->        
 )
 
 app.configure("production", ->
-    app.use(express.errorHandler())
-   
-    app.postConfigure()
 )
 
 app.get("/ide", (req, res) ->
@@ -98,7 +88,8 @@ app.get("/favicon.ico", (req, res) ->
     res.send(fs.readFileSync(config.dirs.public + "/favicon.ico"))
 )
 
-app.run()
+app.listen(app.port, app.host)
+console.log("%s is listening on port %d", config.appName, app.port)
 
 app.io = socketio.listen(app)
 app.io.sockets.on("connection", (client) ->

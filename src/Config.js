@@ -6,7 +6,6 @@ exports = module.exports = {
         public: __dirname + "/public",
         views: __dirname + "/views",
         httpHandlers: __dirname + "/httpHandlers",        
-        messageHandlers: __dirname + "/messageHandlers",
-        compiledJs: __dirname + "/compiledJs"
+        messageHandlers: __dirname + "/messageHandlers"        
     },
 }
