@@ -1,5 +1,5 @@
 define([
-    "dojo",
+    "dojo"
     "dijit/layout/TabController"
 ], (dojo, TabController) ->
     ide = require "core/Ide"
@@ -11,7 +11,7 @@ define([
             @connect(@model, "rowInserted", "onInsertRow")
             @connect(@model, "rowRemoved", "onRemoveRow")
             @connect(@model, "onChange", "updateDocument")
-            this.connect(@model, "currentDocChangedForView", (doc) =>
+            @connect(@model, "currentDocChangedForView", (doc) =>
                 if(doc)
                     @selectButton(@_docToButton[doc.id]);
             )
