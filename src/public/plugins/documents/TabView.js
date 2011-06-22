@@ -14,7 +14,7 @@ define([
 			});
 			dijit.setWaiState(button.focusNode, "selected", "false");
 			var self = this;
-			this.connect(button, 'onClick', function() {
+			this.connect(button, 'onMouseDown', function() {
 			    self.selectButton(button);
 			});
 
