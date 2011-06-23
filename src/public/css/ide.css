@@ -48,6 +48,16 @@ html, body {
     border-color: #cccccc;
 }
 
+.editorPane {
+    border-top: 1px;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
+    border-style: solid;
+    border-color: #b5bcc7;
+    margin: 2px 0px 0px;
+}
+
 .close-button {
     width: 14px;
     height: 14px;

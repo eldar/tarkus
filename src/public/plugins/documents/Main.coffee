@@ -48,15 +48,11 @@ define([
             nested:false
 
         tabs.placeAt mainArea.tabPane.domNode
-#        var footer = dojo.create("div", {
-#            style: "border-bottom-width: 1px solid; height: 5px; display: block"
-#        });
-#        dojo.place(footer, mainArea.tabPane.domNode);
 
         updateTabPane = (size) ->
             sumo.setVisible mainArea.tabPane.domNode, size > 0
             mainArea.centerContainer.resize()
-        
+     
         updateTabPane 0
         dojo.connect tabs, "sizeChanged", (size) ->
             updateTabPane size

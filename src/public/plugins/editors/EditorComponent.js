@@ -41,7 +41,7 @@ define([
     // Editor component that contains the actual ace widget and a find bar in the bottom    
     var EditorComponent = dojo.declare(BorderContainer, {
         gutters: false,
-        style: "border: 0px; height: 100%; ",
+        style: "height: 100%;",
         
         postCreate: function() {
             this.inherited(arguments);
@@ -85,6 +85,8 @@ define([
             
             this.addChild(this.findBar);
             this._setVisible(this.findBar, false);
+            
+            dojo.addClass(this.domNode, "editorPane");
         },
         
         _setVisible: function(widget, visible) {
