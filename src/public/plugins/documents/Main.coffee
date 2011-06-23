@@ -1,9 +1,10 @@
 define([
+    "sumo"
     "plugins/documents/OpenDocs"
     "plugins/documents/OpenDocsWidget"
     "plugins/documents/TabView"
     "ui/ConfirmDialog"
-], (OpenDocuments, OpenDocsWidget, TabView, ConfirmDialog) ->
+], (sumo, OpenDocuments, OpenDocsWidget, TabView, ConfirmDialog) ->
 
     init: () ->
         ide = require "core/Ide"
@@ -52,7 +53,11 @@ define([
 #        });
 #        dojo.place(footer, mainArea.tabPane.domNode);
 
-        mainArea.centerContainer.resize()
-        dojo.connect tabs, "sizeChanged", () ->
+        updateTabPane = (size) ->
+            sumo.setVisible mainArea.tabPane.domNode, size > 0
             mainArea.centerContainer.resize()
+        
+        updateTabPane 0
+        dojo.connect tabs, "sizeChanged", (size) ->
+            updateTabPane size
 )

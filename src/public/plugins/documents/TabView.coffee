@@ -8,13 +8,12 @@ define([
         postCreate: () ->
             @_docToButton = {}
             @inherited arguments
-            @connect(@model, "rowInserted", "onInsertRow")
-            @connect(@model, "rowRemoved", "onRemoveRow")
-            @connect(@model, "onChange", "updateDocument")
-            @connect(@model, "currentDocChangedForView", (doc) =>
+            @connect @model, "rowInserted", "onInsertRow"
+            @connect @model, "rowRemoved", "onRemoveRow"
+            @connect @model, "onChange", "updateDocument"
+            @connect @model, "currentDocChangedForView", (doc) =>
                 if(doc)
                     @selectButton(@_docToButton[doc.id]);
-            )
             
         updateDocument: (doc) ->
             button = @_docToButton[doc.id]
@@ -48,9 +47,12 @@ define([
                 confirmDialog.closeWithPrompt(button.__tarkus_document)
             
             @addChild(button, row)
-            @sizeChanged()
+            @emitSizeChanged()
         
-        sizeChanged: () ->
+        emitSizeChanged: () ->
+            @sizeChanged @model.root().children.length
+
+        sizeChanged: (size) ->
         
         selectButton: (button) ->
             if @_currentButton == button
@@ -78,4 +80,5 @@ define([
                 delete @_docToButton[doc.id]
                 button.destroy()
                 @_currentButton = null
+                @emitSizeChanged()
 )
