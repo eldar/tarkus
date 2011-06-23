@@ -8,14 +8,16 @@ define([
     ide = require "core/Ide"
 
     getCurrentDelta = (session) ->
+        if not session then return null
         stack = session.getUndoManager().$undoStack
         len = stack.length
-        (len == 0) ? null : stack[len - 1];
+        if len == 0 then null else stack[len - 1];
 
     Document = dojo.declare null,
         constructor: (node, session) ->
             @node = node;
             @session = session
+            @setInitialSaveState @session
             sumo.makeUnique this, "od_"
         
         setInitialSaveState: () ->
