@@ -1,6 +1,6 @@
 define([
     "dojo",
-    "order!socket.io/socket.io.js"
+    "socket.io/socket.io.js"
 ], function(dojo) {
     var socket = io.connect();
     var map = {};

@@ -10,3 +10,9 @@
 [submodule "src/public/sumo"]
 	path = src/public/sumo
 	url = https://github.com/eldar/sumo.git
+[submodule "src/public/3rdparty/dojo"]
+	path = src/public/3rdparty/dojo
+	url = https://github.com/dojo/dojo.git
+[submodule "src/public/3rdparty/dijit"]
+	path = src/public/3rdparty/dijit
+	url = https://github.com/dojo/dijit.git

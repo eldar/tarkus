@@ -1,5 +1,5 @@
 define([
-    "order!util/underscore"
+    "util/underscore"
 ], function(dojo) {
     return {};
 });
