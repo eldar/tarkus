@@ -73,10 +73,6 @@ app.configure("development", ->
 app.configure("production", ->
 )
 
-app.get("/ide", (req, res) ->
-    res.render("ide")
-)
-
 app.get("/", (req, res) ->
     res.end()
 )
