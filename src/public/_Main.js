@@ -1,33 +1,25 @@
 require({
-  baseUrl: ".",
-  // set the paths to our library packages
-  packages: [
-    {
-      name: "dojo",
-      location: "dojo-release-1.6.1-src/dojo",
-      main: "lib/main-browser",
-      lib: "."
-    },
-    {
-      name: "dijit",
-      location: "dojo-release-1.6.1-src/dijit",
-      main: "lib/main",
-      lib: "."
-    },
-    {
-      name: "sumo",
-      location: "sumo",
-      main: "core/Main",
-      lib: "."
-    }
-  ],
+    baseUrl: ".",
+    // set the paths to our library packages
+    packages: [
+        { name: 'dojo', location: '3rdparty/dojo', lib: '.' },
+        { name: 'dijit', location: '3rdparty/dijit', lib: '.' },
+        { name: 'dojox', location: '3rdparty/dojox', lib: '.' },
+        {
+          name: "sumo",
+          location: "sumo",
+          main: "core/Main",
+          lib: "."
+        }
+    ],
 
-  paths: {
-    views: "templates",
-    text: "3rdparty/requirejs/text",
-    order: "3rdparty/requirejs/order",
-    i18n: "3rdparty/requirejs/i18n",
-    ace : "3rdparty/ace/lib/ace",
-    pilot: "3rdparty/pilot/lib/pilot"
-  }
-}, ['Main']);
+    paths: {
+      views: "templates",
+      ace : "3rdparty/ace/lib/ace",
+      pilot: "3rdparty/pilot/lib/pilot"
+    },
+});
+// map dojo/text! to text
+define("text", ["dojo/text"], function(t){return t;});
+require(["Main"]);
+

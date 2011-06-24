@@ -32,8 +32,8 @@ define([
             button.__tarkus_document = item
             @_docToButton[item.id] = button
             
-            dijit.setWaiState(button.focusNode, "selected", "false")
-
+            button.focusNode.setAttribute("aria-selected", "false")
+            
             confirmDialog = ide.query "documents.confirmDialog"
 
             @connect button, 'onMouseDown', () =>
@@ -61,12 +61,12 @@ define([
             if @_currentButton
                 oldButton = @_currentButton
                 oldButton.set('checked', false)
-                dijit.setWaiState(oldButton.focusNode, "selected", "false")
+                oldButton.focusNode.setAttribute("aria-selected", "false")
                 oldButton.focusNode.setAttribute("tabIndex", "-1")
 
             @_currentButton = button
             button.set('checked', true);
-            dijit.setWaiState(button.focusNode, "selected", "true")
+            button.focusNode.setAttribute("aria-selected", "true")
             button.focusNode.setAttribute("tabIndex", "0")
 
         onRemoveRow: (doc) ->

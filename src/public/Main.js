@@ -16,7 +16,7 @@ require([
             catalog.startupPlugins({ env: env }).then(function() { callback(); });
         });
     }
-    
+    /*
     onLoadPilot(function() {
         require.ready(function() { // on DOM loads
             require(["core/Global", "core/PluginManager", "core/Ide"], function(Global, PluginManager) {
@@ -25,4 +25,12 @@ require([
             });
         });
     });
+    */
+    onLoadPilot(function() {
+        require(["core/Global", "core/PluginManager", "core/Ide", "dojo/domReady!"], function(Global, PluginManager) {
+            var pluginManager = new PluginManager({ basePath: "plugins"});
+            pluginManager.load(["core", "editors", "documents", "project"]);
+        });
+    });
+
 });
