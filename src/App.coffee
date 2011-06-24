@@ -2,9 +2,6 @@
 #
 # Ensure app is properly configured before it is accessed in other modules.
 
-#require("coffee-script")
-
-
 express = require("express")
 socketio = require("socket.io")
 fs = require("fs")
@@ -33,7 +30,7 @@ app.configure(->
     @sessionOptions =
         secret: "42"
         key: "tarkus-session-id"
-        store: new session.Store()
+        store: new session.Store
         cookie: { httpOnly: false }
  
     @sessionMiddleware = express.session @sessionOptions    
@@ -50,13 +47,13 @@ app.configure(->
     @use express.static(config.dirs.public)
     
     # common view and template settings
-    @set("views", config.dirs.views)
-    @set("view engine", "html")
-    @set('view options',
-            layout: false
-        )
+    # @set("views", config.dirs.views)
+    # @set("view engine", "html")
+    # @set('view options',
+    #        layout: false
+    #    )
         
-    @register(".html", require(__dirname + "/jqtpl/jqtpl"))    
+    # @register(".html", require(__dirname + "/jqtpl/jqtpl"))    
     
     if @settings.env == "development"
         @use express.errorHandler
