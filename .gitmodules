@@ -15,4 +15,4 @@
 	url = https://github.com/dojo/dijit.git
 [submodule "src/async"]
 	path = src/async
-	url = git@github.com:maxter/async.js.git
+	url = https://github.com/maxter/async.js.git
