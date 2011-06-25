@@ -1,6 +1,3 @@
-[submodule "src/public/3rdparty/requirejs"]
-	path = src/public/3rdparty/requirejs
-	url = https://github.com/eldar/requirejs.git
 [submodule "src/public/3rdparty/pilot"]
 	path = src/public/3rdparty/pilot
 	url = https://github.com/eldar/pilot.git
@@ -16,3 +13,6 @@
 [submodule "src/public/3rdparty/dijit"]
 	path = src/public/3rdparty/dijit
 	url = https://github.com/dojo/dijit.git
+[submodule "src/async"]
+	path = src/async
+	url = git@github.com:maxter/async.js.git
