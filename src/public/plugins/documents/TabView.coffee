@@ -1,10 +1,10 @@
 define([
     "dojo"
-    "dijit/layout/TabController"
+    "dijit/layout/ScrollingTabController"
 ], (dojo, TabController) ->
     ide = require "core/Ide"
     
-    dojo.declare TabController, 
+    dojo.declare dijit.layout.ScrollingTabController, 
         postCreate: () ->
             @_docToButton = {}
             @inherited arguments
@@ -47,6 +47,7 @@ define([
                 confirmDialog.closeWithPrompt(button.__tarkus_document)
             
             @addChild(button, row)
+            dojo.style @containerNode, "width", (dojo.style(@containerNode, "width") + 200) + "px"
             @emitSizeChanged()
         
         emitSizeChanged: () ->

@@ -42,10 +42,8 @@ define([
         tabs = new TabView
             model: openDocs
             tabPosition: "top"
-            useMenu: true
-            dir: "ltr"
-            tabPosition: false
-            nested:false
+            class: "dijitTabContainerTop-tabs"
+            style: "visibility: visible;"
 
         tabs.placeAt mainArea.tabPane.domNode
 
