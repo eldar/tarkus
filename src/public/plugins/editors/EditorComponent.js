@@ -76,7 +76,7 @@ define([
                 },
                                 
                 findNext: function() {
-                    ace.findNext(this.getSearchOptions());
+                    ace.find(this.getFindText(), this.getSearchOptions());
                 },
 
                 findPrevious: function() {
