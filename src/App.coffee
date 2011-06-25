@@ -78,7 +78,7 @@ app.get("/", (req, res) ->
 )
 
 app.get("/favicon.ico", (req, res) ->
-    res.send(fs.readFileSync(config.dirs.public + "/favicon.ico"))
+    res.send(fs.readFileSync(config.dirs.public + "/icons/favicon.ico"))
 )
 
 app.listen(app.port, app.host)
