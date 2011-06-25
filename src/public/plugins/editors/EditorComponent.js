@@ -64,22 +64,46 @@ define([
                     ace.focus();
                 },
                 
-                doFind: function(text) {
-                    ace.find(text, {
-                      backwards: false,
-                      wrap: true,
-                      caseSensitive: false,
-                      wholeWord: false,
-                      regExp: false
-                    });
+                getSearchOptions: function() {
+                    return {
+                        backwards: false,
+                        wrap: true,
+                        caseSensitive: false,
+                        wholeWord: false,
+                        regExp: false,
+                        needle: this.getFindText()
+                    };
                 },
-                
+                                
                 findNext: function() {
-                    ace.findNext();
+                    ace.findNext(this.getSearchOptions());
+                },
+
+                findPrevious: function() {
+                    var options = this.getSearchOptions();
+                    options.backwards = true;
+                    ace.findPrevious(options);
+                },
+
+                replace: function() {
+                    var range = ace.getSelectionRange();
+                    var selected = ace.getSession().doc.getTextRange(range);
+
+                    var replacement = this.getReplaceText();
+                    var needle = this.getFindText();
+                    ace.$search.set(this.getSearchOptions());
+
+                    if(selected !== needle) {
+                        range = ace.$search.find(ace.session);
+                    } else {
+                        ace.$tryReplace(range, replacement);
+                        range = ace.$search.find(ace.session);
+                        ace.selection.setSelectionRange(range);
+                    }
                 },
                 
-                findPrevious: function() {
-                    ace.findPrevious();
+                replaceAll: function() {
+                    ace.replaceAll(this.getReplaceText(), this.getSearchOptions());
                 }
             });
             
