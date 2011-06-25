@@ -1305,7 +1305,7 @@ body .dijitAlignClient { position: absolute; }
 }
 
 .dijitTabContainerTop-tabs {
-	border-bottom: 1px solid black;
+	border-bottom: 0px;
 }
 .dijitTabContainerTop-container {
 	border-top: 0;
