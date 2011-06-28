@@ -18,6 +18,8 @@ require({
       ace : "3rdparty/ace/lib/ace",
       pilot: "3rdparty/pilot/lib/pilot"
     },
+    
+    deps: ["pilot/fixoldbrowsers"]
 });
 // map dojo/text! to text
 define("text", ["dojo/text"], function(t){return t;});

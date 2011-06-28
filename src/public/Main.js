@@ -1,7 +1,6 @@
 require([
     "pilot/plugin_manager",
-    "pilot/environment",
-    "pilot/fixoldbrowsers"
+    "pilot/environment"
 ], function(
     pluginManager,
     pilotEnv) {
