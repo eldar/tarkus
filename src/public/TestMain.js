@@ -5,7 +5,9 @@ define([
     "dijit/layout/ContentPane",
     "dojo/domReady!"
 ], function (dojo, sumo, Splitter, ContentPane) {
-    var splitter = new Splitter({}, "main");
+    var splitter = new Splitter({
+        orientation: sumo.Vertical,
+    }, "main");
     var cp = function() {
         return new ContentPane({
             style: "border: 1px solid green"
@@ -33,5 +35,5 @@ define([
     splitter.addChild(cp());
 
     splitter.startup();
-    sumo.setWidgetVisible(cp2, false);
+//    sumo.setWidgetVisible(cp2, false);
 });
