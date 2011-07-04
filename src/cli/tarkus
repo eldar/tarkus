@@ -1,50 +1,48 @@
-#!/usr/bin/env node
+#!/usr/bin/env coffee
 
-var optParser = require("OptionParser");
-var _ = require("Global")._;
-var path = require("path");
+optParser = require "OptionParser"
+_ = (require "Global")._
+path = require "path"
 
-var app = {
-    name: "tarkus",
-};
+app =
+    name: "tarkus"
+    commandsDir: "./commands"
 
-var commands = [
-    { name: "init", moduleName: "Init", brief: "Create " + app.name + " environment." }
-];
+commands = [
+    name: "init", moduleName: "Init", brief: "Initialize #{ app.name } environment"
+,   name: "project", moduleName: "Project", brief: "Manage projects"
+]
 
-var schema = {    
-    stopOnArgument: 2,
+schema =   
+    stopOnArgument: 2
     definitions: [
-        { short: "h", long: "help", brief: "Print this help.", callback: function(parser) {
-            console.log("Usage: " + app.name + " [options] command [command options]");
-            console.log("Options:");
-            parser.printOptions();
-            console.log("Frequently used commands:");
-            _.each(commands.slice(0, 10), function(command) {
-                console.log("\t" + command.name + "\t" + command.brief);
-            });
-            console.log("\nFor command-specific help, use '" + app.name + " command --help'");
-            process.exit(0);
-        }}
+        short: "h", long: "help", brief: "Print this help", callback: (parser) ->
+            console.log "Usage: " + app.name + " [options] command [command options]"
+            console.log "Options:"
+            parser.printOptions()
+            console.log "Frequently used commands:"
+            
+            for command in commands[0...10]
+                console.log "\t" + command.name + "\t\t" + command.brief            
+            
+            console.log "\nFor command-specific help, use '#{ app.name } command --help'"
+            process.exit 0        
     ]
-}
 
-var arguments = process.argv;
-app.options = optParser.parse(arguments, schema);
-app.binaryName = arguments[0];
-app.workDir = arguments[1];
+arguments = process.argv
+app.options = optParser.parse(arguments, schema)
+app.binaryName = arguments[0]
+app.workingDir = arguments[1]
 
-var commandName = app.commandName = arguments[2];
-if (!commandName)
-    throw new Error("Command name is required.\nUse '" + app.name + " --help' to get the list of frequently used commands.");
+commandName = app.commandName = arguments[2]
+if !commandName
+    throw new Error "Command name is required.\nUse '#{ app.name } --help' to get the list of frequently used commands"
 
-app.arguments = arguments.slice(2, arguments.length);
+app.arguments = arguments[3..];
 
-_.each(commands, function(command) {    
-    if (command.name == commandName) {
-        require(command.moduleName)(app);
-        process.exit(0);
-    }    
-});
-
-throw new Error("Unknown command '" + commandName + "'.");
+i = _.findIndex(commands, (command) -> command.name == commandName)
+if i >=0
+    run = require(app.commandsDir + "/" + commands[i].moduleName)       
+    run app
+else
+    throw new Error "Unknown command '#{commandName}'"
