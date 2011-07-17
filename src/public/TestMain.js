@@ -2,10 +2,11 @@ define([
     "dojo",
     "sumo",
     "sumo/ui/Splitter",
+    "sumo/ui/Box",
     "dijit/layout/ContentPane",
     "dojo/domReady!"
-], function (dojo, sumo, Splitter, ContentPane) {
-    var splitter = new Splitter({
+], function (dojo, sumo, Splitter, Box, ContentPane) {
+    var splitter = new Box({
         orientation: sumo.Vertical,
     }, "main");
     var cp = function() {
@@ -30,8 +31,10 @@ define([
     };
 */  
     splitter.addChild(cp());
-    var cp2 = cp();  
-    splitter.addChild(cp2);
+    var c = cp();
+//    var el = dojo.create("div", { style: "border: 1px solid red; height: 20px;" });
+//    dojo.place(el, c.domNode);
+    splitter.addChild(c);
     splitter.addChild(cp());
 
     splitter.startup();
