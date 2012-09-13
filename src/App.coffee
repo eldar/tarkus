@@ -5,7 +5,7 @@
 express = require("express")
 socketio = require("socket.io")
 fs = require("fs")
-path = require("path")
+http = require("http")
 
 _ = require("Global")._
 config = require("./Config")
@@ -15,8 +15,10 @@ handler = require("./Handler")
 msgHandler = require("./MsgHandler")
 events = require("./Events")
 
-app = express.createServer()
+app = express()
 exports.app = app
+
+server = http.createServer app
 
 # Application configuration
 app.configure(->    
@@ -38,10 +40,9 @@ app.configure(->
     
     #@use _.bind(@httpHandler.handle, @httpHandler)
     
-    if @settings.env == "development"    
-        @use express.compiler
-            src: config.dirs.public            
-            enable: ["coffeescript"]        
+    if @settings.env == "development"
+        @use require('connect-assets')
+            src: "public"
     
     @use @router
     @use express.static(config.dirs.public)
@@ -81,10 +82,10 @@ app.get("/favicon.ico", (req, res) ->
     res.send(fs.readFileSync(config.dirs.public + "/icons/favicon.ico"))
 )
 
-app.listen(app.port, app.host)
+server.listen(app.port, app.host)
 console.log("%s is listening on port %d", config.appName, app.port)
 
-app.io = socketio.listen(app)
+app.io = socketio.listen(server)
 app.io.sockets.on("connection", (client) ->
     console.log("socket connected")
     
@@ -98,11 +99,11 @@ app.io.sockets.on("connection", (client) ->
             client.headers = {}
             client.cookies = {}
             client.url = ""
+            client.originalUrl = ""
             client.cookies[app.sessionOptions.key] = msg.data.sessionId
             client.headers["user-agent"] = msg.data.userAgent
             msgHandlerObj.handler._respond(msg)
         else       
-            
             # dummy response object for session middleware
             res =
                 end: ->

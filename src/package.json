@@ -1,0 +1,19 @@
+{
+  "name": "tarkus",
+  "version": "0.0.1",
+  "copyright": "Copyright © 2011-2012, Eldar Insafutdinov, Max Samukha",
+  "scripts": {
+    "start": "nodemon --watch . App.coffee"
+  },
+  "authors": [
+    "Eldar Insafutdinov", "Max Samukha"
+  ],
+  "dependencies": {
+    "coffee-script": "*",
+    "express": "3.0.0rc4",
+    "connect": "*",
+    "socket.io": "*",
+    "underscore": "*",
+    "connect-assets": "*"
+  }
+}
