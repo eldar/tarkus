@@ -41,8 +41,8 @@ app.configure(->
     #@use _.bind(@httpHandler.handle, @httpHandler)
     
     if @settings.env == "development"
-        @use require('connect-assets')
-            src: "public"
+        @use require("./CoffeeCompiler")
+            src: config.dirs.public
     
     @use @router
     @use express.static(config.dirs.public)
