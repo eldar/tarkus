@@ -23,14 +23,16 @@ module.exports = (options = {}) ->
             next()
             return
   
-        if fs.existsSync(fileName)
-            jsStats = fs.statSync(fileName)
-  
         csFileName = stripExt(fileName) + ".coffee"
+
         if fs.existsSync(csFileName)
             csStats = fs.statSync(csFileName)
+            overwrite = true
+            if fs.existsSync(fileName)
+                jsStats = fs.statSync(fileName)
+                overwrite = csStats.mtime.getTime() > jsStats.mtime.getTime()
+            if overwrite
+                compiledJs = coffee.compile fs.readFileSync(csFileName, 'utf8')
+                fs.writeFileSync fileName, compiledJs
 
-        if csStats
-            res.end coffee.compile fs.readFileSync(csFileName, 'utf8')
-        else
-            next()
+        next()
