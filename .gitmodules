@@ -1,9 +1,3 @@
-[submodule "src/public/3rdparty/pilot"]
-	path = src/public/3rdparty/pilot
-	url = https://github.com/eldar/pilot.git
-[submodule "src/public/3rdparty/ace"]
-	path = src/public/3rdparty/ace
-	url = https://github.com/maxter/ace.git
 [submodule "src/public/sumo"]
 	path = src/public/sumo
 	url = https://github.com/eldar/sumo.git
