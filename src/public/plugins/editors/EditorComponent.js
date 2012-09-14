@@ -29,6 +29,7 @@ define([
                 "width": "100%"
             });
             this.editor = new Editor(new Renderer(this.editorNode, theme));
+            this.editor.setFontSize("14px");
         },
 
         resize: function()

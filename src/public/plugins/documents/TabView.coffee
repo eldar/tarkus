@@ -21,8 +21,7 @@ define([
             button.set("title", @model.getToolTip(doc))
             
         onInsertRow: (row, item) ->
-            cls = dojo.getObject(@buttonWidget)
-            button = new cls
+            button = new @buttonWidget
                 label: @model.getLabel(item)
                 showLabel: true
                 closeButton: true

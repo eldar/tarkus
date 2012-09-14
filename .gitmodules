@@ -10,3 +10,9 @@
 [submodule "src/async"]
 	path = src/async
 	url = https://github.com/maxter/async.js.git
+[submodule "src/public/3rdparty/ace"]
+	path = src/public/3rdparty/ace
+	url = https://github.com/eldar/ace.git
+[submodule "src/public/3rdparty/pilot"]
+	path = src/public/3rdparty/pilot
+	url = https://github.com/eldar/pilot.git
