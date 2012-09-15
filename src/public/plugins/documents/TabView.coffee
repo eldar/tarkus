@@ -1,7 +1,8 @@
-define([
+define [
     "dojo"
     "dijit/layout/ScrollingTabController"
 ], (dojo, TabController) ->
+    
     ide = require "core/Ide"
     
     dojo.declare dijit.layout.ScrollingTabController, 
@@ -12,39 +13,39 @@ define([
             @connect @model, "rowRemoved", "onRemoveRow"
             @connect @model, "onChange", "updateDocument"
             @connect @model, "currentDocChangedForView", (doc) =>
-                if(doc)
-                    @selectButton(@_docToButton[doc.id]);
+                @selectButton @_docToButton[doc.id] if doc
+            @confirmDialog = ide.query "documents.confirmDialog"
             
         updateDocument: (doc) ->
             button = @_docToButton[doc.id]
-            button.set("label", @model.getLabel(doc))
-            button.set("title", @model.getToolTip(doc))
+            button.set "label", @model.getLabel doc
+            button.set "title", @model.getToolTip doc
             
+        onCloseButtonClick: (page) ->
+            @confirmDialog.closeWithPrompt page
+
+        onButtonClick: (page) ->
+
         onInsertRow: (row, item) ->
             button = new @buttonWidget
-                label: @model.getLabel(item)
+                label: @model.getLabel item
                 showLabel: true
                 closeButton: true
-                title: @model.getToolTip(item)
+                title: @model.getToolTip item
                 dir: "ltr"
 
-            button.__tarkus_document = item
+            button.page = item
             @_docToButton[item.id] = button
             
-            button.focusNode.setAttribute("aria-selected", "false")
+            button.focusNode.setAttribute "aria-selected", "false"
             
-            confirmDialog = ide.query "documents.confirmDialog"
+            @connect button, "onMouseDown", () =>
+                @model.setCurrentDocument item
 
-            @connect button, 'onMouseDown', () =>
-                @model.setCurrentDocument button.__tarkus_document
-
-            @connect button, 'onMouseUp', (event) =>
-                @model.focusEditor button.__tarkus_document
+            @connect button, "onMouseUp", (event) =>
+                @model.focusEditor item
                 dojo.stopEvent event
 
-            @connect button, 'onClickCloseButton', (event) =>
-                confirmDialog.closeWithPrompt(button.__tarkus_document)
-            
             @addChild(button, row)
             dojo.style @containerNode, "width", (dojo.style(@containerNode, "width") + 200) + "px"
             @emitSizeChanged()
@@ -55,19 +56,18 @@ define([
         sizeChanged: (size) ->
         
         selectButton: (button) ->
-            if @_currentButton == button
-                return
+            return if @_currentButton == button
               
             if @_currentButton
                 oldButton = @_currentButton
-                oldButton.set('checked', false)
-                oldButton.focusNode.setAttribute("aria-selected", "false")
-                oldButton.focusNode.setAttribute("tabIndex", "-1")
+                oldButton.set "checked", false
+                oldButton.focusNode.setAttribute "aria-selected", "false"
+                oldButton.focusNode.setAttribute "tabIndex", "-1"
 
             @_currentButton = button
-            button.set('checked', true);
-            button.focusNode.setAttribute("aria-selected", "true")
-            button.focusNode.setAttribute("tabIndex", "0")
+            button.set "checked", true
+            button.focusNode.setAttribute "aria-selected", "true"
+            button.focusNode.setAttribute "tabIndex", "0"
 
         onRemoveRow: (doc) ->
             # disconnect connections related to page being removed
@@ -81,4 +81,3 @@ define([
                 button.destroy()
                 @_currentButton = null
                 @emitSizeChanged()
-)
