@@ -1,12 +1,24 @@
-define ["dojo", "sumo", "pilot/canon", "ace/editor", "ace/virtual_renderer", "ace/theme/textmate", "ui/Action", "ui/FindBar", "dijit/layout/BorderContainer", "dijit/layout/ContentPane"], (dojo, sumo, canon, editor, renderer, theme, Action, FindBar, BorderContainer, ContentPane) ->
+define [
+  "dojo",
+  "sumo",
+  "pilot/canon",
+  "ace/editor",
+  "ace/virtual_renderer",
+  "ace/theme/textmate",
+  "ui/FindBar",
+  "dijit/layout/BorderContainer",
+  "dijit/layout/ContentPane"
+], (dojo, sumo, canon, editor, renderer, theme, FindBar, BorderContainer, ContentPane) ->
+
   Editor = editor.Editor
   Renderer = renderer.VirtualRenderer
   
   # Simple widget that just wraps Ace editor into dijit._Widget
-  AceWidget = dojo.declare(ContentPane,
+  AceWidget = dojo.declare ContentPane,
     editor: null
+
     postCreate: ->
-      @editorNode = dojo.create("div")
+      @editorNode = dojo.create "div"
       dojo.place @editorNode, @domNode
       dojo.style @editorNode,
         height: "100%"
@@ -18,28 +30,31 @@ define ["dojo", "sumo", "pilot/canon", "ace/editor", "ace/virtual_renderer", "ac
     resize: ->
       @inherited arguments
       @editor.resize()
-  )
   
   # Editor component that contains the actual ace widget and a find bar in the bottom    
-  EditorComponent = dojo.declare(BorderContainer,
+  EditorComponent = dojo.declare BorderContainer,
     gutters: false
     style: "height: 100%;"
+
     postCreate: ->
       @inherited arguments
       self = this
-      aceWidget = new AceWidget( #.placeAt(this.centerPane.domNode);
+      
+      aceWidget = new AceWidget #.placeAt(this.centerPane.domNode);
         _borderContainer: self
         region: "center"
         style: "padding: 0px;"
-      )
+
       @addChild aceWidget
       ace = aceWidget.editor
       ace.renderer.setHScrollBarAlwaysVisible false
       @editor = ace
-      @findBar = new FindBar(
+
+      @findBar = new FindBar
         region: "bottom"
         splitter: false
         style: "padding: 0px;"
+
         closePane: ->
           self._setVisible this, false
           ace.focus()
@@ -67,7 +82,7 @@ define ["dojo", "sumo", "pilot/canon", "ace/editor", "ace/virtual_renderer", "ac
           needle = @getFindText()
           ace.$search.set @getSearchOptions()
           if selected isnt needle
-            range = ace.$search.find(ace.session)
+            range = ace.$search.find ace.session
           else
             ace.$tryReplace range, replacement
             range = ace.$search.find(ace.session)
@@ -75,10 +90,19 @@ define ["dojo", "sumo", "pilot/canon", "ace/editor", "ace/virtual_renderer", "ac
 
         replaceAll: ->
           ace.replaceAll @getReplaceText(), @getSearchOptions()
-      )
+
       @addChild @findBar
       @_setVisible @findBar, false
       dojo.addClass @domNode, "editorPane"
+
+      commandManager = aceWidget.editor.commands;
+      commandManager.addCommand
+        name: "find"
+        bindKey:
+          win: "Ctrl-F"
+          mac: "Command-F"
+        exec: (editor) ->
+          self.initFind()
 
     _setVisible: (widget, visible) ->
       sumo.setVisible widget.domNode, visible
@@ -92,17 +116,5 @@ define ["dojo", "sumo", "pilot/canon", "ace/editor", "ace/virtual_renderer", "ac
       text = ace.getSession().doc.getTextRange(ace.getSelectionRange())
       @_setVisible @findBar, true
       @findBar.initFind text
-  )
-  findAction = new Action(
-    label: "Find in Current File"
-    keyBinding:
-      win: "Ctrl-F"
-      mac: "Command-F"
-      extent: Action::EDITOR
-  )
-  dojo.connect findAction, "triggered", (env) ->
-    aceWidget = dijit.getEnclosingWidget(env.editor.container)
-    editorComponent = aceWidget._borderContainer
-    editorComponent.initFind()
 
   EditorComponent
