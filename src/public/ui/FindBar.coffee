@@ -1,4 +1,4 @@
-define([
+define [
     "dojo"
     "sumo"
     "dijit/layout/ContentPane"
@@ -43,4 +43,3 @@ define([
             @findTextBox.focus()
             if text then @findTextBox.set "value", text
             @findTextBox.focusNode.select()
-)

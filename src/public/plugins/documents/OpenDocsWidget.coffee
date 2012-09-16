@@ -1,4 +1,4 @@
-define([
+define [
     "dojo"
     "sumo"
     "ui/List"
@@ -38,4 +38,3 @@ define([
         onClick: (doc) -> @model.setCurrentDocument doc
         
         _createTreeNode: (args) -> new ClosableNode args
-)

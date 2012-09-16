@@ -1,5 +1,7 @@
 define ["ui/Action"], (Action) ->
+
   ide = require "core/Ide"
+
   init: ->
     actions =
       file:
@@ -7,18 +9,18 @@ define ["ui/Action"], (Action) ->
         newFile: new Action(label: "New File...")
         newFolder: new Action(label: "New Folder...")
         openProject: new Action(label: "Open Project...")
-        save: new Action(
+
+        save: new Action
           label: "Save"
           iconClass: "dijitEditorIcon dijitEditorIconSave"
           disabled: true
           keyBinding:
             win: "Ctrl-S"
             mac: "Command-S"
-        )
-        closeProject: new Action(
+
+        closeProject: new Action
           label: "Close Project"
           disabled: true
-        )
 
       edit:
         cut: new Action(label: "Cut")
@@ -26,4 +28,3 @@ define ["ui/Action"], (Action) ->
         paste: new Action(label: "Paste")
 
     ide.register "actions", actions
-

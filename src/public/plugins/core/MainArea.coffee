@@ -1,7 +1,20 @@
-define ["dojo", "dojo/parser", "dijit", "text!templates/ide-body.html", "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/MenuBar", "dijit/PopupMenuBarItem", "dijit/ToolbarSeparator", "dijit/form/Button"], (dojo, parser, dijit, bodyView) ->
+define [
+  "dojo",
+  "dojo/parser",
+  "dijit",
+  "text!templates/ide-body.html",
+  "dijit/layout/BorderContainer",
+  "dijit/layout/ContentPane",
+  "dijit/MenuBar",
+  "dijit/PopupMenuBarItem",
+  "dijit/ToolbarSeparator",
+  "dijit/form/Button"
+], (dojo, parser, dijit, bodyView) ->
+
   init: ->
     dojo.html.set dojo.body(), bodyView
     parser.parse()
+
     mainArea =
       container: dijit.byId "mainLayout"
       left:

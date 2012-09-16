@@ -1,5 +1,7 @@
 define ["dojo", "dijit/Menu", "dijit/MenuItem", "dijit/MenuSeparator", "dijit/PopupMenuItem"], (dojo, Menu, MenuItem, MenuSeparator, PopupMenuItem) ->
-  ide = require("core/Ide")
+
+  ide = require "core/Ide"
+
   init: ->
     actions = ide.query "actions"
 
@@ -10,10 +12,9 @@ define ["dojo", "dijit/Menu", "dijit/MenuItem", "dijit/MenuSeparator", "dijit/Po
     fileNew.addChild actions.file.newProject.makeMenuItem(label: "Project...")
     fileNew.addChild actions.file.newFile.makeMenuItem(label: "File...")
     fileNew.addChild actions.file.newFolder.makeMenuItem(label: "Folder")
-    fileMenu.addChild new PopupMenuItem(
+    fileMenu.addChild new PopupMenuItem
       label: "New"
       popup: fileNew
-    )
 
     fileMenu.addChild actions.file.openProject.makeMenuItem()
     fileMenu.addChild actions.file.save.makeMenuItem()

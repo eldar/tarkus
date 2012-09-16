@@ -1,4 +1,4 @@
-define([
+define [
     "sumo"
     "plugins/documents/OpenDocs"
     "plugins/documents/OpenDocsWidget"
@@ -54,4 +54,3 @@ define([
         updateTabPane 0
         dojo.connect tabs, "sizeChanged", (size) ->
             updateTabPane size
-)

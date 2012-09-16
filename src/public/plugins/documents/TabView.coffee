@@ -56,7 +56,7 @@ define [
         sizeChanged: (size) ->
         
         selectButton: (button) ->
-            return if @_currentButton == button
+            return if @_currentButton is button
               
             if @_currentButton
                 oldButton = @_currentButton
@@ -71,8 +71,8 @@ define [
 
         onRemoveRow: (doc) ->
             # disconnect connections related to page being removed
-#            dojo.forEach(this.pane2connects[page.id], dojo.hitch(this, "disconnect"));
-#            delete this.pane2connects[page.id];
+            # dojo.forEach(this.pane2connects[page.id], dojo.hitch(this, "disconnect"));
+            # delete this.pane2connects[page.id];
 
             button = @_docToButton[doc.id]
             if button

@@ -1,4 +1,4 @@
-define([
+define [
     "dojo"
     "sumo"
     "core/Io"
@@ -8,7 +8,7 @@ define([
     ide = require "core/Ide"
 
     getCurrentDelta = (session) ->
-        if not session then return null
+        return null unless session
         stack = session.getUndoManager().$undoStack
         len = stack.length
         if len == 0 then null else stack[len - 1];
@@ -27,7 +27,6 @@ define([
         name: () -> @node.name
         
         isModified: () -> @_isModified
-
     
     OpenDocuments = dojo.declare Model.ModelBase,
         constructor: () ->
@@ -47,11 +46,10 @@ define([
         
         _currentDoc: null
         
-        editors: () -> ide.query("editors")
+        editors: () -> ide.query "editors"
         
         open: (node, content) ->
-            if @docByNode node
-                return
+            return if @docByNode node
             session = @editors().getSession node.docType, content
             doc = new Document node, session
             session.getUndoManager().on "change", () =>
@@ -85,8 +83,7 @@ define([
         setCurrentDocument: (newDoc) ->
             ace = @editors().current()
             ace.editor.focus()
-            if @_currentDoc == newDoc
-                return
+            return if @_currentDoc is newDoc
             @_currentDoc = newDoc
             ace.setVisible true
             ace.editor.setSession newDoc.session
@@ -99,12 +96,10 @@ define([
         currentDocChangedForView: () ->
         
         docByNode: (node) ->
-            for doc in @list()
-                if node == doc.node then return doc
-            null
+            _.find @list(), (doc) -> doc.node is node
 
         closeDocumentPrompt: (doc, prompt) ->
-            if not doc then return
+            return unless doc
 
             if doc.isModified()
                 prompt doc.name(), (save) =>
@@ -115,9 +110,9 @@ define([
                 @closeDocument doc
 
         closeDocument: (doc) ->
-            if not doc then return
+            return unless doc
             
-            isSelected = (doc == @_currentDoc)
+            isSelected = (doc is @_currentDoc)
 
             # delete document from the model
             list = @list()
@@ -158,4 +153,3 @@ define([
             object = _.extend doc.node.pathDefinition(),
                 content: doc.session.getValue()
             socketIo.send "saveFile", object
-)
