@@ -1,7 +1,7 @@
 var fs = require("fs");
 var _ = require("Global")._;
 
-var PROJECTS_DIR = "/var/tarkus/";
+var PROJECTS_DIR = "/var/tarkus";
 
 var ignoreDirs = [".git", ".hg", ".svn"];
 

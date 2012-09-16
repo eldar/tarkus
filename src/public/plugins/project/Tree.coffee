@@ -1,28 +1,32 @@
 define [
   "dojo",
   "dojo/_base/declare",
+  "dijit",
   "dijit/Tree",
   "dijit/Menu",
   "ui/FixedTreeNode",
   "ui/ResizableTextBox",
   "plugins/project/Nodes"
-], (dojo, declare, Tree, Menu, FixedTreeNode, ResizableTextBox, nodes) ->
+], (dojo, declare, dijit, Tree, Menu, FixedTreeNode, ResizableTextBox, nodes) ->
 
   ide = require "core/Ide"
   Type = nodes.Type
 
   ContextMenu = declare Menu,
     postCreate: ->
+      @inherited arguments
       tree = @tree
+      getCurrentTarget = => dijit.byNode @currentTarget
+
       @addChild new dijit.MenuItem
         label: "Rename"
         onClick: ->
-          tree._selectedProjectItem.createEditBox()
+          getCurrentTarget().createEditBox()
 
       @addChild new dijit.MenuItem
         label: "Delete"
         onClick: ->
-          node = tree._selectedProjectItem.item
+          node = getCurrentTarget().item
           tree.model.deleteNode node  if node.type isnt Type.Project
 
   TreeEditBox = declare ResizableTextBox,
@@ -58,16 +62,11 @@ define [
 
   ProjectNode = declare FixedTreeNode,
     postCreate: ->
-      dojo.connect @rowNode, "oncontextmenu", dojo.hitch(this, "onContextMenu")
+      @inherited arguments
+      dojo.connect @rowNode, "oncontextmenu", this, "onContextMenu"
 
     onContextMenu: (e) ->
-      @tree._selectedProjectItem = this
       @tree.set "path", @item.fullObjectPath()
-      @tree._contextMenu._scheduleOpen e.target, `undefined`,
-        x: e.pageX
-        y: e.pageY
-
-      dojo.stopEvent e
 
     _onDblClick: (evt) ->
       @tree._onDblClick this, evt  unless @_supressEvents
@@ -82,7 +81,7 @@ define [
         treeItem: self
         name: "editName"
         value: @tree.model.getLabel @item
-        style: #FIXME remove styling into css
+        style: #FIXME move styling into css
           marginLeft: "4px"
           marginRight: "4px"
 
@@ -105,11 +104,13 @@ define [
     autoExpand: false
     showRoot: false
     persist: false
-    _selectedProjectItem: null
 
-    postCreate: ->
-      @inherited arguments
-      @_contextMenu = new ContextMenu(tree: this)
+    initMenus: ->
+      self = this
+      @_contextMenu = new ContextMenu
+        tree: self
+        targetNodeIds: [self.domNode.id]
+        selector: ".dijitTreeNode"
 
     _createTreeNode: (args) -> new ProjectNode(args)
 
